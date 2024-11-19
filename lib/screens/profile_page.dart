@@ -4,11 +4,12 @@ import 'package:care_clinic/screens/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 import 'package:url_launcher/url_launcher.dart';
 import 'about_app_screen.dart';
 import 'appointment_confirmation_page.dart';
-import 'rating_page.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -18,11 +19,48 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class UserProfileScreenState extends State<UserProfileScreen> {
-  String userName = 'Mutie Abu Zanat';
+  String? firstName;
+  String? lastName;
+  String? phone;
+  String? email;
+  String? birthday;
 
   String? imagePath;
 
   final ImagePicker _picker = ImagePicker();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> fetchUserData() async {
+    try {
+      User? currentUser = _auth.currentUser;
+      if (currentUser != null) {
+        String uid = currentUser.uid;
+
+        DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(uid).get();
+        if (userDoc.exists) {
+          setState(() {
+            firstName = userDoc['firstName'] as String?;
+            lastName = userDoc['lastName'] as String?;
+            phone = userDoc['phone'] as String?;
+            email = userDoc['email'] as String?;
+            birthday = userDoc['birthday'] as String?;
+          });
+        }
+      } else {
+        print("No user is currently logged in.");
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
 
   Future<void> _pickImage() async {
     final XFile? image = await _picker.pickImage(
@@ -37,7 +75,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
 
   Future<void> _sendWhatsAppMessage() async {
     final Uri whatsappUrl = Uri.parse(
-        "https://wa.me/+962792808314?text=هل ممكن أن احصل على استفسار");
+        "https://wa.me/+962777163292?text=هل ممكن أن احصل على استفسار");
     launchUrl(whatsappUrl);
   }
 
@@ -73,13 +111,18 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Column(
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Mutie Abu Zanat',
-                          style: TextStyle(
+                          '${firstName ?? 'تحميل...'} ${lastName ?? ''}',
+                          style: const TextStyle(
                               fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          email ?? 'تحميل...',
+                          style:
+                              const TextStyle(fontSize: 16, color: Colors.grey),
                         ),
                       ],
                     ),
@@ -96,7 +139,9 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                                 : null,
                             child: imagePath == null
                                 ? Text(
-                                    'M',
+                                    firstName != null && firstName!.isNotEmpty
+                                        ? firstName![0]
+                                        : '...',
                                     style: TextStyle(
                                       fontSize: 24,
                                       color: themeProvider.isDarkMode
@@ -127,12 +172,22 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                   ],
                 ),
                 const Divider(height: 30),
-                const ListTile(
-                  leading: Icon(Icons.phone_android),
-                  title: Text('الرقم'),
+                ListTile(
+                  leading: const Icon(Icons.phone_android),
+                  title: const Text('الرقم'),
                   trailing: Text(
-                    '0792808314',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    '0$phone',
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.cake),
+                  title: const Text('تاريخ الميلاد'),
+                  trailing: Text(
+                    birthday ?? 'تحميل...',
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
                 ListTile(
@@ -144,20 +199,6 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => const UserAppointmentsPage()),
-                    );
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.medical_services),
-                  title: const Text('السجل الطبي'),
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => RatingPage(
-                                doctorId: '123456',
-                              )),
                     );
                   },
                 ),

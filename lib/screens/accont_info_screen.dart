@@ -1,5 +1,6 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
+import 'package:care_clinic/widgets/custom_text_fieled.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,8 +13,8 @@ class AccountInfoScreen extends StatefulWidget {
 
 class AccountInfoScreenState extends State<AccountInfoScreen> {
   String gender = 'ذكر';
-  bool isEditing = false;
-  DateTime? birthDate; // متغير لتخزين تاريخ الميلاد
+  bool isEditing = false; // التحكم في إمكانية التعديل
+  DateTime? birthDate;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,7 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
                 ),
                 onPressed: () {
                   setState(() {
-                    isEditing = !isEditing;
+                    isEditing = !isEditing; // التبديل بين حالتي التعديل
                   });
                 },
               ),
@@ -52,52 +53,58 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextFormField(
-                      initialValue: 'mutieaz@yahoo.com',
-                      enabled: isEditing,
-                      textAlign: TextAlign.right,
-                      decoration: InputDecoration(
-                        labelText: 'البريد الإلكتروني',
-                        border: const OutlineInputBorder(),
-                        filled: true,
-                        fillColor: themeProvider.isDarkMode
-                            ? AppColors.textBox
-                            : Colors.white,
-                      ),
+                    CustomTextField(
+                      text: 'البريد الإلكتروني',
+                      controller:
+                          TextEditingController(text: 'mutieaz@yahoo.com'),
+                      icon: const Icon(Icons.email),
+                      onChanged: (value) {},
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'يرجى إدخال البريد الإلكتروني';
+                        }
+                        return null;
+                      },
+                      obscureText: false,
+                      enabled: isEditing, // السماح بالتعديل بناءً على الحالة
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      initialValue: 'Mutie Abu Zanat',
-                      enabled: isEditing,
-                      textAlign: TextAlign.right,
-                      decoration: InputDecoration(
-                        labelText: 'الاسم الأول',
-                        border: const OutlineInputBorder(),
-                        filled: true,
-                        fillColor: themeProvider.isDarkMode
-                            ? AppColors.textBox
-                            : Colors.white,
-                      ),
+                    CustomTextField(
+                      text: 'الاسم الأول',
+                      controller:
+                          TextEditingController(text: 'Mutie Abu Zanat'),
+                      icon: const Icon(Icons.person),
+                      onChanged: (value) {},
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'يرجى إدخال الاسم الأول';
+                        }
+                        return null;
+                      },
+                      obscureText: false,
+                      enabled: isEditing, // السماح بالتعديل بناءً على الحالة
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      initialValue: 'Zanat',
-                      enabled: isEditing,
-                      textAlign: TextAlign.right,
-                      decoration: InputDecoration(
-                        labelText: 'الاسم الأخير',
-                        border: const OutlineInputBorder(),
-                        filled: true,
-                        fillColor: themeProvider.isDarkMode
-                            ? AppColors.textBox
-                            : Colors.white,
-                      ),
+                    CustomTextField(
+                      text: 'الاسم الأخير',
+                      controller: TextEditingController(text: 'Zanat'),
+                      icon: const Icon(Icons.person_outline),
+                      onChanged: (value) {},
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'يرجى إدخال الاسم الأخير';
+                        }
+                        return null;
+                      },
+                      obscureText: false,
+                      enabled: isEditing, // السماح بالتعديل بناءً على الحالة
                     ),
                     const SizedBox(height: 16),
                     GestureDetector(
                       onTap: () {
                         if (isEditing) {
-                          _selectBirthDate(context);
+                          _selectBirthDate(
+                              context); // السماح بتغيير تاريخ الميلاد عند التعديل
                         }
                       },
                       child: InputDecorator(
@@ -108,8 +115,7 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
                           fillColor: themeProvider.isDarkMode
                               ? AppColors.textBox
                               : Colors.white,
-                          prefixIcon: const Icon(
-                              Icons.calendar_today), // إضافة أيقونة التقويم
+                          prefixIcon: const Icon(Icons.calendar_today),
                         ),
                         child: Text(
                           birthDate == null
@@ -231,9 +237,8 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
             ),
             TextButton(
               onPressed: () {
-                // هنا يمكنك تنفيذ كود حذف الحساب
                 Navigator.of(context).pop();
-                print('حساب تم حذفه'); // يمكنك استبداله بكود الحذف الفعلي
+                print('حساب تم حذفه');
               },
               child: const Text('حذف', style: TextStyle(color: Colors.red)),
             ),

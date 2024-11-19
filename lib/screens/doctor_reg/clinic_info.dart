@@ -15,7 +15,6 @@ import 'package:care_clinic/screens/doctor_reg/doctor_info.dart';
 import '../../widgets/custom_phone_field.dart';
 import 'loading_overlay.dart';
 
-
 class RegPage extends StatefulWidget {
   const RegPage({super.key});
 
@@ -47,14 +46,9 @@ class _RegPageState extends State<RegPage> {
     "Gastroenterology",
     "Respiratory Medicine",
     "Nephrology and Urology",
-
   ];
 
-
-
   Future<void> _uploadData() async {
-
-
     // عرض شاشة التحميل
     showDialog(
       context: context,
@@ -66,7 +60,8 @@ class _RegPageState extends State<RegPage> {
 
     try {
       // إنشاء مستخدم جديد باستخدام Firebase Auth
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
@@ -99,7 +94,6 @@ class _RegPageState extends State<RegPage> {
         'email': emailController.text,
         'location': locationController.text,
         'phone': phoneController.text,
-
         'imageUrl': imageUrl,
         'fileUrl': fileUrl,
       });
@@ -125,8 +119,10 @@ class _RegPageState extends State<RegPage> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text("Clinic Information",
-              style: TextStyle(color: AppColors.textColor)),
+          title: const Text(
+            "Clinic Information",
+            style: TextStyle(color: AppColors.textColor),
+          ),
           backgroundColor: AppColors.primaryColor,
           leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -161,22 +157,26 @@ class _RegPageState extends State<RegPage> {
                   CustomEmailTextField(
                     text: 'Email',
                     controller: emailController,
+                    icon:
+                        const Icon(Icons.email, color: AppColors.primaryColor),
                   ),
                   const SizedBox(height: 20),
-                  TextFormField(
+                  CustomTextField(
+                    text: "Password",
                     controller: passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: "Password",
-                      prefixIcon:
-                      Icon(Icons.lock, color: AppColors.primaryColor),
-                      border: OutlineInputBorder(),
-                    ),
+                    icon: const Icon(Icons.lock, color: AppColors.primaryColor),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      } else if (value.length < 6) {
+                        return 'Password must be at least 6 characters long';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
                   CustomLocationPicker(controller: locationController),
-                  const SizedBox(height: 20),
-
                   const SizedBox(height: 20),
                   UploadFile(
                     onFilePicked: (File file) {
