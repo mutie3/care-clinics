@@ -24,27 +24,75 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
   int _currentIndex = 0;
 
   List<Map<String, dynamic>> medicalSpecialties = [
-    {"name": "ALL", "icon": FontAwesomeIcons.borderAll},
-    {"name": "General Medicine / Family Medicine", "icon": FontAwesomeIcons.userMd},
-    {"name": "Internal Medicine", "icon": FontAwesomeIcons.stethoscope},
-    {"name": "Pediatrics", "icon": FontAwesomeIcons.baby},
-    {"name": "Obstetrics and Gynecology", "icon": FontAwesomeIcons.venus},
-    {"name": "Dermatology", "icon": FontAwesomeIcons.handHoldingMedical},
-    {"name": "Cardiology", "icon": FontAwesomeIcons.heartbeat},
-    {"name": "Orthopedic Surgery", "icon": FontAwesomeIcons.bone},
-    {"name": "Psychiatry", "icon": FontAwesomeIcons.brain},
-    {"name": "Endocrinology", "icon": FontAwesomeIcons.vial},
-    {"name": "Gastroenterology", "icon": FontAwesomeIcons.userInjured},
-    {"name": "Respiratory Medicine", "icon": FontAwesomeIcons.lungs},
-    {"name": "Nephrology and Urology", "icon": FontAwesomeIcons.toilet},
-    {"name": "Oncology and Radiotherapy", "icon": FontAwesomeIcons.dna},
-    {"name": "Sports Medicine", "icon": FontAwesomeIcons.running},
-    {"name": "Hematology", "icon": FontAwesomeIcons.syringe},
-    {"name": "Hepatology", "icon": FontAwesomeIcons.prescriptionBottle},
-    {"name": "Infectious Diseases", "icon": FontAwesomeIcons.virus},
-    {"name": "Nutrition and Dietetics", "icon": FontAwesomeIcons.appleAlt},
-    {"name": "Ophthalmology", "icon": FontAwesomeIcons.eye},
-    {"name": "ENT (Ear, Nose, and Throat)", "icon": FontAwesomeIcons.headSideMask},
+    {
+      "name": "ALL",
+      "icon": FontAwesomeIcons.listAlt
+    }, // أيقونة شاملة لجميع التخصصات
+    {
+      "name": "General Medicine",
+      "icon": FontAwesomeIcons.medkit
+    }, // أيقونة لمجموعة أدوات طبية
+    {
+      "name": "Internal Medicine",
+      "icon": FontAwesomeIcons.userInjured
+    }, // أيقونة مريض مصاب
+    {"name": "Pediatrics", "icon": FontAwesomeIcons.child}, // أيقونة طفل
+    {
+      "name": "Obstetrics and Gynecology",
+      "icon": FontAwesomeIcons.venusMars
+    }, // أيقونة ولادة وجنس
+    {
+      "name": "Dermatology",
+      "icon": FontAwesomeIcons.handHoldingHeart
+    }, // أيقونة للعناية بالبشرة
+    {
+      "name": "Cardiology",
+      "icon": FontAwesomeIcons.heartPulse
+    }, // أيقونة نبض القلب
+    {
+      "name": "Orthopedic Surgery",
+      "icon": FontAwesomeIcons.hammer
+    }, // أيقونة جراحة العظام
+    {"name": "Psychiatry", "icon": FontAwesomeIcons.brain}, // أيقونة الدماغ
+    {
+      "name": "Endocrinology",
+      "icon": FontAwesomeIcons.bottleDroplet
+    }, // أيقونة هرمون أو غدة
+    {
+      "name": "Gastroenterology",
+      "icon": FontAwesomeIcons.utensils
+    }, // أيقونة غذاء أو معدة
+    {
+      "name": "Respiratory Medicine",
+      "icon": FontAwesomeIcons.lungs
+    }, // أيقونة الرئتين
+    {
+      "name": "Nephrology and Urology",
+      "icon": FontAwesomeIcons.toilet
+    }, // أيقونة للحمام أو البول
+    {
+      "name": "Oncology and Radiotherapy",
+      "icon": FontAwesomeIcons.capsules
+    }, // أيقونة علاج إشعاعي
+    {
+      "name": "Sports Medicine",
+      "icon": FontAwesomeIcons.running
+    }, // أيقونة رياضية
+    {"name": "Hematology", "icon": FontAwesomeIcons.syringe}, // أيقونة حقنة
+    {"name": "Hepatology", "icon": FontAwesomeIcons.pills}, // أيقونة أقراص دواء
+    {
+      "name": "Infectious Diseases",
+      "icon": FontAwesomeIcons.virus
+    }, // أيقونة فيروس
+    {
+      "name": "Nutrition and Dietetics",
+      "icon": FontAwesomeIcons.carrot
+    }, // أيقونة خضار
+    {"name": "Ophthalmology", "icon": FontAwesomeIcons.eye}, // أيقونة عين
+    {
+      "name": "ENT (Ear, Nose, and Throat)",
+      "icon": FontAwesomeIcons.headSideCough
+    } // أيقونة رأس
   ];
 
   @override
@@ -65,7 +113,8 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
           child: Scaffold(
             body: Column(
               children: [
-                if (_currentIndex == 0) _buildCurvedAppBar(context, themeProvider),
+                if (_currentIndex == 0)
+                  _buildCurvedAppBar(context, themeProvider),
                 Expanded(
                   child: PageView(
                     controller: _pageController,
@@ -102,31 +151,41 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
     return ClipPath(
       clipper: AppBarClipper(),
       child: Container(
-        height: 120, // جعل الحاوية أقل ارتفاعًا ليكون الانحناء أصغر
+        height: 100,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              themeProvider.isDarkMode ? AppColors.textBox : AppColors.primaryColor,
-              themeProvider.isDarkMode ? AppColors.textBox : AppColors.primaryColor,
+              themeProvider.isDarkMode
+                  ? AppColors.textBox
+                  : AppColors.primaryColor,
+              themeProvider.isDarkMode
+                  ? AppColors.textBox.withOpacity(0.7)
+                  : AppColors.primaryColor.withOpacity(0.8),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30),
+          ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF1E88E5).withOpacity(0.5),
-              offset: const Offset(0, 8),
-              blurRadius: 8,
-              spreadRadius: 3,
+              color: themeProvider.isDarkMode
+                  ? Colors.black.withOpacity(0.5)
+                  : Colors.blue.withOpacity(0.3),
+              offset: const Offset(0, 10),
+              blurRadius: 15,
+              spreadRadius: 2,
             ),
           ],
         ),
         child: AppBar(
           title: Text(
             'Medical Specialties',
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0, // تقليل حجم النص ليكون أصغر
+            style: GoogleFonts.robotoSlab(
+              fontWeight: FontWeight.w600,
+              fontSize: 24.0,
               color: Colors.white,
             ),
           ),
@@ -165,7 +224,8 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
     );
   }
 
-  Widget _buildSpecialtyCard(Map<String, dynamic> specialty, BuildContext context) {
+  Widget _buildSpecialtyCard(
+      Map<String, dynamic> specialty, BuildContext context) {
     final specialtyName = specialty['name'] ?? '';
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
@@ -178,7 +238,8 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => Clinics(
-                    selectedSpecialty: specialtyName == "ALL" ? '' : specialtyName,
+                    selectedSpecialty:
+                        specialtyName == "ALL" ? '' : specialtyName,
                     isGustLogin: widget.isGustLogin,
                   ),
                 ),
@@ -187,38 +248,40 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
           },
           child: Card(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.0),
+              borderRadius: BorderRadius.circular(20.0), // زاوية أكثر نعومة
             ),
-            elevation: 6.0,
+            elevation: 10.0, // زيادة الظل
             color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[800]
+                ? Colors.grey[850]
                 : AppColors.scaffoldBackgroundColor,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(
+                  16.0), // زيادة padding لجعل البطاقة أكثر اتساعًا
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 40), // تقليل الارتفاع
+                  const SizedBox(height: 20),
+                  // زيادة حجم الأيقونة لتكون أكثر وضوحًا
                   FaIcon(
                     specialty['icon'],
-                    size: 40, // جعل الأيقونة أصغر قليلاً
+                    size: 50, // زيادة الحجم لجعل الأيقونة أكثر بروزًا
                     color: themeProvider.isDarkMode
-                        ? Colors.black
+                        ? Colors.white
                         : AppColors.primaryColor,
                   ),
-                  const SizedBox(height: 8.0),
+                  const SizedBox(height: 10.0),
                   Expanded(
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
                         specialtyName,
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.merriweather(
                           fontWeight: FontWeight.w600,
-                          fontSize: 16.0, // تقليل حجم النص ليكون أصغر
+                          fontSize: 16.0, // زيادة الحجم قليلاً لجعل النص أكبر
                           color: themeProvider.isDarkMode
                               ? Colors.white
-                              : Colors.black,
+                              : Colors.black87,
                         ),
                       ),
                     ),
@@ -242,7 +305,7 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginPage()),

@@ -1,7 +1,6 @@
 import 'package:care_clinic/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import '../screens/user_appointments_screen.dart';
 
 class VideoPage extends StatefulWidget {
   @override

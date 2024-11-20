@@ -118,7 +118,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Text(
               'Hakeem AI',
               style: TextStyle(
-                fontFamily: 'Poppins', // استخدام خط عصري
+                fontFamily: 'PlayfairDisplay',
                 fontSize: 24,
                 letterSpacing: 1, // تباعد الأحرف لجعل النص أكثر عصرية
               ),

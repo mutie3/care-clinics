@@ -30,45 +30,46 @@ class _UploadFileState extends State<UploadFile> {
         children: [
           file == null
               ? const Center(
-            child: Text(
-              'No file selected',
-              style: TextStyle(
-                color: AppColors.textColor,
-                fontSize: 18,
-              ),
-            ),
-          )
+                  child: Text(
+                    'No file selected',
+                    style: TextStyle(
+                      color: AppColors.textColor,
+                      fontFamily: 'Tajawal',
+                      fontSize: 18,
+                    ),
+                  ),
+                )
               : Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black54),
-                    borderRadius: BorderRadius.circular(10),
-                    color: AppColors.textColor.withOpacity(0.2),
-                  ),
-                  height: 50,
-                  width: 50,
-                  child: FaIcon(
-                    platformFile!.extension == 'pdf'
-                        ? FontAwesomeIcons.filePdf
-                        : FontAwesomeIcons.fileWord,
-                    size: 30,
-                    color: platformFile!.extension == 'pdf'
-                        ? Colors.red
-                        : Colors.blue,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black54),
+                          borderRadius: BorderRadius.circular(10),
+                          color: AppColors.textColor.withOpacity(0.2),
+                        ),
+                        height: 50,
+                        width: 50,
+                        child: FaIcon(
+                          platformFile!.extension == 'pdf'
+                              ? FontAwesomeIcons.filePdf
+                              : FontAwesomeIcons.fileWord,
+                          size: 30,
+                          color: platformFile!.extension == 'pdf'
+                              ? Colors.red
+                              : Colors.blue,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        platformFile!.name.split('.').first,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  platformFile!.name.split('.').first,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ],
-            ),
-          ),
           if (file == null)
             Positioned.fill(
               child: MaterialButton(
@@ -79,8 +80,10 @@ class _UploadFileState extends State<UploadFile> {
                 ),
                 child: Text(
                   "Pick your Clinic certification",
-                  style:
-                  TextStyle(color: AppColors.primaryColor.withOpacity(0.6)),
+                  style: TextStyle(
+                    color: AppColors.primaryColor.withOpacity(0.6),
+                    fontFamily: 'Tajawal',
+                  ),
                 ),
               ),
             ),

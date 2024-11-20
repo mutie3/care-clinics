@@ -257,9 +257,9 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
       builder: (context, themeProvider, child) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(widget.doctorName,
-                style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold)),
+            // title: Text(widget.doctorName,
+            //     style: const TextStyle(
+            //         color: Colors.white, fontWeight: FontWeight.bold)),
             centerTitle: true,
             backgroundColor: themeProvider.isDarkMode
                 ? AppColors.textBox

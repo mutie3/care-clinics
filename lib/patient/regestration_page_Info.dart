@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../screens/doctor_reg/loading_overlay.dart';
-import '../screens/login_page.dart';
 import 'auth_service.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -41,7 +40,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
             backgroundColor: themeProvider.isDarkMode
                 ? AppColors.textBox
                 : AppColors.primaryColor,
-            title: const Text('Your Account'),
+            title: const Text(
+              'your informations',
+              style: TextStyle(
+                fontFamily: 'PlayfairDisplay',
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             leading: IconButton(
               icon: Icon(
                 Icons.arrow_back,
@@ -62,19 +68,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Center(
-                      child: Text(
-                        'Care Clink',
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          color: themeProvider.isDarkMode
-                              ? Colors.white
-                              : AppColors.primaryColor,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 18),
                     NameField(
                         controllerFirstName: _firstNameController,
                         controllerLastName:

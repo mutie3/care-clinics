@@ -28,12 +28,14 @@ class SignUpText extends StatelessWidget {
                   const TextSpan(
                     text: "Don't have an account? ",
                     style: TextStyle(
+                      fontFamily: 'Tajawal',
                       color: AppColors.textBox,
                     ),
                   ),
                   TextSpan(
                     text: "Registration",
                     style: TextStyle(
+                      fontFamily: 'Tajawal',
                       color: themeProvider.isDarkMode
                           ? Colors.grey[300]
                           : AppColors.primaryColor,

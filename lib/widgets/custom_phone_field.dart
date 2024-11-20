@@ -7,7 +7,8 @@ import 'package:provider/provider.dart';
 class CustomPhoneField extends StatelessWidget {
   final TextEditingController controller;
 
-  const CustomPhoneField({Key? key, required this.controller}) : super(key: key);
+  const CustomPhoneField({Key? key, required this.controller})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,17 +18,24 @@ class CustomPhoneField extends StatelessWidget {
           controller: controller,
           decoration: InputDecoration(
             labelText: 'Phone Number',
-            labelStyle: const TextStyle(color: AppColors.textColor),
+            labelStyle: const TextStyle(
+              color: AppColors.textColor,
+              fontFamily: 'Tajawal',
+            ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(25.0),
               borderSide: BorderSide(
-                color: themeProvider.isDarkMode ? Colors.white : AppColors.primaryColor,
+                color: themeProvider.isDarkMode
+                    ? Colors.white
+                    : AppColors.primaryColor,
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(25.0),
               borderSide: BorderSide(
-                color: themeProvider.isDarkMode ? Colors.white : AppColors.primaryColor,
+                color: themeProvider.isDarkMode
+                    ? Colors.white
+                    : AppColors.primaryColor,
               ),
             ),
           ),

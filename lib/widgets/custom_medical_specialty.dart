@@ -36,9 +36,15 @@ class CustomMedicalSpacialty extends StatelessWidget {
           color: AppColors.primaryColor,
         ),
         hintText: "Medical Specialty",
-        hintStyle: const TextStyle(color: AppColors.textColor),
+        hintStyle: const TextStyle(
+          color: AppColors.textColor,
+          fontFamily: 'Tajawal',
+        ),
         labelText: "Medical Specialty",
-        labelStyle: const TextStyle(color: AppColors.textColor),
+        labelStyle: const TextStyle(
+          color: AppColors.textColor,
+          fontFamily: 'Tajawal',
+        ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
           borderSide: const BorderSide(

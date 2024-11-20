@@ -30,6 +30,7 @@ class _RegAsSelectState extends State<RegAsSelect> {
                   Text(
                     'Registration as:',
                     style: TextStyle(
+                      fontFamily: 'PlayfairDisplay',
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: themeProvider.isDarkMode
@@ -66,6 +67,7 @@ class _RegAsSelectState extends State<RegAsSelect> {
                           Text(
                             'Clinic',
                             style: TextStyle(
+                              fontFamily: 'PlayfairDisplay',
                               fontSize: 18,
                               color: themeProvider.isDarkMode
                                   ? Colors.white
@@ -102,6 +104,7 @@ class _RegAsSelectState extends State<RegAsSelect> {
                           Text(
                             'Person',
                             style: TextStyle(
+                              fontFamily: 'PlayfairDisplay',
                               fontSize: 18,
                               color: themeProvider.isDarkMode
                                   ? Colors.white

@@ -19,7 +19,7 @@ class DatePickerWidget extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -27,7 +27,7 @@ class DatePickerWidget extends StatelessWidget {
                 'Select Date',
                 style: TextStyle(
                   color: Color(0xff363636),
-                  fontSize: 25,
+                  fontSize: 22,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -46,7 +46,7 @@ class DatePickerWidget extends StatelessWidget {
                 },
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                   decoration: BoxDecoration(
                     color: themeProvider.isDarkMode
                         ? Colors.grey
@@ -59,7 +59,7 @@ class DatePickerWidget extends StatelessWidget {
                       Text(
                         DateFormat('EEE, MMM d, yyyy').format(selectedDate),
                         style: const TextStyle(
-                          fontSize: 18,
+                          fontSize: 15,
                           color: Colors.black,
                         ),
                       ),

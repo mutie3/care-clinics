@@ -41,7 +41,50 @@ class CareClink extends StatelessWidget {
         return MaterialApp(
           title: 'Care Clinic',
           debugShowCheckedModeBanner: false,
-          theme: themeProvider.currentTheme,
+          theme: themeProvider.currentTheme.copyWith(
+            textTheme: themeProvider.currentTheme.textTheme.copyWith(
+              // تخصيص نصوص الجسم
+              bodyLarge: TextStyle(
+                fontFamily: 'Tajawal',
+                color: themeProvider.currentTheme.brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+              bodyMedium: TextStyle(
+                fontFamily: 'Tajawal',
+                color: themeProvider.currentTheme.brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+
+              // تخصيص نصوص العرض
+              displayLarge: TextStyle(
+                fontFamily: 'PlayfairDisplay',
+                color: themeProvider.currentTheme.brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+              displayMedium: TextStyle(
+                fontFamily: 'PlayfairDisplay',
+                color: themeProvider.currentTheme.brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+
+              titleMedium: TextStyle(
+                fontFamily: 'Tajawal',
+                color: themeProvider.currentTheme.brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+              titleSmall: TextStyle(
+                fontFamily: 'Tajawal',
+                color: themeProvider.currentTheme.brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+            ),
+          ),
           home: const VideoPlayerScreen(),
         );
       },

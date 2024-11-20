@@ -121,7 +121,10 @@ class _RegPageState extends State<RegPage> {
         appBar: AppBar(
           title: const Text(
             "Clinic Information",
-            style: TextStyle(color: AppColors.textColor),
+            style: TextStyle(
+              color: AppColors.textColor,
+              fontFamily: 'PlayfairDisplay',
+            ),
           ),
           backgroundColor: AppColors.primaryColor,
           leading: IconButton(

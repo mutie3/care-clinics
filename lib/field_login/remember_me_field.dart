@@ -55,6 +55,7 @@ class _RememberMeAndForgotPasswordRowState
               child: Text(
                 'Forgot Password?',
                 style: TextStyle(
+                  fontFamily: 'Tajawal',
                   color: themeProvider.isDarkMode
                       ? AppColors.textBox
                       : AppColors.primaryColor,

@@ -35,6 +35,7 @@ class LoginButtons extends StatelessWidget {
                 child: Text(
                   'Login',
                   style: TextStyle(
+                    fontFamily: 'Tajawal',
                     fontSize: 18,
                     color: AppColors.scaffoldBackgroundColor,
                   ),
@@ -46,6 +47,7 @@ class LoginButtons extends StatelessWidget {
               child: Text(
                 'OR',
                 style: TextStyle(
+                  fontFamily: 'Tajawal',
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: themeProvider.isDarkMode
@@ -70,6 +72,7 @@ class LoginButtons extends StatelessWidget {
                 child: Text(
                   'Guest Login',
                   style: TextStyle(
+                    fontFamily: 'Tajawal',
                     fontSize: 18,
                     color: AppColors.scaffoldBackgroundColor,
                   ),
