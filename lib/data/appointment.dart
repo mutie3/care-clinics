@@ -21,8 +21,10 @@ class Appointment {
       'patientName': patientName,
       'doctorName': doctorName,
       'status': status,
-      'appointmentDate': appointmentDate.toIso8601String(),
-      'appointmentTime': appointmentTime.toIso8601String(),
+      'appointmentDate': appointmentDate
+          .toIso8601String(), // تأكد من تحويل DateTime إلى String
+      'appointmentTime': appointmentTime
+          .toIso8601String(), // تأكد من تحويل DateTime إلى String
     };
   }
 
@@ -33,8 +35,10 @@ class Appointment {
       patientName: map['patientName'],
       doctorName: map['doctorName'],
       status: map['status'] ?? false,
-      appointmentDate: DateTime.parse(map['appointmentDate']),
-      appointmentTime: DateTime.parse(map['appointmentTime']),
+      appointmentDate: DateTime.parse(
+          map['appointmentDate']), // تحويل من String إلى DateTime
+      appointmentTime: DateTime.parse(
+          map['appointmentTime']), // تحويل من String إلى DateTime
     );
   }
 }

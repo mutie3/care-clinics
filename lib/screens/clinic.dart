@@ -10,7 +10,10 @@ class Clinics extends StatefulWidget {
   final String selectedSpecialty;
   final bool isGustLogin; // إضافة isGustLogin هنا
 
-  const Clinics({super.key, required this.selectedSpecialty, required this.isGustLogin}); // إضافة isGustLogin للكونستركتر
+  const Clinics(
+      {super.key,
+      required this.selectedSpecialty,
+      required this.isGustLogin}); // إضافة isGustLogin للكونستركتر
 
   @override
   ClinicsState createState() => ClinicsState();
@@ -32,7 +35,7 @@ class ClinicsState extends State<Clinics> {
   Future<void> _fetchClinicsData() async {
     try {
       QuerySnapshot<Map<String, dynamic>> clinicsSnapshot =
-      await FirebaseFirestore.instance.collection('clinics').get();
+          await FirebaseFirestore.instance.collection('clinics').get();
 
       List<Map<String, dynamic>> allClinics = [];
 
@@ -43,7 +46,8 @@ class ClinicsState extends State<Clinics> {
         double latitude = 0.0;
         double longitude = 0.0;
 
-        if (clinicData['location'] != null && clinicData['location'] is String) {
+        if (clinicData['location'] != null &&
+            clinicData['location'] is String) {
           final locationString = clinicData['location'] as String;
           final latLngMatch = RegExp(r'Lat:\s*([\d.-]+),\s*Lng:\s*([\d.-]+)')
               .firstMatch(locationString);
@@ -67,12 +71,12 @@ class ClinicsState extends State<Clinics> {
           });
         } else {
           QuerySnapshot<Map<String, dynamic>> doctorsSnapshot =
-          await FirebaseFirestore.instance
-              .collection('clinics')
-              .doc(clinicId)
-              .collection('doctors')
-              .where("specialty", isEqualTo: widget.selectedSpecialty)
-              .get();
+              await FirebaseFirestore.instance
+                  .collection('clinics')
+                  .doc(clinicId)
+                  .collection('doctors')
+                  .where("specialty", isEqualTo: widget.selectedSpecialty)
+                  .get();
 
           if (doctorsSnapshot.docs.isNotEmpty) {
             allClinics.add({
@@ -150,7 +154,7 @@ class ClinicsState extends State<Clinics> {
                               borderSide: BorderSide.none,
                             ),
                             prefixIcon:
-                            const Icon(Icons.search, color: Colors.white),
+                                const Icon(Icons.search, color: Colors.white),
                             contentPadding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 16),
                           ),
@@ -164,42 +168,42 @@ class ClinicsState extends State<Clinics> {
                 child: isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : filteredClinics.isEmpty
-                    ? const Center(
-                    child: Text('لا توجد عيادات تتطابق مع هذا البحث'))
-                    : GridView.builder(
-                  gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.75,
-                  ),
-                  itemCount: filteredClinics.length,
-                  itemBuilder: (context, index) {
-                    final clinic = filteredClinics[index];
-                    return DoctorCard(
-                      imgPath: clinic["img"],
-                      doctorName: clinic["name"] ?? "No Name",
-                      doctorSpeciality:
-                      clinic["location"] ?? "No Location",
-                      rating: clinic["rating"] ?? "0",
-                      onTap: () async {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DoctorDetailPage(
-                              clinicId: clinic["id"],
-                              imgPath: clinic["img"],
-                              doctorName: clinic["name"],
-                              doctorSpeciality: clinic["location"],
-                              rating: clinic["rating"],
-                              latitude: clinic["latitude"],
-                              longitude: clinic["longitude"],
+                        ? const Center(
+                            child: Text('لا توجد عيادات تتطابق مع هذا البحث'))
+                        : GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.75,
                             ),
+                            itemCount: filteredClinics.length,
+                            itemBuilder: (context, index) {
+                              final clinic = filteredClinics[index];
+                              return DoctorCard(
+                                imgPath: clinic["img"],
+                                doctorName: clinic["name"] ?? "No Name",
+                                doctorSpeciality:
+                                    clinic["location"] ?? "No Location",
+                                rating: clinic["rating"] ?? "0",
+                                onTap: () async {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DoctorDetailPage(
+                                        clinicId: clinic["id"],
+                                        imgPath: clinic["img"],
+                                        doctorName: clinic["name"],
+                                        doctorSpeciality: clinic["location"],
+                                        rating: clinic["rating"],
+                                        latitude: clinic["latitude"],
+                                        longitude: clinic["longitude"],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
                           ),
-                        );
-                      },
-                    );
-                  },
-                ),
               ),
             ],
           ),

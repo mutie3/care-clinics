@@ -7,7 +7,7 @@ import '../pages_doctors/doctor_card.dart';
 import '../pages_doctors/doctor_detail_page.dart';
 
 class Search extends StatefulWidget {
-  const Search({Key? key}) : super(key: key);
+  const Search({super.key});
 
   @override
   State<Search> createState() => _SearchState();
@@ -33,7 +33,7 @@ class _SearchState extends State<Search> {
 
     try {
       QuerySnapshot<Map<String, dynamic>> clinicsSnapshot =
-      await FirebaseFirestore.instance.collection('clinics').get();
+          await FirebaseFirestore.instance.collection('clinics').get();
 
       List<Map<String, dynamic>> allClinics = clinicsSnapshot.docs.map((doc) {
         return {
@@ -49,7 +49,6 @@ class _SearchState extends State<Search> {
       }).toList();
 
       if (mounted) {
-
         setState(() {
           filteredClinics = allClinics;
           isLoading = false;
@@ -65,15 +64,14 @@ class _SearchState extends State<Search> {
     }
   }
 
-
   Future<List<Map<String, dynamic>>> _fetchDoctors(String clinicId) async {
     try {
       QuerySnapshot<Map<String, dynamic>> doctorsSnapshot =
-      await FirebaseFirestore.instance
-          .collection('clinics')
-          .doc(clinicId)
-          .collection('doctors')
-          .get();
+          await FirebaseFirestore.instance
+              .collection('clinics')
+              .doc(clinicId)
+              .collection('doctors')
+              .get();
 
       return doctorsSnapshot.docs.map((doc) {
         return {
@@ -88,12 +86,10 @@ class _SearchState extends State<Search> {
     }
   }
 
-
   void _filterClinics() {
     final query = searchController.text.toLowerCase();
 
     if (mounted) {
-
       setState(() {
         filteredClinics = filteredClinics.where((clinic) {
           final name = clinic["name"]!.toLowerCase();
@@ -150,46 +146,45 @@ class _SearchState extends State<Search> {
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : filteredClinics.isEmpty
-                  ? const Center(
-                  child: Text('لا توجد عيادات تتطابق مع هذا البحث'))
-                  : GridView.builder(
-                gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.75,
-                ),
-                itemCount: filteredClinics.length,
-                itemBuilder: (context, index) {
-                  final clinic = filteredClinics[index];
-                  return DoctorCard(
-                    imgPath: clinic["img"],
-                    doctorName: clinic["name"] ?? "No Name",
-                    doctorSpeciality:
-                    clinic["speciality"] ?? "No Specialty",
-                    rating: clinic["rating"] ?? "0",
-                    onTap: () async {
-
-                      List<Map<String, dynamic>> doctors =
-                      await _fetchDoctors(clinic["id"]);
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DoctorDetailPage(
-                            clinicId: clinic["id"],
-                            imgPath: clinic["img"],
-                            doctorName: clinic["name"],
-                            doctorSpeciality: clinic["speciality"],
-                            rating: clinic["rating"],
-                            latitude: clinic["latitude"],
-                            longitude: clinic["longitude"],
+                      ? const Center(
+                          child: Text('لا توجد عيادات تتطابق مع هذا البحث'))
+                      : GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.75,
                           ),
+                          itemCount: filteredClinics.length,
+                          itemBuilder: (context, index) {
+                            final clinic = filteredClinics[index];
+                            return DoctorCard(
+                              imgPath: clinic["img"],
+                              doctorName: clinic["name"] ?? "No Name",
+                              doctorSpeciality:
+                                  clinic["speciality"] ?? "No Specialty",
+                              rating: clinic["rating"] ?? "0",
+                              onTap: () async {
+                                List<Map<String, dynamic>> doctors =
+                                    await _fetchDoctors(clinic["id"]);
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DoctorDetailPage(
+                                      clinicId: clinic["id"],
+                                      imgPath: clinic["img"],
+                                      doctorName: clinic["name"],
+                                      doctorSpeciality: clinic["speciality"],
+                                      rating: clinic["rating"],
+                                      latitude: clinic["latitude"],
+                                      longitude: clinic["longitude"],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
                         ),
-                      );
-                    },
-                  );
-                },
-              ),
             ),
           ],
         ),
@@ -197,7 +192,6 @@ class _SearchState extends State<Search> {
     });
   }
 }
-
 
 class AppBarClipper extends CustomClipper<Path> {
   @override

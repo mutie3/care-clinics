@@ -1,4 +1,5 @@
 import 'package:care_clinic/widgets/video.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
@@ -35,19 +36,21 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+
   DateTime selectedDate = DateTime.now();
   int? selectedDoctorIndex;
   String? selectedTime;
   List<Map<String, dynamic>> doctors = [];
   bool isLoading = true;
   List<Map<String, dynamic>> appointments = [];
-  String clinicPhoneNumber = ''; // رقم الهاتف للعيادة
+  String clinicPhoneNumber = '';
+  String? patientFirstName;
+  String? patientLastName;
+
   @override
   void initState() {
     super.initState();
-    _fetchClinicData();
-    _fetchDoctors();
-    _fetchAppointments();
+    _fetchInitialData();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -55,14 +58,42 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
   }
 
+  Future<void> _fetchInitialData() async {
+    await Future.wait([
+      _fetchClinicData(),
+      _fetchDoctors(),
+      _fetchUserData(),
+    ]);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> _fetchUserData() async {
+    try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        String uid = currentUser.uid;
+        DocumentSnapshot userDoc =
+            await FirebaseFirestore.instance.collection('users').doc(uid).get();
+        if (userDoc.exists) {
+          setState(() {
+            patientFirstName = userDoc['firstName'] as String?;
+            patientLastName = userDoc['lastName'] as String?;
+          });
+        }
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+  }
+
   Future<void> _fetchClinicData() async {
     try {
-      // جلب بيانات العيادة من الوثيقة الرئيسية
       final clinicSnapshot = await FirebaseFirestore.instance
           .collection('clinics')
           .doc(widget.clinicId)
           .get();
-
       if (clinicSnapshot.exists) {
         setState(() {
           clinicPhoneNumber = clinicSnapshot.data()?['phone'] ?? '';
@@ -73,12 +104,6 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
     }
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   Future<void> _fetchDoctors() async {
     try {
       final querySnapshot = await FirebaseFirestore.instance
@@ -86,7 +111,6 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
           .doc(widget.clinicId)
           .collection('doctors')
           .get();
-
       setState(() {
         doctors = querySnapshot.docs
             .map((doc) => {
@@ -96,13 +120,28 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                   'image_url': doc.data()['image_url'] ?? '',
                 })
             .toList();
-        isLoading = false;
       });
     } catch (e) {
       print('Error fetching doctors: $e');
+    }
+  }
+
+  Future<void> _fetchAppointments() async {
+    if (selectedDoctorIndex == null) return;
+
+    try {
+      final doctorId = doctors[selectedDoctorIndex!]['id'];
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('appointments')
+          .where('doctorId', isEqualTo: doctorId)
+          .get();
       setState(() {
-        isLoading = false;
+        appointments = querySnapshot.docs
+            .map((doc) => doc.data() as Map<String, dynamic>)
+            .toList();
       });
+    } catch (e) {
+      print('Error fetching appointments: $e');
     }
   }
 
@@ -114,34 +153,6 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
     });
     _fetchAppointments();
     _controller.forward();
-  }
-
-  List<String> _generateTimeSlots() {
-    return List<String>.generate(8, (index) {
-      final time = TimeOfDay(hour: 9 + index, minute: 0);
-      return time.format(context);
-    });
-  }
-
-  Future<void> _fetchAppointments() async {
-    if (selectedDoctorIndex == null) return;
-
-    try {
-      final doctorId = doctors[selectedDoctorIndex!]['id'];
-
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('appointments')
-          .where('doctorId', isEqualTo: doctorId)
-          .get();
-
-      setState(() {
-        appointments = querySnapshot.docs
-            .map((doc) => doc.data() as Map<String, dynamic>)
-            .toList();
-      });
-    } catch (e) {
-      print('Error fetching appointments: $e');
-    }
   }
 
   Future<void> _openMap() async {
@@ -164,13 +175,9 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
   }
 
   bool isTimeSlotBooked(String time) {
-    for (var appointment in appointments) {
-      if (appointment['time'] == time &&
-          appointment['date'] == selectedDate.toIso8601String()) {
-        return true;
-      }
-    }
-    return false;
+    return appointments.any((appointment) =>
+        appointment['time'] == time &&
+        DateTime.parse(appointment['date']).isAtSameMomentAs(selectedDate));
   }
 
   void _makeAppointment() {
@@ -190,7 +197,8 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
       'clinicId': widget.clinicId,
       'date': selectedDate.toIso8601String(),
       'time': selectedTime,
-      'patientName': 'John Doe', // Replace with actual patient name
+      'patientName':
+          '${patientFirstName ?? 'Unknown'} ${patientLastName ?? ''}',
     };
 
     FirebaseFirestore.instance
@@ -234,6 +242,13 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
         ),
       ],
     );
+  }
+
+  List<String> _generateTimeSlots() {
+    return List<String>.generate(8, (index) {
+      final time = TimeOfDay(hour: 9 + index, minute: 0);
+      return time.format(context);
+    });
   }
 
   @override

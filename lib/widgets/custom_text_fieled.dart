@@ -10,7 +10,7 @@ class CustomTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final TextEditingController? controller;
   final Function(String)? onChanged;
-  final bool? enabled; // إضافة خاصية enabled
+  final bool? enabled;
 
   const CustomTextField({
     super.key,
@@ -22,7 +22,7 @@ class CustomTextField extends StatelessWidget {
     this.suffixIcon,
     this.controller,
     this.onChanged,
-    this.enabled = true, // تحديد القيمة الافتراضية لـ true
+    this.enabled = true,
   });
 
   @override
@@ -33,7 +33,7 @@ class CustomTextField extends StatelessWidget {
       validator: validator,
       obscureText: obscureText,
       onChanged: onChanged,
-      enabled: enabled, // تمرير الخاصية إلى TextFormField
+      enabled: enabled,
       decoration: InputDecoration(
         hintText: text,
         hintStyle: const TextStyle(color: AppColors.textColor),

@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
-import 'bloc/appointment_bloc.dart';
+
 import 'constants/gemini_provider.dart';
 import 'constants/media_provider.dart';
 import 'cubit/navigation_cubit.dart';
@@ -23,7 +23,6 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         BlocProvider(create: (_) => NavigationCubit()),
-        BlocProvider(create: (_) => AppointmentBloc()),
         ChangeNotifierProvider(create: (_) => GeminiProvider()),
         ChangeNotifierProvider(create: (_) => MediaProvider()),
       ],

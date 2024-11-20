@@ -9,7 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 import 'package:url_launcher/url_launcher.dart';
 import 'about_app_screen.dart';
-import 'appointment_confirmation_page.dart';
+import 'user_appointments_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
