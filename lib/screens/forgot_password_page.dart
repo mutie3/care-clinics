@@ -26,7 +26,6 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
           key: _formKey,
           child: Column(
             children: [
-              // استخدم CustomTextField بدلاً من TextFormField العادي
               CustomTextField(
                 text: 'Email',
                 controller: _emailController,
@@ -44,7 +43,6 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 onPressed: () async {
                   if (_formKey.currentState?.validate() ?? false) {
                     try {
-                      // محاولة إرسال رابط إعادة تعيين كلمة المرور
                       await FirebaseAuth.instance.sendPasswordResetEmail(
                         email: _emailController.text,
                       );
@@ -54,10 +52,8 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           content: Text('Password reset email sent.'),
                         ),
                       );
-                      Navigator.pop(
-                          context); // العودة إلى صفحة تسجيل الدخول بعد الإرسال
+                      Navigator.pop(context);
                     } on FirebaseAuthException catch (e) {
-                      // التعامل مع الأخطاء الممكنة من Firebase
                       String errorMessage = '';
                       switch (e.code) {
                         case 'invalid-email':

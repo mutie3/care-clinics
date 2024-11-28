@@ -3,22 +3,20 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RatingPage extends StatefulWidget {
-  final String doctorId; // معرّف الطبيب الذي سيتم تقييمه
+  final String doctorId;
 
-  RatingPage({required this.doctorId});
+  const RatingPage({super.key, required this.doctorId});
 
   @override
-  _RatingPageState createState() => _RatingPageState();
+  RatingPageState createState() => RatingPageState();
 }
 
-class _RatingPageState extends State<RatingPage> {
+class RatingPageState extends State<RatingPage> {
   double _rating = 3.0;
-  TextEditingController _commentController = TextEditingController();
+  final TextEditingController _commentController = TextEditingController();
 
-  // دالة لإرسال التقييم
   Future<void> submitRating() async {
-    String userId =
-        'user123'; // هنا قم بجلب معرّف المستخدم من Firebase أو SharedPreferences
+    String userId = 'user123';
 
     try {
       await FirebaseFirestore.instance.collection('ratings').add({
@@ -29,7 +27,7 @@ class _RatingPageState extends State<RatingPage> {
         'timestamp': FieldValue.serverTimestamp(),
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Rating submitted successfully!')),
+        const SnackBar(content: Text('Rating submitted successfully!')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -41,7 +39,7 @@ class _RatingPageState extends State<RatingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Rate Doctor")),
+      appBar: AppBar(title: const Text("Rate Doctor")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -54,32 +52,32 @@ class _RatingPageState extends State<RatingPage> {
               allowHalfRating: true,
               itemCount: 5,
               itemSize: 40,
-              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
               onRatingUpdate: (rating) {
                 setState(() {
                   _rating = rating;
                 });
               },
-              itemBuilder: (context, index) => Icon(
+              itemBuilder: (context, index) => const Icon(
                 Icons.star,
                 color: Colors.amber,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // حقل التعليق
             TextField(
               controller: _commentController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "Add a comment",
                 border: OutlineInputBorder(),
               ),
               maxLines: 3,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // زر إرسال التقييم
             ElevatedButton(
               onPressed: submitRating,
-              child: Text("Submit Rating"),
+              child: const Text("Submit Rating"),
             ),
           ],
         ),

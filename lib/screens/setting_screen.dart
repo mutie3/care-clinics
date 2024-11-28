@@ -2,7 +2,6 @@ import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:care_clinic/screens/accont_info_screen.dart';
 import 'package:care_clinic/screens/login_page.dart';
-import 'package:care_clinic/screens/rating_page.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';

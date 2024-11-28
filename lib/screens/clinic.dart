@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:geocoding/geocoding.dart';
-import '../pages_doctors/doctor_card.dart';
 import '../pages_doctors/doctor_detail_page.dart';
 
 class Clinics extends StatefulWidget {
@@ -34,19 +33,15 @@ class ClinicsState extends State<Clinics> {
     _fetchClinicsData();
   }
 
-  // لتحويل الإحداثيات إلى اسم الموقع
   Future<String> _getLocationName(double latitude, double longitude) async {
     try {
-      // استخدام مكتبة geocoding لتحويل الإحداثيات إلى اسم
       List<Placemark> placemarks =
           await placemarkFromCoordinates(latitude, longitude);
       if (placemarks.isNotEmpty) {
-        print("Location Name: ${placemarks[0].locality}"); // سجل اسم المدينة
-        return placemarks[0].locality ??
-            'Unknown Location'; // يمكنك استخدام خصائص أخرى مثل locality أو administrativeArea
+        return placemarks[0].locality ?? 'Unknown Location';
       }
     } catch (e) {
-      print('Error getting location name: $e');
+      return 'Unknown Location';
     }
     return 'Unknown Location';
   }

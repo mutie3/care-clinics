@@ -38,10 +38,12 @@ class _LoginPageState extends State<LoginPage>
     _opacityAnimation =
         Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
     _slideAnimation =
-        Tween<Offset>(begin: const Offset(0, -0.5), end: Offset.zero)
+        Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero)
             .animate(_controller);
 
-    _controller.forward();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.forward(); // تأجيل بدء الأنيميشن
+    });
   }
 
   @override
@@ -61,12 +63,11 @@ class _LoginPageState extends State<LoginPage>
       return;
     }
 
-    // إظهار LoadingOverlay أثناء محاولة تسجيل الدخول
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return const LoadingOverlay(message: "Logging in...");
+        return const LoadingOverlay(message: "");
       },
     );
 

@@ -115,12 +115,12 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${firstName ?? 'تحميل...'} ${lastName ?? ''}',
+                          '${firstName ?? ''} ${lastName ?? ''}',
                           style: const TextStyle(
                               fontSize: 22, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          email ?? 'تحميل...',
+                          email ?? '',
                           style:
                               const TextStyle(fontSize: 16, color: Colors.grey),
                         ),
@@ -185,7 +185,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                   leading: const Icon(Icons.cake),
                   title: const Text('تاريخ الميلاد'),
                   trailing: Text(
-                    birthday ?? 'تحميل...',
+                    birthday ?? '',
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold),
                   ),

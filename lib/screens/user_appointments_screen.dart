@@ -95,6 +95,16 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
     }
   }
 
+  bool _isAppointmentCompleted(String date, String time) {
+    try {
+      DateTime appointmentDate =
+          DateFormat('dd-MM-yyyy hh:mm').parse('$date $time');
+      return DateTime.now().isAfter(appointmentDate);
+    } catch (e) {
+      return false;
+    }
+  }
+
   void _editAppointment(Map<String, dynamic> appointment) {
     showDialog(
       context: context,

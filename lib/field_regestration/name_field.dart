@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class NameField extends StatelessWidget {
   final TextEditingController
-  controllerFirstName; // إضافة المتغير للتحكم في الاسم الأول
+      controllerFirstName; // إضافة المتغير للتحكم في الاسم الأول
   final TextEditingController
-  controllerLastName; // إضافة المتغير للتحكم في الاسم الأخير
+      controllerLastName; // إضافة المتغير للتحكم في الاسم الأخير
 
   const NameField({
     super.key,
@@ -23,7 +23,7 @@ class NameField extends StatelessWidget {
             text: 'First Name',
           ),
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         Expanded(
           child: CustomTextField(
             controller: controllerLastName, // تمرير المتحكم للاسم الأخير

@@ -6,9 +6,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
+import 'bloc/appointment_bloc.dart';
 import 'constants/gemini_provider.dart';
 import 'constants/media_provider.dart';
 import 'cubit/navigation_cubit.dart';
+import 'data/appointment_repository.dart';
 import 'screens/login_page.dart';
 import 'firebase_options.dart';
 
@@ -18,6 +20,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final appointmentRepository = AppointmentRepository();
   runApp(
     MultiProvider(
       providers: [
@@ -25,6 +28,9 @@ void main() async {
         BlocProvider(create: (_) => NavigationCubit()),
         ChangeNotifierProvider(create: (_) => GeminiProvider()),
         ChangeNotifierProvider(create: (_) => MediaProvider()),
+        BlocProvider(
+          create: (context) => AppointmentBloc(appointmentRepository),
+        ),
       ],
       child: const CareClink(),
     ),
@@ -103,13 +109,16 @@ class VideoPlayerScreenState extends State<VideoPlayerScreen> {
   late VideoPlayerController _controller;
 
   @override
-  @override
   void initState() {
     super.initState();
     _controller = VideoPlayerController.asset('assets/intro_logo.mp4')
       ..initialize().then((_) {
-        setState(() {}); // لتحديث واجهة المستخدم بعد تهيئة الفيديو
+        setState(() {}); // تحديث واجهة المستخدم بعد التهيئة
         _controller.play();
+        Future.delayed(const Duration(seconds: 2), () {
+          // قم بتهيئة صفحة تسجيل الدخول بعد وقت قصير
+          precacheImage(AssetImage('images/logo.png'), context);
+        });
         _controller.addListener(() {
           if (_controller.value.position == _controller.value.duration) {
             Navigator.of(context).pushReplacement(
@@ -119,7 +128,6 @@ class VideoPlayerScreenState extends State<VideoPlayerScreen> {
         });
       }).catchError((error) {
         print("Error initializing video: $error");
-        // إذا حدث خطأ، الانتقال إلى صفحة تسجيل الدخول مباشرة
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const LoginPage()),
         );
