@@ -2,11 +2,18 @@ import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
 import '../screens/forgot_password_page.dart';
 
 class RememberMeAndForgotPasswordRow extends StatefulWidget {
-  const RememberMeAndForgotPasswordRow({super.key});
+  final bool rememberMe; // Take rememberMe as a parameter
+  final ValueChanged<bool?> onRememberMeChanged; // Callback for changes
+
+  const RememberMeAndForgotPasswordRow({
+    super.key,
+    required this.rememberMe,
+    required this.onRememberMeChanged,
+  });
 
   @override
   _RememberMeAndForgotPasswordRowState createState() =>
@@ -15,7 +22,20 @@ class RememberMeAndForgotPasswordRow extends StatefulWidget {
 
 class _RememberMeAndForgotPasswordRowState
     extends State<RememberMeAndForgotPasswordRow> {
-  bool rememberMe = false;
+  late bool rememberMe;
+
+  @override
+  void initState() {
+    super.initState();
+    rememberMe =
+        widget.rememberMe; // Initialize with the passed rememberMe value
+  }
+
+  // Function to save the rememberMe value to SharedPreferences
+  Future<void> _saveRememberMe() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('rememberMe', rememberMe);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +52,9 @@ class _RememberMeAndForgotPasswordRowState
                     setState(() {
                       rememberMe = value ?? false;
                     });
+                    widget.onRememberMeChanged(
+                        rememberMe); // Notify the parent widget of the change
+                    _saveRememberMe(); // Save the value whenever it's changed
                   },
                   activeColor: themeProvider.isDarkMode
                       ? AppColors.textBox

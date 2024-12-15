@@ -2,13 +2,12 @@ import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:care_clinic/screens/accont_info_screen.dart';
 import 'package:care_clinic/screens/login_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
-  // final Function(Locale) onLanguageChange;
   const SettingsScreen({super.key});
 
   @override
@@ -18,40 +17,47 @@ class SettingsScreen extends StatefulWidget {
 class SettingsScreenState extends State<SettingsScreen> {
   bool isDarkMode = false;
   bool notificationsEnabled = false;
-  bool isFingerprintEnabled = false; // متغير لتخزين حالة البصمة
-  final LocalAuthentication _localAuth =
-      LocalAuthentication(); // إنشاء الكائن الخاص بالبصمة
-// تحميل حالة البصمة من SharedPreferences
-  Future<void> _loadFingerprintPreference() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isFingerprintEnabled = prefs.getBool('fingerprint_enabled') ?? false;
-    });
-  }
-
-  // حفظ حالة تفعيل البصمة في SharedPreferences
-  Future<void> _saveFingerprintPreference(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('fingerprint_enabled', value);
-  }
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('الإعدادات'),
+        title: const Text(
+          'الإعدادات',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         centerTitle: true,
-        backgroundColor: themeProvider.isDarkMode
-            ? AppColors.textBox
-            : AppColors.primaryColor,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: themeProvider.isDarkMode
+                  ? [Colors.blueGrey, Colors.blueGrey.shade700]
+                  : [AppColors.primaryColor, Colors.lightBlueAccent],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                spreadRadius: 1,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+        ),
+        elevation: 5,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          // عنوان القسم
           _buildSectionTitle('إعدادات الحساب'),
-          _buildListTile(
+          _buildCustomTile(
             title: 'معلومات الحساب',
             onTap: () {
               Navigator.pushReplacement(
@@ -61,19 +67,15 @@ class SettingsScreenState extends State<SettingsScreen> {
               );
             },
           ),
-          _buildListTile(
+          _buildCustomTile(
             title: 'تغيير البريد الإلكتروني',
-            onTap: () {
-              // يمكنك إضافة ما تريده عند الضغط هنا
-            },
+            onTap: () {},
           ),
-          _buildListTile(
+          _buildCustomTile(
             title: 'تغيير كلمة المرور',
-            onTap: () {
-              // يمكنك إضافة ما تريده عند الضغط هنا
-            },
+            onTap: () {},
           ),
-          _buildListTile(
+          _buildCustomTile(
             title: 'الإشعارات',
             trailing: Switch(
               value: notificationsEnabled,
@@ -83,113 +85,92 @@ class SettingsScreenState extends State<SettingsScreen> {
                 });
               },
             ),
-            onTap: () {
-              // يمكنك إضافة ما تريده عند الضغط هنا
-            },
           ),
-
           _buildSectionTitle('اللغة و الوضع'),
-          _buildListTile(
+          _buildCustomTile(
             title: 'اللغة',
-            subtitle: 'اللغة',
+            subtitle: 'العربية',
             onTap: () {},
           ),
-          _buildListTile(
-            title: 'الوضع',
-            subtitle: themeProvider.isDarkMode ? 'داكن' : 'فاتح',
-            trailing: Switch(
-              value: themeProvider.isDarkMode,
-              onChanged: (value) {
-                // تحديث حالة الوضع الداكن
-                themeProvider.toggleTheme(value);
-              },
-            ),
-          ),
-          _buildListTile(
-            title: 'تفعيل البصمة',
-            subtitle: isFingerprintEnabled ? 'مفعل' : 'غير مفعل',
-            trailing: Switch(
-              value: isFingerprintEnabled,
-              onChanged: (value) async {
-                // التحقق إذا كانت البصمة مدعومة
-                bool canAuthenticate = await _localAuth.canCheckBiometrics;
-                if (canAuthenticate) {
-                  // إذا كانت البصمة مدعومة، نطلب التحقق منها
-                  bool authenticated = await _localAuth.authenticate(
-                    localizedReason: 'يرجى التحقق باستخدام البصمة',
-                    options: const AuthenticationOptions(stickyAuth: true),
-                  );
-
-                  // إذا تم التحقق من البصمة بنجاح، نغير حالة تفعيل البصمة
-                  if (authenticated) {
-                    setState(() {
-                      isFingerprintEnabled = value;
-                    });
-                    // حفظ حالة تفعيل البصمة
-                    await _saveFingerprintPreference(value);
-                  } else {
-                    // إذا فشل التحقق من البصمة، نعرض رسالة للمستخدم
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('فشل التحقق باستخدام البصمة')),
-                    );
-                  }
-                } else {
-                  // إذا كانت البصمة غير مدعومة
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('البصمة غير مدعومة في هذا الجهاز')),
-                  );
-                }
-              },
-            ),
-          ),
-
-          // عنصر تسجيل الخروج
-          _buildListTile(
+          _buildThemeListTile(themeProvider),
+          _buildCustomTile(
             title: 'تسجيل الخروج',
             leading: const Icon(
-              Icons.logout,
-              color: Colors.red, // تغيير اللون لجعل الأيقونة واضحة
-              size: 28, // زيادة حجم الأيقونة
+              Icons.logout_rounded,
+              color: Colors.red,
+              size: 28,
             ),
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-              );
+            onTap: () async {
+              try {
+                final prefs = await SharedPreferences.getInstance();
+                prefs.remove('isLoggedIn');
+                await FirebaseAuth.instance.signOut();
+                if (context.mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  );
+                }
+              } catch (e) {
+                print('Error during logout: $e');
+              }
             },
-            showTrailing: false, // عدم عرض السهم لهذا العنصر
+            showTrailing: false,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildListTile({
+  Widget _buildCustomTile({
     required String title,
     String? subtitle,
     Widget? trailing,
-    Icon? leading, // إضافة وسيط للأيقونة
+    Icon? leading,
     VoidCallback? onTap,
-    bool showTrailing = true, // وسيط للتحكم في عرض السهم
+    bool showTrailing = true,
   }) {
-    return Column(
-      children: [
-        ListTile(
-          leading: leading, // استخدام الأيقونة إذا كانت موجودة
-          title: Text(
-            title,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      decoration: BoxDecoration(
+        color: themeProvider.isDarkMode ? Colors.grey[800] : Colors.white,
+        borderRadius: BorderRadius.circular(20.0), // تعديل الحدود
+        boxShadow: [
+          if (!themeProvider.isDarkMode)
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2), // تحسين الظل
+              blurRadius: 12,
+              spreadRadius: 2,
+              offset: const Offset(0, 6),
+            ),
+        ],
+      ),
+      child: ListTile(
+        leading: leading,
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: themeProvider.isDarkMode ? Colors.white : Colors.black,
           ),
-          subtitle: subtitle != null ? Text(subtitle) : null,
-          trailing: showTrailing
-              ? (trailing ?? const Icon(Icons.arrow_forward_ios))
-              : null,
-          onTap: onTap,
         ),
-        const Divider(height: 10),
-      ],
+        subtitle: subtitle != null
+            ? Text(
+                subtitle,
+                style: TextStyle(
+                    color: themeProvider.isDarkMode
+                        ? Colors.grey[400]
+                        : Colors.grey[600]),
+              )
+            : null,
+        trailing: showTrailing
+            ? (trailing ?? const Icon(Icons.arrow_forward_ios))
+            : null,
+        onTap: onTap,
+      ),
     );
   }
 
@@ -199,6 +180,26 @@ class SettingsScreenState extends State<SettingsScreen> {
       child: Text(
         title,
         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildThemeListTile(ThemeProvider themeProvider) {
+    return _buildCustomTile(
+      title: 'الوضع',
+      subtitle: themeProvider.isDarkMode ? 'داكن' : 'فاتح',
+      leading: Icon(
+        themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+        color:
+            themeProvider.isDarkMode ? Colors.orangeAccent : Colors.blueAccent,
+      ),
+      trailing: Switch(
+        value: themeProvider.isDarkMode,
+        onChanged: (value) {
+          themeProvider.toggleTheme(value);
+        },
+        activeColor: Colors.orangeAccent,
+        inactiveThumbColor: Colors.blueAccent,
       ),
     );
   }

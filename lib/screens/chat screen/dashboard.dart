@@ -1,9 +1,12 @@
 import 'dart:typed_data';
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../constants/gemini_provider.dart';
+import '../../constants/theme_dark_mode.dart';
 import '../../data/database_helper_chatbot.dart';
+import '../home_page.dart';
 import 'chat_input.dart';
 import 'message_list.dart';
 
@@ -17,7 +20,6 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final TextEditingController _messageController = TextEditingController();
   final List<Map<String, dynamic>> _messages = [];
-  // ignore: unused_field
   bool _isLoading = false;
 
   String cleanResponse(String response) {
@@ -107,26 +109,67 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Row(
-          children: [
-            Icon(Icons.medical_information, color: Colors.white, size: 30),
-            SizedBox(width: 8),
-            Text(
+  PreferredSizeWidget _buildCurvedAppBar(
+      BuildContext context, ThemeProvider themeProvider) {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(100),
+      child: ClipPath(
+        clipper: AppBarClipper(),
+        child: Container(
+          height: 100,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                themeProvider.isDarkMode
+                    ? AppColors.textBox
+                    : AppColors.primaryColor,
+                themeProvider.isDarkMode
+                    ? AppColors.textBox.withOpacity(0.7)
+                    : AppColors.primaryColor.withOpacity(0.8),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: themeProvider.isDarkMode
+                    ? Colors.black.withOpacity(0.5)
+                    : Colors.blue.withOpacity(0.3),
+                offset: const Offset(0, 10),
+                blurRadius: 15,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: AppBar(
+            title: Text(
               'Hakeem AI',
-              style: TextStyle(
-                fontFamily: 'PlayfairDisplay',
-                fontSize: 24,
-                letterSpacing: 1, // تباعد الأحرف لجعل النص أكثر عصرية
+              style: GoogleFonts.robotoSlab(
+                fontWeight: FontWeight.w600,
+                fontSize: 24.0,
+                color: Colors.white,
               ),
             ),
-          ],
+            centerTitle: true,
+            elevation: 0.0,
+            backgroundColor: Colors.transparent,
+          ),
         ),
-        backgroundColor: AppColors.primaryColor, // خلفية الـ AppBar
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
+    return Scaffold(
+      appBar: _buildCurvedAppBar(
+          context, themeProvider), // Using the PreferredSizeWidget here
       body: Column(
         children: [
           Expanded(

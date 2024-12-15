@@ -1,8 +1,7 @@
-import 'package:care_clinic/constants/colors_page.dart';
-import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:flutter/material.dart';
-import 'package:circle_nav_bar/circle_nav_bar.dart';
 import 'package:provider/provider.dart';
+
+import '../constants/theme_dark_mode.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -18,140 +17,109 @@ class CustomBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
-        return CircleNavBar(
-          activeIcons: [
-            InkWell(
-              onTap: () => onTap(0),
-              borderRadius: BorderRadius.circular(50),
-              child: Container(
-                width: 80, // عرض الحاوية لتوسيع مساحة الضغط
-                height: 80, // ارتفاع الحاوية لتوسيع مساحة الضغط
-                alignment: Alignment.center, // يضمن أن الأيقونة في المنتصف
-                child: Icon(
-                  Icons.home_filled,
-                  size: 30, // حجم الأيقونة
-                  color: themeProvider.isDarkMode
-                      ? Colors.black
-                      : AppColors.primaryColor,
-                ),
-              ),
+        final isDarkMode = themeProvider.isDarkMode;
+        final primaryColor = isDarkMode ? Colors.tealAccent : Colors.blueAccent;
+        final secondaryColor = isDarkMode ? Colors.grey[850]! : Colors.white;
+
+        return Container(
+          height: 70,
+          decoration: BoxDecoration(
+            color: secondaryColor,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
             ),
-            InkWell(
-              onTap: () => onTap(1),
-              borderRadius: BorderRadius.circular(50),
-              child: Container(
-                width: 80,
-                height: 80,
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.search,
-                  size: 30,
-                  color: themeProvider.isDarkMode
-                      ? Colors.black
-                      : AppColors.primaryColor,
-                ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, -4),
               ),
-            ),
-            InkWell(
-              onTap: () => onTap(2),
-              borderRadius: BorderRadius.circular(50),
-              child: Container(
-                width: 80,
-                height: 80,
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.chat,
-                  size: 30,
-                  color: themeProvider.isDarkMode
-                      ? Colors.black
-                      : AppColors.primaryColor,
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: () => onTap(3),
-              borderRadius: BorderRadius.circular(50),
-              child: Container(
-                width: 80,
-                height: 80,
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.person,
-                  size: 30,
-                  color: themeProvider.isDarkMode
-                      ? Colors.black
-                      : AppColors.primaryColor,
-                ),
-              ),
-            ),
-          ],
-          inactiveIcons: [
-            SizedBox(
-              width: 80,
-              height: 60,
-              child: Icon(
-                Icons.home_filled,
-                color: themeProvider.isDarkMode ? Colors.black : Colors.white,
-              ),
-            ),
-            SizedBox(
-              width: 80,
-              height: 60,
-              child: Icon(
-                Icons.search,
-                color: themeProvider.isDarkMode ? Colors.black : Colors.white,
-              ),
-            ),
-            SizedBox(
-              width: 60,
-              height: 60,
-              child: Icon(
-                Icons.chat,
-                color: themeProvider.isDarkMode ? Colors.black : Colors.white,
-              ),
-            ),
-            SizedBox(
-              width: 60,
-              height: 60,
-              child: Icon(
-                Icons.person,
-                color: themeProvider.isDarkMode ? Colors.black : Colors.white,
-              ),
-            ),
-          ],
-          color: Colors.white,
-          circleColor: Colors.white,
-          height: 60,
-          circleWidth: 60,
-          activeIndex: currentIndex,
-          onTap: onTap,
-          cornerRadius: const BorderRadius.only(
-            topLeft: Radius.circular(17),
-            topRight: Radius.circular(17),
-          ),
-          shadowColor:
-              themeProvider.isDarkMode ? Colors.grey : AppColors.primaryColor,
-          circleShadowColor:
-              themeProvider.isDarkMode ? Colors.grey : AppColors.primaryColor,
-          elevation: 20,
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [
-              themeProvider.isDarkMode ? Colors.black : AppColors.primaryColor,
-              themeProvider.isDarkMode ? Colors.grey : AppColors.primaryColor,
             ],
           ),
-          circleGradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [
-              themeProvider.isDarkMode ? Colors.black : Colors.white,
-              themeProvider.isDarkMode ? Colors.white : AppColors.primaryColor,
-            ],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: List.generate(4, (index) {
+              final isActive = index == currentIndex;
+              return GestureDetector(
+                onTap: () => onTap(index),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: isActive ? primaryColor : secondaryColor,
+                    borderRadius: BorderRadius.circular(50),
+                    boxShadow: isActive
+                        ? [
+                            BoxShadow(
+                              color: primaryColor.withOpacity(0.4),
+                              blurRadius: 15,
+                              offset: const Offset(0, 6),
+                            ),
+                          ]
+                        : [],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        _getIcon(index),
+                        size: isActive ? 30 : 26,
+                        color: isActive
+                            ? Colors.white
+                            : isDarkMode
+                                ? Colors.grey
+                                : Colors.black54,
+                      ),
+                      const SizedBox(height: 4),
+                      if (isActive)
+                        Text(
+                          _getLabel(index),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            }),
           ),
         );
       },
     );
+  }
+
+  IconData _getIcon(int index) {
+    switch (index) {
+      case 0:
+        return Icons.home_rounded;
+      case 1:
+        return Icons.search_rounded;
+      case 2:
+        return Icons.chat_bubble_rounded;
+      case 3:
+        return Icons.person_rounded;
+      default:
+        return Icons.home;
+    }
+  }
+
+  String _getLabel(int index) {
+    switch (index) {
+      case 0:
+        return 'Home';
+      case 1:
+        return 'Search';
+      case 2:
+        return 'Chat';
+      case 3:
+        return 'Profile';
+      default:
+        return '';
+    }
   }
 }

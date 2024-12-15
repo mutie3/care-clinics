@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'date_picker_widget.dart';
 
@@ -245,9 +246,11 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
   }
 
   List<String> _generateTimeSlots() {
-    return List<String>.generate(8, (index) {
-      final time = TimeOfDay(hour: 9 + index, minute: 0);
-      return time.format(context);
+    return List<String>.generate(20, (index) {
+      final startTime = DateTime(selectedDate.year, selectedDate.month,
+          selectedDate.day, 9, 0); // يبدأ من الساعة 9 صباحًا
+      final timeSlot = startTime.add(Duration(minutes: 30 * index));
+      return "${timeSlot.hour.toString().padLeft(2, '0')}:${timeSlot.minute.toString().padLeft(2, '0')}";
     });
   }
 
@@ -256,114 +259,132 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return Scaffold(
-          appBar: AppBar(
-            // title: Text(widget.doctorName,
-            //     style: const TextStyle(
-            //         color: Colors.white, fontWeight: FontWeight.bold)),
-            centerTitle: true,
-            backgroundColor: themeProvider.isDarkMode
-                ? AppColors.textBox
-                : AppColors.primaryColor,
-          ),
-          body: isLoading
+            body: WillPopScope(
+          onWillPop: () async {
+            Navigator.pop(context);
+            return true;
+          },
+          child: isLoading
               ? const Center(child: CircularProgressIndicator())
               : SingleChildScrollView(
                   child: Column(
                     children: [
+                      const SizedBox(height: 20),
                       Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: Row(
+                        child: Stack(
                           children: [
-                            CircleAvatar(
-                              radius: 50,
-                              backgroundImage: (widget.imgPath.isNotEmpty)
-                                  ? NetworkImage(widget.imgPath)
-                                  : const AssetImage('images/R.png')
-                                      as ImageProvider,
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: FadeInImage.memoryNetwork(
+                                placeholder: kTransparentImage,
+                                image: widget.imgPath.isNotEmpty
+                                    ? widget.imgPath
+                                    : 'https://via.placeholder.com/150', // صورة افتراضية
+                                height: 250, // ارتفاع الصورة
+                                width: double.infinity,
+                                fit: BoxFit.cover, // ملائمة الصورة داخل الإطار
+                              ),
                             ),
-                            const SizedBox(width: 20),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.doctorName,
-                                  style: const TextStyle(
+                            // المساحة الشفافة التي تغطي الصورة بالكامل
+                            Positioned.fill(
+                              child: Container(
+                                color: Colors.black54, // خلفية شفافة داكنة
+                              ),
+                            ),
+                            // عرض المعلومات والأزرار داخل الصورة ولكن في الأسفل
+                            Positioned(
+                              bottom: 10, // تحديد المسافة من الأسفل
+                              left: 10,
+                              right: 10,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.doctorName, // اسم العيادة
+                                    style: const TextStyle(
                                       fontSize: 24,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 10),
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .start, // Align the buttons to the start
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white, // اللون الأبيض للنص
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    'Rank: ${widget.rating}', // التقييم
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color:
+                                          Colors.white70, // اللون الأبيض الفاتح
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  // عرض الأزرار الخاصة بالموقع والاتصال
+                                  Row(
                                     children: [
                                       ElevatedButton.icon(
-                                        onPressed: _openMap,
+                                        onPressed: _openMap, // لفتح الموقع
                                         icon: const Icon(Icons.location_on,
                                             size: 20),
                                         label: const Text(
-                                          'موقع',
+                                          'Location',
                                           style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 14,
                                               fontWeight: FontWeight.w600),
                                         ),
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              themeProvider.isDarkMode
-                                                  ? AppColors.textBox
-                                                  : AppColors.primaryColor,
+                                          backgroundColor: themeProvider
+                                                  .isDarkMode
+                                              ? Colors.blueGrey.withOpacity(0.7)
+                                              : Colors.blue.withOpacity(0.8),
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 15),
+                                              horizontal: 20, vertical: 12),
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                30), // Rounded corners
+                                            borderRadius:
+                                                BorderRadius.circular(30),
                                           ),
-                                          elevation:
-                                              5, // Adds shadow for better depth
+                                          elevation: 4,
                                         ),
                                       ),
                                       const SizedBox(width: 10),
                                       ElevatedButton.icon(
-                                        onPressed: () =>
-                                            _makeCall(clinicPhoneNumber),
+                                        onPressed: () => _makeCall(
+                                            clinicPhoneNumber), // الاتصال
                                         icon: const Icon(Icons.phone, size: 20),
                                         label: const Text(
-                                          'اتصال',
+                                          'Call',
                                           style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 14,
                                               fontWeight: FontWeight.w600),
                                         ),
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              themeProvider.isDarkMode
-                                                  ? AppColors.textBox
-                                                  : AppColors.primaryColor,
+                                          backgroundColor: themeProvider
+                                                  .isDarkMode
+                                              ? Colors.greenAccent
+                                                  .withOpacity(0.7)
+                                              : Colors.green.withOpacity(0.8),
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 15),
+                                              horizontal: 20, vertical: 12),
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                30), // Rounded corners
+                                            borderRadius:
+                                                BorderRadius.circular(30),
                                           ),
-                                          elevation:
-                                              5, // Adds shadow for better depth
+                                          elevation: 4,
                                         ),
                                       ),
                                     ],
                                   ),
-                                )
-                              ],
+                                ],
+                              ),
                             ),
                           ],
                         ),
                       ),
-                      const Divider(color: Colors.black),
-                      const SizedBox(height: 5),
                       const Align(
-                        alignment: Alignment
-                            .bottomLeft, // Aligns the text to the bottom left
+                        alignment: Alignment.bottomLeft,
                         child: Text(
-                          'Doctors: ',
+                          'Select a Doctor: ',
                           style: TextStyle(
                               fontSize: 22, fontWeight: FontWeight.bold),
                         ),
@@ -371,22 +392,149 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                       const SizedBox(height: 20),
                       doctors.isNotEmpty
                           ? SizedBox(
-                              height: 120,
+                              height: 180, // يمكنك تعديل الارتفاع حسب الحاجة
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: doctors.length,
                                 itemBuilder: (context, index) {
                                   final doctor = doctors[index];
-                                  bool isSelected =
-                                      selectedDoctorIndex == index;
+                                  bool isSelected = selectedDoctorIndex ==
+                                      index; // تحقق إذا كان هذا الطبيب هو المحدد
 
                                   return GestureDetector(
-                                    onTap: () => _onDoctorSelected(index),
-                                    child: Card(
-                                      color: isSelected
-                                          ? Colors.blueAccent.withOpacity(0.5)
-                                          : Colors.white,
-                                      child: _buildDoctorCardContent(doctor),
+                                    onTap: () {
+                                      _onDoctorSelected(
+                                          index); // تعيين الطبيب المحدد
+                                    },
+                                    child: AnimatedContainer(
+                                      duration: const Duration(
+                                          milliseconds: 300), // مدة الانتقال
+                                      curve: Curves
+                                          .easeInOut, // نوع تأثير الانتقال
+                                      transform: isSelected
+                                          ? (Matrix4.identity()
+                                            ..scale(
+                                                1.1)) // تكبير الحجم للطبيب المحدد
+                                          : (Matrix4.identity()
+                                            ..scale(
+                                                0.9)), // الحجم الطبيعي للطبيب غير المحدد
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: Card(
+                                          elevation: isSelected
+                                              ? 10
+                                              : 5, // إضافة ظل أقوى للطبيب المحدد
+                                          color: isSelected
+                                              ? Colors.blueAccent.withOpacity(
+                                                  0.5) // تغيير اللون للطبيب المحدد
+                                              : Colors
+                                                  .white, // اللون الطبيعي للطبيب غير المحدد
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                12), // جعل الحواف مدورة
+                                          ),
+                                          child: Stack(
+                                            children: [
+                                              FadeInImage.memoryNetwork(
+                                                placeholder: kTransparentImage,
+                                                image:
+                                                    doctor['image_url'] ?? '',
+                                                height: 150,
+                                                width: 120,
+                                                fit: BoxFit.cover,
+                                              ),
+                                              Positioned(
+                                                bottom: 10,
+                                                left: 10,
+                                                right: 10,
+                                                child: Container(
+                                                  color: Colors.black54,
+                                                  padding:
+                                                      const EdgeInsets.all(5),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      LayoutBuilder(
+                                                        builder: (context,
+                                                            constraints) {
+                                                          return SingleChildScrollView(
+                                                            scrollDirection:
+                                                                Axis.horizontal,
+                                                            child: Text(
+                                                              doctor['name'],
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                      const SizedBox(height: 5),
+                                                      LayoutBuilder(
+                                                        builder: (context,
+                                                            constraints) {
+                                                          return SingleChildScrollView(
+                                                            scrollDirection:
+                                                                Axis.horizontal,
+                                                            child: Text(
+                                                              doctor[
+                                                                  'specialty'],
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      ), // مسافة بين النص والتقييم
+                                                      // Row لإظهار التقييم
+                                                      Row(
+                                                        children: [
+                                                          const Icon(
+                                                            Icons
+                                                                .star, // أيقونة النجمة
+                                                            color: Colors
+                                                                .yellow, // اللون الذهبي للنجمة
+                                                            size:
+                                                                20, // حجم الأيقونة
+                                                          ),
+                                                          const SizedBox(
+                                                              width:
+                                                                  5), // فاصل بين الأيقونة والنص
+                                                          Text(
+                                                            '${doctor['rating'] ?? "0.0"}', // التقييم (افتراضي 0.0 إذا لم يكن موجوداً)
+                                                            style:
+                                                                const TextStyle(
+                                                              color: Colors
+                                                                  .white70, // اللون الفاتح للنص
+                                                              fontSize:
+                                                                  12, // حجم النص
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   );
                                 },
@@ -407,42 +555,80 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                               },
                             ),
                             const SizedBox(height: 20),
-                            Wrap(
-                              spacing: 10,
-                              runSpacing: 10,
-                              children: _generateTimeSlots()
-                                  .map(
-                                    (time) => ElevatedButton(
-                                      onPressed: isTimeSlotBooked(time)
-                                          ? null
-                                          : () {
-                                              setState(
-                                                  () => selectedTime = time);
-                                            },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: isTimeSlotBooked(time)
-                                            ? Colors.red
-                                            : (selectedTime == time
-                                                ? Colors.green
-                                                : null),
-                                      ),
-                                      child: Text(time),
+                            SizedBox(
+                              width: 200, // تحديد العرض ليكون أقل
+                              child: DropdownButtonFormField<String>(
+                                value: selectedTime, // الوقت المختار
+                                hint: const Text("Select Time",
+                                    style: TextStyle(color: Colors.white)),
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16), // تحديد شكل النص
+                                decoration: InputDecoration(
+                                  filled: true, // تعبئة الخلفية
+                                  fillColor:
+                                      Colors.blue, // اللون الأزرق للخلفية
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        10), // شكل الحواف المدورة
+                                    borderSide: BorderSide.none, // إزالة الحدود
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 14), // تحديد الهوامش الداخلية
+                                ),
+                                items: _generateTimeSlots().map((String time) {
+                                  return DropdownMenuItem<String>(
+                                    value: time,
+                                    child: Text(
+                                      time,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          color: AppColors.textColor),
                                     ),
-                                  )
-                                  .toList(),
+                                  );
+                                }).toList(),
+                                onChanged: (String? newTime) {
+                                  setState(() {
+                                    selectedTime =
+                                        newTime; // تعيين الوقت الجديد المختار
+                                  });
+                                },
+                              ),
                             ),
                             const SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: _makeAppointment,
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor:
+                                    Colors.blue, // اللون عند التفاعل (أبيض)
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                    horizontal: 32), // تباعد داخلي أكبر
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      30), // جعل الزر ذو حواف مدورة بشكل عصري
+                                ),
+                                elevation: 8, // إضافة ظل لإعطاء تأثير عميق
+                                shadowColor: Colors.blueAccent, // لون الظل
+                                textStyle: const TextStyle(
+                                  fontSize: 18, // تكبير النص ليبدو أكثر وضوحًا
+                                  fontWeight: FontWeight.bold, // جعل النص عريض
+                                ),
+                              ),
                               child: const Text("Make Appointment"),
                             ),
+                            const SizedBox(
+                              height: 5,
+                            )
                           ],
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),
-        );
+        ));
       },
     );
   }

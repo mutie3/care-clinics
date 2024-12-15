@@ -191,7 +191,8 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
           ),
           centerTitle: true,
           elevation: 0.0,
-          backgroundColor: Colors.transparent,
+          backgroundColor:
+              Colors.transparent, // Ensure transparency for gradient
         ),
       ),
     );

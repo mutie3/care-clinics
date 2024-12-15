@@ -1,6 +1,7 @@
-import 'package:care_clinic/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+
+import '../screens/home_page.dart';
 
 class VideoPage extends StatefulWidget {
   @override
@@ -23,9 +24,14 @@ class VideoPageState extends State<VideoPage> {
     _controller.addListener(() {
       if (_controller.value.position == _controller.value.duration) {
         // الانتقال إلى صفحة المواعيد بعد انتهاء الفيديو
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const UserProfileScreen()),
+          MaterialPageRoute(
+            builder: (context) => const HomePageSpecializations(
+              isGustLogin: false,
+            ),
+          ),
+          (Route<dynamic> route) => false,
         );
       }
     });

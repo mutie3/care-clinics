@@ -3,9 +3,12 @@ import 'package:care_clinic/field_login/email_field.dart';
 import 'package:care_clinic/field_login/password_field.dart';
 import 'package:care_clinic/field_login/remember_me_field.dart';
 import 'package:care_clinic/field_login/sign_up_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'blank_page.dart';
 import 'doctor_reg/loading_overlay.dart';
 import 'home_page.dart';
 import 'package:care_clinic/constants/colors_page.dart';
@@ -14,10 +17,10 @@ class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage>
+class LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _opacityAnimation;
@@ -26,7 +29,7 @@ class _LoginPageState extends State<LoginPage>
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  bool rememberMe = false;
   @override
   void initState() {
     super.initState();
@@ -42,8 +45,42 @@ class _LoginPageState extends State<LoginPage>
             .animate(_controller);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.forward(); // تأجيل بدء الأنيميشن
+      _controller.forward();
+      // _checkLoginState();
     });
+  }
+
+  Future<void> _checkLoginState() async {
+    User? user = _auth.currentUser;
+
+    if (user != null) {
+      String email = user.email ?? '';
+
+      final clinicSnapshot = await FirebaseFirestore.instance
+          .collection('clinics')
+          .where('email', isEqualTo: email)
+          .get();
+
+      if (clinicSnapshot.docs.isNotEmpty) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const BlankPage(),
+          ),
+          (Route<dynamic> route) => false,
+        );
+      } else {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomePageSpecializations(
+              isGustLogin: false,
+            ),
+          ),
+          (Route<dynamic> route) => false,
+        );
+      }
+    }
   }
 
   @override
@@ -77,21 +114,56 @@ class _LoginPageState extends State<LoginPage>
         password: _passwordController.text.trim(),
       );
 
-      Navigator.of(context).pop(); // إخفاء LoadingOverlay
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Login successful")),
-      );
+      if (!mounted) return;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const HomePageSpecializations(
-                  isGustLogin: false,
-                )),
-      );
+      // استرداد البريد الإلكتروني للمستخدم الذي سجل الدخول
+      final String email = _emailController.text.trim();
+
+      // التحقق من البريد الإلكتروني في Firestore
+      final clinicSnapshot = await FirebaseFirestore.instance
+          .collection('clinics')
+          .where('email', isEqualTo: email)
+          .get();
+
+      if (clinicSnapshot.docs.isNotEmpty) {
+        // البريد الإلكتروني موجود في مجموعة clinics
+        Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const BlankPage()),
+          (Route<dynamic> route) => false,
+        );
+      } else {
+        // التحقق في مجموعة users
+        final userSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .where('email', isEqualTo: email)
+            .get();
+
+        if (userSnapshot.docs.isNotEmpty) {
+          // البريد الإلكتروني موجود في مجموعة users
+          Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomePageSpecializations(
+                isGustLogin: false,
+              ),
+            ),
+            (Route<dynamic> route) => false,
+          );
+        } else {
+          Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Email not found")),
+          );
+        }
+      }
     } on FirebaseAuthException catch (e) {
-      Navigator.of(context).pop(); // إخفاء LoadingOverlay
-      String errorMessage = 'Wrong email or password';
+      if (!mounted) return;
+
+      Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
+      String errorMessage = 'Login failed. Please try again.';
       if (e.code == 'user-not-found') {
         errorMessage = 'No user found for that email.';
       } else if (e.code == 'wrong-password') {
@@ -149,7 +221,14 @@ class _LoginPageState extends State<LoginPage>
                         const SizedBox(height: 20),
                         PasswordField(controller: _passwordController),
                         const SizedBox(height: 10),
-                        const RememberMeAndForgotPasswordRow(),
+                        RememberMeAndForgotPasswordRow(
+                          rememberMe: rememberMe, // Pass rememberMe state
+                          onRememberMeChanged: (value) {
+                            setState(() {
+                              rememberMe = value ?? false;
+                            });
+                          },
+                        ),
                         const SizedBox(height: 20),
                         LoginButtons(
                           onLoginPressed: _login,

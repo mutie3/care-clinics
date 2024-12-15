@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../pages_doctors/doctor_card.dart';
 import '../pages_doctors/doctor_detail_page.dart';
+import 'home_page.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -69,38 +70,82 @@ class _SearchState extends State<Search> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, child) {
-        return Scaffold(
-          appBar: AppBar(
+  PreferredSizeWidget _buildCurvedAppBar(
+      BuildContext context, ThemeProvider themeProvider) {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(100),
+      child: ClipPath(
+        clipper: AppBarClipper(),
+        child: Container(
+          height: 100,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                themeProvider.isDarkMode
+                    ? AppColors.textBox
+                    : AppColors.primaryColor,
+                themeProvider.isDarkMode
+                    ? AppColors.textBox.withOpacity(0.7)
+                    : AppColors.primaryColor.withOpacity(0.8),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: themeProvider.isDarkMode
+                    ? Colors.black.withOpacity(0.5)
+                    : Colors.blue.withOpacity(0.3),
+                offset: const Offset(0, 10),
+                blurRadius: 15,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: AppBar(
             title: TextField(
               controller: searchController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'ابحث باسم العيادة أو التخصص...',
                 hintStyle: TextStyle(color: Colors.white70),
                 border: InputBorder.none,
                 prefixIcon: Icon(Icons.search, color: Colors.white70),
               ),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-            backgroundColor: themeProvider.isDarkMode
-                ? AppColors.textBox
-                : AppColors.primaryColor,
+            centerTitle: true,
+            elevation: 0.0,
+            backgroundColor: Colors.transparent,
           ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return Scaffold(
+          appBar: _buildCurvedAppBar(
+              context, themeProvider), // Using the PreferredSizeWidget here
           body: isLoading
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : filteredClinics.isEmpty
-                  ? Center(
+                  ? const Center(
                       child: Text(
                         'لا توجد نتائج تطابق البحث',
                         style: TextStyle(fontSize: 18, color: Colors.grey),
                       ),
                     )
                   : GridView.builder(
-                      padding: EdgeInsets.all(8),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      padding: const EdgeInsets.all(8),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 0.8,
                         crossAxisSpacing: 8,

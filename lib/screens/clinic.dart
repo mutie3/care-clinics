@@ -1,9 +1,9 @@
-import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:transparent_image/transparent_image.dart';
 import '../pages_doctors/doctor_detail_page.dart';
 
 class Clinics extends StatefulWidget {
@@ -60,12 +60,9 @@ class ClinicsState extends State<Clinics> {
         double latitude = 0.0;
         double longitude = 0.0;
 
-        // التأكد إذا كانت قيمة 'location' مخزنة كنص بصيغة "Lat: x, Lng: y"
         if (clinicData['location'] != null &&
             clinicData['location'] is String) {
           final locationString = clinicData['location'] as String;
-
-          // استخدام تعبير عادي لاستخراج إحداثيات Lat و Lng
           final latLngMatch = RegExp(r'Lat:\s*([\d.-]+),\s*Lng:\s*([\d.-]+)')
               .firstMatch(locationString);
 
@@ -75,14 +72,13 @@ class ClinicsState extends State<Clinics> {
           }
         }
 
-        // الحصول على اسم الموقع من الإحداثيات
         String locationName = await _getLocationName(latitude, longitude);
 
         if (widget.selectedSpecialty.isEmpty) {
           allClinics.add({
             "id": clinicId,
             "name": clinicData['name'] ?? 'No Name',
-            "location": locationName, // عرض اسم الموقع بدلاً من الإحداثيات
+            "location": locationName,
             "img": clinicData['imageUrl'] ?? '',
             "rating": clinicData['rating']?.toString() ?? '0',
             "latitude": latitude,
@@ -101,7 +97,7 @@ class ClinicsState extends State<Clinics> {
             allClinics.add({
               "id": clinicId,
               "name": clinicData['name'] ?? 'No Name',
-              "location": locationName, // عرض اسم الموقع بدلاً من الإحداثيات
+              "location": locationName,
               "img": clinicData['imageUrl'] ?? '',
               "rating": clinicData['rating']?.toString() ?? '0',
               "latitude": latitude,
@@ -142,157 +138,197 @@ class ClinicsState extends State<Clinics> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.pop(context); // العودة عند الضغط على زر الرجوع في الهاتف
-        return false; // منع الإغلاق المباشر
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              "عياداتنا",
+              style: TextStyle(
+                color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+              ),
+            ),
+            backgroundColor:
+                themeProvider.isDarkMode ? Colors.grey[900] : Colors.white,
+            elevation: 0,
+          ),
+          body: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    hintText: 'ابحث عن عيادة...',
+                    hintStyle: TextStyle(
+                      color: themeProvider.isDarkMode
+                          ? Colors.grey[400]
+                          : Colors.grey[600],
+                    ),
+                    filled: true,
+                    fillColor: themeProvider.isDarkMode
+                        ? Colors.grey[800]
+                        : Colors.grey[200],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
+                    ),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: themeProvider.isDarkMode
+                          ? Colors.grey[400]
+                          : Colors.grey[600],
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        itemCount: filteredClinics.isEmpty
+                            ? clinics.length
+                            : filteredClinics.length,
+                        itemBuilder: (context, index) {
+                          final clinic = filteredClinics.isEmpty
+                              ? clinics[index]
+                              : filteredClinics[index];
+                          return ClinicCard(
+                            clinic: clinic,
+                            onSelectClinic: (selectedClinic) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DoctorDetailPage(
+                                    clinicId: selectedClinic["id"],
+                                    imgPath: selectedClinic["img"],
+                                    doctorName: selectedClinic["name"],
+                                    doctorSpeciality:
+                                        selectedClinic["location"],
+                                    rating: selectedClinic["rating"],
+                                    latitude: selectedClinic["latitude"],
+                                    longitude: selectedClinic["longitude"],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+        );
       },
-      child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
-          return Scaffold(
-            body: Column(
+    );
+  }
+}
+
+class ClinicCard extends StatelessWidget {
+  final Map<String, dynamic> clinic;
+  final void Function(Map<String, dynamic> clinic) onSelectClinic;
+
+  const ClinicCard({
+    super.key,
+    required this.clinic,
+    required this.onSelectClinic,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      clipBehavior: Clip.hardEdge,
+      elevation: 2,
+      child: InkWell(
+        onTap: () => onSelectClinic(clinic),
+        child: Column(
+          children: [
+            Stack(
               children: [
-                const SizedBox(
-                    height: 40), // المسافة بين الـ AppBar والـ search bar
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: SizedBox(
-                    height: 60, // تأكد أن الارتفاع مناسب
-                    child: TextField(
-                      controller: searchController,
-                      onChanged: (value) {
-                        _filterClinics();
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'ابحث عن عيادة...',
-                        hintStyle: const TextStyle(color: Colors.white),
-                        filled: true,
-                        fillColor: themeProvider.isDarkMode
-                            ? AppColors.textBox
-                            : AppColors.primaryColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide.none,
-                        ),
-                        prefixIcon:
-                            const Icon(Icons.search, color: Colors.white),
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
+                FadeInImage.memoryNetwork(
+                  placeholder: kTransparentImage,
+                  image: clinic["img"],
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: 250,
+                  imageErrorBuilder: (context, error, stackTrace) => const Icon(
+                    Icons.broken_image,
+                    size: 70,
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 6,
+                      horizontal: 44,
+                    ),
+                    color: Colors.black54,
+                    child: Text(
+                      clinic["name"],
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ),
-
-                Expanded(
-                  child: isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : filteredClinics.isEmpty
-                          ? const Center(
-                              child: Text(
-                                'لا توجد عيادات تتطابق مع هذا البحث',
-                                style:
-                                    TextStyle(fontSize: 18, color: Colors.grey),
-                              ),
-                            )
-                          : GridView.builder(
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                                childAspectRatio: 0.7,
-                              ),
-                              itemCount: filteredClinics.length,
-                              itemBuilder: (context, index) {
-                                final clinic = filteredClinics[index];
-                                return Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  elevation: 5,
-                                  child: InkWell(
-                                    onTap: () async {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              DoctorDetailPage(
-                                            clinicId: clinic["id"],
-                                            imgPath: clinic["img"],
-                                            doctorName: clinic["name"],
-                                            doctorSpeciality:
-                                                clinic["location"],
-                                            rating: clinic["rating"],
-                                            latitude: clinic["latitude"],
-                                            longitude: clinic["longitude"],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              const BorderRadius.vertical(
-                                                  top: Radius.circular(15)),
-                                          child: Image.network(
-                                            clinic["img"],
-                                            width: double.infinity,
-                                            height: 120,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            clinic["name"] ?? "No Name",
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0),
-                                          child: Text(
-                                            clinic["location"] ?? "No Location",
-                                            style:
-                                                const TextStyle(fontSize: 14),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0, vertical: 4),
-                                          child: Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.star,
-                                                color: Colors.amber,
-                                                size: 16,
-                                              ),
-                                              const SizedBox(width: 4),
-                                              Text(
-                                                clinic["rating"] ?? "2.3",
-                                                style: const TextStyle(
-                                                    fontSize: 14),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                ),
               ],
             ),
-          );
-        },
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    clinic["location"],
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Baseline(
+                        baseline: 18.0, // القيمة تحدد ارتفاع خط النص
+                        baselineType: TextBaseline.alphabetic,
+                        child: Text(
+                          clinic["rating"],
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Baseline(
+                        baseline: 18.0, // نفس الخط الأساسي للتنسيق
+                        baselineType: TextBaseline.alphabetic,
+                        child: Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                          size: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,15 +1,16 @@
-import 'package:care_clinic/constants/colors_page.dart';
-import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:care_clinic/screens/setting_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:io';
 import 'package:url_launcher/url_launcher.dart';
+import '../constants/theme_dark_mode.dart';
 import 'about_app_screen.dart';
+import 'accont_info_screen.dart';
+import 'home_page.dart';
 import 'user_appointments_screen.dart';
+import 'package:google_fonts/google_fonts.dart'; // استيراد الخطوط
+import 'package:care_clinic/constants/colors_page.dart'; // لاستيراد الألوان
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -25,9 +26,6 @@ class UserProfileScreenState extends State<UserProfileScreen> {
   String? email;
   String? birthday;
 
-  String? imagePath;
-
-  final ImagePicker _picker = ImagePicker();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -36,7 +34,6 @@ class UserProfileScreenState extends State<UserProfileScreen> {
       User? currentUser = _auth.currentUser;
       if (currentUser != null) {
         String uid = currentUser.uid;
-
         DocumentSnapshot userDoc =
             await _firestore.collection('users').doc(uid).get();
         if (userDoc.exists) {
@@ -62,185 +59,216 @@ class UserProfileScreenState extends State<UserProfileScreen> {
     fetchUserData();
   }
 
-  Future<void> _pickImage() async {
-    final XFile? image = await _picker.pickImage(
-      source: ImageSource.gallery,
-    );
-    if (image != null) {
-      setState(() {
-        imagePath = image.path;
-      });
-    }
-  }
-
   Future<void> _sendWhatsAppMessage() async {
     final Uri whatsappUrl = Uri.parse(
         "https://wa.me/+962777163292?text=هل ممكن أن احصل على استفسار");
     launchUrl(whatsappUrl);
   }
 
+  PreferredSizeWidget _buildCurvedAppBar(
+      BuildContext context, ThemeProvider themeProvider) {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(100),
+      child: ClipPath(
+        clipper: AppBarClipper(),
+        child: Container(
+          height: 100,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                themeProvider.isDarkMode
+                    ? AppColors.textBox
+                    : AppColors.primaryColor,
+                themeProvider.isDarkMode
+                    ? AppColors.textBox.withOpacity(0.7)
+                    : AppColors.primaryColor.withOpacity(0.8),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: themeProvider.isDarkMode
+                    ? Colors.black.withOpacity(0.5)
+                    : Colors.blue.withOpacity(0.3),
+                offset: const Offset(0, 10),
+                blurRadius: 15,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: AppBar(
+            title: Text(
+              'الملف الشخصي',
+              style: GoogleFonts.robotoSlab(
+                fontWeight: FontWeight.w600,
+                fontSize: 24.0,
+                color: Colors.white,
+              ),
+            ),
+            centerTitle: true,
+            elevation: 0.0,
+            backgroundColor: Colors.transparent,
+            actions: [
+              IconButton(
+                icon: Icon(Icons.settings, color: Colors.white),
+                onPressed: () {
+                  // التوجيه إلى صفحة الإعدادات
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          const SettingsScreen(), // تأكد من وجود صفحة SettingScreen
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, child) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('الملف الشخصي'),
-            centerTitle: true,
-            backgroundColor: themeProvider.isDarkMode
-                ? AppColors.textBox
-                : AppColors.primaryColor,
-            leading: IconButton(
-              icon: const Icon(Icons.settings),
-              color: themeProvider.isDarkMode
-                  ? Colors.grey
-                  : AppColors.scaffoldBackgroundColor,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SettingsScreen()),
-                );
-              },
-            ),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${firstName ?? ''} ${lastName ?? ''}',
-                          style: const TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          email ?? '',
-                          style:
-                              const TextStyle(fontSize: 16, color: Colors.grey),
-                        ),
-                      ],
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    bool isDarkMode = themeProvider.isDarkMode;
+
+    return Scaffold(
+      appBar: _buildCurvedAppBar(
+          context, themeProvider), // استخدم الـ AppBar المنحني
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: ListTile(
+                  title: Text(
+                    '${firstName ?? ''} ${lastName ?? ''}',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: isDarkMode ? Colors.white : Colors.black,
                     ),
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: _pickImage,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.grey[300],
-                            radius: 30,
-                            backgroundImage: imagePath != null
-                                ? Image.file(File(imagePath!)).image
-                                : null,
-                            child: imagePath == null
-                                ? Text(
-                                    firstName != null && firstName!.isNotEmpty
-                                        ? firstName![0]
-                                        : '...',
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      color: themeProvider.isDarkMode
-                                          ? Colors.grey
-                                          : AppColors.textBox,
-                                    ),
-                                  )
-                                : null,
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: GestureDetector(
-                            onTap: _pickImage,
-                            child: CircleAvatar(
-                              radius: 12,
-                              backgroundColor: themeProvider.isDarkMode
-                                  ? Colors.grey
-                                  : AppColors.primaryColor,
-                              child: const Icon(Icons.edit,
-                                  size: 16, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ],
+                  ),
+                  subtitle: Text(
+                    email ?? '',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: isDarkMode ? Colors.grey : Colors.black54,
                     ),
-                  ],
-                ),
-                const Divider(height: 30),
-                ListTile(
-                  leading: const Icon(Icons.phone_android),
-                  title: const Text('الرقم'),
-                  trailing: Text(
-                    '0$phone',
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.cake),
-                  title: const Text('تاريخ الميلاد'),
-                  trailing: Text(
-                    birthday ?? '',
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.calendar_today),
-                  title: const Text('المواعيد'),
-                  trailing: const Icon(Icons.arrow_forward_ios),
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const UserAppointmentsPage()),
+                        builder: (context) => const AccountInfoScreen(),
+                      ),
                     );
                   },
                 ),
-                const Divider(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: themeProvider.isDarkMode
-                            ? Colors.grey
-                            : AppColors.primaryColor,
-                        foregroundColor: Colors.white,
-                      ),
-                      onPressed: _sendWhatsAppMessage,
-                      icon: const Icon(Icons.help),
-                      label: const Text('احصل على المساعدة'),
-                    ),
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: themeProvider.isDarkMode
-                            ? Colors.grey
-                            : AppColors.primaryColor,
-                        foregroundColor: Colors.white,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AboutAppScreen()),
-                        );
-                      },
-                      icon: const Icon(Icons.info),
-                      label: const Text('حول التطبيق'),
-                    ),
-                  ],
-                ),
-              ],
+              ),
+              const SizedBox(height: 20),
+              _buildInfoCard(Icons.phone_android, 'الرقم', '0$phone',
+                  isDarkMode: isDarkMode),
+              _buildInfoCard(
+                  Icons.event_available, 'تاريخ الميلاد', birthday ?? '',
+                  isDarkMode: isDarkMode),
+              _buildInfoCard(Icons.calendar_today, 'المواعيد', '',
+                  isDarkMode: isDarkMode, onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const UserAppointmentsPage()),
+                );
+              }),
+              const SizedBox(height: 20),
+              _buildButtonRow(isDarkMode),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoCard(IconData icon, String title, String value,
+      {VoidCallback? onTap, required bool isDarkMode}) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: isDarkMode ? Colors.grey[800] : Colors.white,
+      child: ListTile(
+        leading:
+            Icon(icon, color: isDarkMode ? Colors.blueAccent : Colors.blue),
+        title: Text(title,
+            style: TextStyle(color: isDarkMode ? Colors.white : Colors.black)),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: isDarkMode ? Colors.white : Colors.black,
+              ),
+            ),
+            if (onTap != null)
+              const Icon(Icons.arrow_forward_ios, color: Colors.grey),
+          ],
+        ),
+        onTap: onTap,
+      ),
+    );
+  }
+
+  Widget _buildButtonRow(bool isDarkMode) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isDarkMode ? Colors.black87 : Colors.blueAccent,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
           ),
-        );
-      },
+          onPressed: _sendWhatsAppMessage,
+          icon: const Icon(Icons.help),
+          label: const Text('احصل على المساعدة'),
+        ),
+        ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isDarkMode ? Colors.black87 : Colors.blueAccent,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AboutAppScreen()),
+            );
+          },
+          icon: const Icon(Icons.info),
+          label: const Text('حول التطبيق'),
+        ),
+      ],
     );
   }
 }

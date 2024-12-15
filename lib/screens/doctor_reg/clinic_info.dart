@@ -49,7 +49,7 @@ class _RegPageState extends State<RegPage> {
   ];
 
   Future<void> _uploadData() async {
-    // عرض شاشة التحميل
+    // Show loading overlay
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -59,7 +59,7 @@ class _RegPageState extends State<RegPage> {
     );
 
     try {
-      // إنشاء مستخدم جديد باستخدام Firebase Auth
+      // Create user with Firebase Auth
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: emailController.text,
@@ -69,7 +69,7 @@ class _RegPageState extends State<RegPage> {
       String? imageUrl;
       String? fileUrl;
 
-      // رفع الصورة إلى Firebase Storage
+      // Upload image (if selected)
       if (_image != null) {
         final storageRef = FirebaseStorage.instance
             .ref()
@@ -78,7 +78,7 @@ class _RegPageState extends State<RegPage> {
         imageUrl = await uploadTask.ref.getDownloadURL();
       }
 
-      // رفع الملف إلى Firebase Storage
+      // Upload file (if selected)
       if (selectedFile != null) {
         final fileRef = FirebaseStorage.instance
             .ref()
@@ -87,29 +87,46 @@ class _RegPageState extends State<RegPage> {
         fileUrl = await uploadTask.ref.getDownloadURL();
       }
 
-      // حفظ بيانات العيادة في Firestore
+      // Save clinic data to Firestore
       final clinicId = userCredential.user!.uid;
+      print(clinicId);
       await FirebaseFirestore.instance.collection('clinics').doc(clinicId).set({
         'name': nameController.text,
         'email': emailController.text,
         'location': locationController.text,
         'phone': phoneController.text,
-        'imageUrl': imageUrl,
-        'fileUrl': fileUrl,
+        // 'imageUrl': imageUrl,
+        // 'fileUrl': fileUrl,
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Clinic data uploaded successfully')),
       );
 
-      // التنقل إلى صفحة المعلومات بعد التسجيل الناجح
-      Navigator.of(context).pop();
+      // Wait for uploads (optional, see point 2)
+      // await Future.wait([imageUrl != null ? Future.value(null) : imageUrl!.future, fileUrl != null ? Future.value(null) : fileUrl!.future]);
+
+      Navigator.of(context).pop(); // Dismiss loading overlay
       Navigator.of(context).push(animateRoute(ClincInfo(clinicId: clinicId)));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Error: ${e.toString()}"),
-      ));
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(); // Dismiss loading overlay
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Error"),
+            content: Text("An error occurred: ${e.toString()} ,"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: const Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 

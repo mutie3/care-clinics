@@ -5,11 +5,24 @@ Route animateRoute(Widget animatedPage) {
     transitionDuration: const Duration(milliseconds: 600),
     pageBuilder: (context, animation, secondaryAnimation) => animatedPage,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      // تأثير انزلاق مع تغيير الشفافية والتكبير
+      var curve = Curves.easeInOut;
+      var curvedAnimation = CurvedAnimation(
+        parent: animation,
+        curve: curve,
+      );
+
       return SlideTransition(
-        position: animation.drive(
+        position: curvedAnimation.drive(
           Tween(begin: const Offset(2, 0), end: Offset.zero),
         ),
-        child: child,
+        child: FadeTransition(
+          opacity: curvedAnimation,
+          child: ScaleTransition(
+            scale: curvedAnimation,
+            child: child,
+          ),
+        ),
       );
     },
   );
