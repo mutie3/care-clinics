@@ -3,6 +3,7 @@ import 'package:care_clinic/constants/colors_page.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 class UploadFile extends StatefulWidget {
   final Function(File)? onFilePicked; // باراميتر onFilePicked
@@ -29,10 +30,10 @@ class _UploadFileState extends State<UploadFile> {
       child: Stack(
         children: [
           file == null
-              ? const Center(
+              ? Center(
                   child: Text(
-                    'No file selected',
-                    style: TextStyle(
+                    '132'.tr,
+                    style: const TextStyle(
                       color: AppColors.textColor,
                       fontFamily: 'Tajawal',
                       fontSize: 18,
@@ -79,7 +80,7 @@ class _UploadFileState extends State<UploadFile> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  "Pick your Clinic certification",
+                  '58'.tr,
                   style: TextStyle(
                     color: AppColors.primaryColor.withOpacity(0.6),
                     fontFamily: 'Tajawal',
@@ -118,12 +119,12 @@ class _UploadFileState extends State<UploadFile> {
         file = File(result.paths.first!);
         platformFile = result.files.first;
       });
-      _showCustomSnackBar("تم رفع الملف");
+      _showCustomSnackBar('133'.tr);
 
       // استدعاء الدالة الممررة في onFilePicked
       widget.onFilePicked?.call(file!);
     } else {
-      _showCustomSnackBar("لم تقم باختيار ملف");
+      _showCustomSnackBar('134'.tr);
     }
   }
 
@@ -132,7 +133,7 @@ class _UploadFileState extends State<UploadFile> {
       file = null;
       platformFile = null;
     });
-    _showCustomSnackBar("تم حذف الملف");
+    _showCustomSnackBar('135'.tr);
   }
 
   void _showCustomSnackBar(String message) {

@@ -1,6 +1,7 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import '../widgets/custom_text_fieled.dart';
 
@@ -21,8 +22,8 @@ class PasswordFieldState extends State<PasswordField> {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return CustomTextField(
-          text: 'Password',
-          controller: widget.controller,  // تمرير المتحكم إلى الحقل
+          text: '49'.tr,
+          controller: widget.controller, // تمرير المتحكم إلى الحقل
           icon: Icon(
             Icons.lock,
             color: themeProvider.isDarkMode
@@ -45,10 +46,10 @@ class PasswordFieldState extends State<PasswordField> {
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter your password';
+              return '87'.tr;
             }
             if (value.length < 6) {
-              return 'Password must be at least 6 characters';
+              return '88'.tr;
             }
             return null;
           },

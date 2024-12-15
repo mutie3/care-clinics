@@ -1,6 +1,7 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import '../widgets/custom_text_fieled.dart';
 
@@ -20,19 +21,19 @@ class PasswordFieldState extends State<PasswordField> {
   void _validatePassword(String value) {
     if (value.isEmpty) {
       setState(() {
-        _errorText = 'Please enter your password';
+        _errorText = '49'.tr;
       });
     } else if (value.length < 6) {
       setState(() {
-        _errorText = 'Password must be at least 6 characters';
+        _errorText = '88'.tr;
       });
     } else if (!RegExp(r'[A-Z]').hasMatch(value)) {
       setState(() {
-        _errorText = 'Password must contain at least one uppercase letter';
+        _errorText = '142'.tr;
       });
     } else if (!RegExp(r'[0-9]').hasMatch(value)) {
       setState(() {
-        _errorText = 'Password must contain at least one digit';
+        _errorText = '143'.tr;
       });
     } else {
       setState(() {

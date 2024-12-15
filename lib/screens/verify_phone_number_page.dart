@@ -1,6 +1,7 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'login_page.dart';
 import '../field_regestration/phone_field.dart';
@@ -25,7 +26,7 @@ class VerifyPhoneNumberPageState extends State<VerifyPhoneNumberPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Phone Verification'),
+        title: Text('186'.tr),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -52,17 +53,16 @@ class VerifyPhoneNumberPageState extends State<VerifyPhoneNumberPage> {
                     backgroundColor: AppColors.primaryColor,
                   ),
                   child: Text(
-                    _isResending ? 'Please wait...' : 'Send Verification Code',
+                    _isResending ? '187'.tr : '188'.tr,
                     style: const TextStyle(
                         fontSize: 18, color: AppColors.scaffoldBackgroundColor),
                   ),
                 ),
               ],
               if (_isVerificationSent) ...[
-                const Padding(
-                  padding: EdgeInsets.only(top: 20),
-                  child:
-                      Text('A verification code has been sent to your phone.'),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Text('189'.tr),
                 ),
                 const SizedBox(height: 20),
                 PinCodeTextField(
@@ -101,9 +101,9 @@ class VerifyPhoneNumberPageState extends State<VerifyPhoneNumberPage> {
                     ),
                     backgroundColor: AppColors.primaryColor,
                   ),
-                  child: const Text(
-                    'Verify OTP',
-                    style: TextStyle(
+                  child: Text(
+                    '190'.tr,
+                    style: const TextStyle(
                         fontSize: 18, color: AppColors.scaffoldBackgroundColor),
                   ),
                 ),
@@ -124,9 +124,9 @@ class VerifyPhoneNumberPageState extends State<VerifyPhoneNumberPage> {
                     ),
                     backgroundColor: AppColors.primaryColor,
                   ),
-                  child: const Text(
-                    'Resend Verification Code',
-                    style: TextStyle(
+                  child: Text(
+                    '191'.tr,
+                    style: const TextStyle(
                         fontSize: 18, color: AppColors.scaffoldBackgroundColor),
                   ),
                 ),
@@ -154,8 +154,7 @@ class VerifyPhoneNumberPageState extends State<VerifyPhoneNumberPage> {
         verificationCompleted: (PhoneAuthCredential credential) async {
           await FirebaseAuth.instance.signInWithCredential(credential);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Phone number automatically verified.')),
+            SnackBar(content: Text('192'.tr)),
           );
         },
         verificationFailed: (FirebaseAuthException e) {
@@ -193,7 +192,10 @@ class VerifyPhoneNumberPageState extends State<VerifyPhoneNumberPage> {
       final code = _otpController.text.trim();
       if (code.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please enter the OTP.')),
+          SnackBar(
+              content: Text(
+            '193'.tr,
+          )),
         );
         return;
       }
@@ -210,7 +212,7 @@ class VerifyPhoneNumberPageState extends State<VerifyPhoneNumberPage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Phone number verified successfully.')),
+        SnackBar(content: Text('194'.tr)),
       );
 
       Navigator.pushReplacement(

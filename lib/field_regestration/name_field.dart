@@ -1,5 +1,6 @@
 import 'package:care_clinic/widgets/custom_text_fieled.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class NameField extends StatelessWidget {
   final TextEditingController
@@ -20,14 +21,14 @@ class NameField extends StatelessWidget {
         Expanded(
           child: CustomTextField(
             controller: controllerFirstName, // تمرير المتحكم للاسم الأول
-            text: 'First Name',
+            text: '47'.tr,
           ),
         ),
         const SizedBox(width: 10),
         Expanded(
           child: CustomTextField(
             controller: controllerLastName, // تمرير المتحكم للاسم الأخير
-            text: 'Last Name',
+            text: '48'.tr,
           ),
         ),
       ],

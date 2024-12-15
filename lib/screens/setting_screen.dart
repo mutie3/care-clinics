@@ -4,6 +4,7 @@ import 'package:care_clinic/screens/accont_info_screen.dart';
 import 'package:care_clinic/screens/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,9 +24,9 @@ class SettingsScreenState extends State<SettingsScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'الإعدادات',
-          style: TextStyle(
+        title: Text(
+          '80'.tr,
+          style: const TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -56,9 +57,9 @@ class SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          _buildSectionTitle('إعدادات الحساب'),
+          _buildSectionTitle('24'.tr),
           _buildCustomTile(
-            title: 'معلومات الحساب',
+            title: '25'.tr,
             onTap: () {
               Navigator.pushReplacement(
                 context,
@@ -68,15 +69,15 @@ class SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           _buildCustomTile(
-            title: 'تغيير البريد الإلكتروني',
+            title: '26'.tr,
             onTap: () {},
           ),
           _buildCustomTile(
-            title: 'تغيير كلمة المرور',
+            title: '27'.tr,
             onTap: () {},
           ),
           _buildCustomTile(
-            title: 'الإشعارات',
+            title: '28'.tr,
             trailing: Switch(
               value: notificationsEnabled,
               onChanged: (value) {
@@ -86,15 +87,15 @@ class SettingsScreenState extends State<SettingsScreen> {
               },
             ),
           ),
-          _buildSectionTitle('اللغة و الوضع'),
+          _buildSectionTitle('29'.tr),
           _buildCustomTile(
-            title: 'اللغة',
-            subtitle: 'العربية',
+            title: '30'.tr,
+            subtitle: '178'.tr,
             onTap: () {},
           ),
           _buildThemeListTile(themeProvider),
           _buildCustomTile(
-            title: 'تسجيل الخروج',
+            title: '32'.tr,
             leading: const Icon(
               Icons.logout_rounded,
               color: Colors.red,
@@ -103,7 +104,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             onTap: () async {
               try {
                 final prefs = await SharedPreferences.getInstance();
-                prefs.remove('isLoggedIn');
+                prefs.remove('179'.tr);
                 await FirebaseAuth.instance.signOut();
                 if (context.mounted) {
                   Navigator.pushReplacement(
@@ -186,8 +187,8 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildThemeListTile(ThemeProvider themeProvider) {
     return _buildCustomTile(
-      title: 'الوضع',
-      subtitle: themeProvider.isDarkMode ? 'داكن' : 'فاتح',
+      title: '31'.tr,
+      subtitle: themeProvider.isDarkMode ? '82'.tr : '81'.tr,
       leading: Icon(
         themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
         color:

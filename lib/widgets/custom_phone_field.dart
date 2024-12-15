@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
@@ -17,7 +18,7 @@ class CustomPhoneField extends StatelessWidget {
         return IntlPhoneField(
           controller: controller,
           decoration: InputDecoration(
-            labelText: 'Phone Number',
+            labelText: '41'.tr,
             labelStyle: const TextStyle(
               color: AppColors.textColor,
               fontFamily: 'Tajawal',

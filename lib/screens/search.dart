@@ -2,6 +2,7 @@ import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import '../pages_doctors/doctor_card.dart';
 import '../pages_doctors/doctor_detail_page.dart';
@@ -109,11 +110,11 @@ class _SearchState extends State<Search> {
           child: AppBar(
             title: TextField(
               controller: searchController,
-              decoration: const InputDecoration(
-                hintText: 'ابحث باسم العيادة أو التخصص...',
-                hintStyle: TextStyle(color: Colors.white70),
+              decoration: InputDecoration(
+                hintText: '177'.tr,
+                hintStyle: const TextStyle(color: Colors.white70),
                 border: InputBorder.none,
-                prefixIcon: Icon(Icons.search, color: Colors.white70),
+                prefixIcon: const Icon(Icons.search, color: Colors.white70),
               ),
               style: const TextStyle(color: Colors.white),
             ),
@@ -136,10 +137,11 @@ class _SearchState extends State<Search> {
           body: isLoading
               ? const Center(child: CircularProgressIndicator())
               : filteredClinics.isEmpty
-                  ? const Center(
+                  ? Center(
                       child: Text(
-                        'لا توجد نتائج تطابق البحث',
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                        '124'.tr,
+                        style:
+                            const TextStyle(fontSize: 18, color: Colors.grey),
                       ),
                     )
                   : GridView.builder(

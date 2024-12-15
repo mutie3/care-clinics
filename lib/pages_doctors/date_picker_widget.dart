@@ -1,6 +1,7 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -23,9 +24,9 @@ class DatePickerWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Select Date',
-                style: TextStyle(
+              Text(
+                '91'.tr,
+                style: const TextStyle(
                   color: Color(0xff363636),
                   fontSize: 22,
                   fontWeight: FontWeight.w700,

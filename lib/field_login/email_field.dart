@@ -1,6 +1,7 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import '../widgets/custom_text_fieled.dart';
 
@@ -15,7 +16,7 @@ class EmailField extends StatelessWidget {
       builder: (context, themeProvider, child) {
         return CustomTextField(
           controller: controller,
-          text: 'Email',
+          text: '50'.tr,
           icon: Icon(
             Icons.email,
             color: themeProvider.isDarkMode
@@ -25,10 +26,10 @@ class EmailField extends StatelessWidget {
           keyboardType: TextInputType.emailAddress,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter your email';
+              return '84'.tr;
             }
             if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-              return 'Please enter a valid email';
+              return '85'.tr;
             }
             return null;
           },

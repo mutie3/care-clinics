@@ -1,5 +1,6 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -40,13 +41,13 @@ class _CustomLocationPickerState extends State<CustomLocationPicker> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        print("Location permissions are denied.");
+        print('198'.tr);
         return false;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      print("Location permissions are permanently denied.");
+      print('199'.tr);
       return false;
     }
 
@@ -99,7 +100,7 @@ class _CustomLocationPickerState extends State<CustomLocationPicker> {
                   child: Text(
                     widget.controller.text.isNotEmpty
                         ? widget.controller.text
-                        : 'Tap to select location',
+                        : '59'.tr,
                     style: const TextStyle(
                         color: AppColors.textColor, fontSize: 15),
                   ),
@@ -139,7 +140,7 @@ class _LocationMapState extends State<LocationMap> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select Location'),
+        title: Text('130'.tr),
       ),
       body: GoogleMap(
         onMapCreated: (GoogleMapController controller) {
@@ -158,9 +159,9 @@ class _LocationMapState extends State<LocationMap> {
         },
         markers: {
           Marker(
-            markerId: const MarkerId('selectedLocation'),
+            markerId: MarkerId('200'.tr),
             position: _markerLocation,
-            infoWindow: const InfoWindow(title: 'Selected Location'),
+            infoWindow: InfoWindow(title: '201'.tr),
             icon: BitmapDescriptor.defaultMarkerWithHue(
                 BitmapDescriptor.hueRed), // دبوس أحمر لموقع مختار
           ),
@@ -172,7 +173,7 @@ class _LocationMapState extends State<LocationMap> {
           widget.onLocationSelected(_markerLocation); // تمرير الموقع المحدد
           Navigator.pop(context);
         },
-        label: const Text('Confirm Location'),
+        label: Text('131'.tr),
         icon: const Icon(Icons.check),
       ),
     );

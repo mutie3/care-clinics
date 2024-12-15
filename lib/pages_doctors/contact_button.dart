@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ContactButton extends StatelessWidget {
@@ -12,14 +13,14 @@ class ContactButton extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Row(
+        Row(
           children: [
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
             Text(
-              "Contact Dr.",
-              style: TextStyle(
+              '89'.tr,
+              style: const TextStyle(
                 color: Color(0xff363636),
                 fontSize: 25,
                 fontWeight: FontWeight.w700,
@@ -38,7 +39,7 @@ class ContactButton extends StatelessWidget {
                   launchUrl(whatsappUrl);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('رقم الهاتف غير متوفر')),
+                    SnackBar(content: Text('90'.tr)),
                   );
                 }
               },
@@ -57,7 +58,7 @@ class ContactButton extends StatelessWidget {
                   launch('tel:$doctorPhoneNumber');
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('رقم الهاتف غير متوفر')),
+                    SnackBar(content: Text('90'.tr)),
                   );
                 }
               },

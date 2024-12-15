@@ -1,5 +1,6 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class selectWorkDays extends StatefulWidget {
   const selectWorkDays({super.key});
@@ -9,7 +10,15 @@ class selectWorkDays extends StatefulWidget {
 }
 
 class _selectWorkDaysState extends State<selectWorkDays> {
-  List<String> days = const ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+  List<String> days = [
+    '102'.tr,
+    '103'.tr,
+    '104'.tr,
+    '105'.tr,
+    '106'.tr,
+    '107'.tr,
+    '108'.tr
+  ];
   Set<int> selectedWorkDays = {};
 
   @override

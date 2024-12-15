@@ -1,6 +1,7 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../screens/regestration_as_screen.dart';
@@ -25,15 +26,15 @@ class SignUpText extends StatelessWidget {
             child: RichText(
               text: TextSpan(
                 children: [
-                  const TextSpan(
-                    text: "Don't have an account? ",
-                    style: TextStyle(
+                  TextSpan(
+                    text: '65'.tr,
+                    style: const TextStyle(
                       fontFamily: 'Tajawal',
                       color: AppColors.textBox,
                     ),
                   ),
                   TextSpan(
-                    text: "Registration",
+                    text: '64'.tr,
                     style: TextStyle(
                       fontFamily: 'Tajawal',
                       color: themeProvider.isDarkMode

@@ -8,6 +8,7 @@ import 'package:care_clinic/field_regestration/password_field.dart';
 import 'package:care_clinic/field_regestration/phone_field.dart';
 import 'package:care_clinic/screens/verify_phone_number_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../screens/doctor_reg/loading_overlay.dart';
@@ -40,9 +41,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
             backgroundColor: themeProvider.isDarkMode
                 ? AppColors.textBox
                 : AppColors.primaryColor,
-            title: const Text(
-              'your informations',
-              style: TextStyle(
+            title: Text(
+              '46'.tr,
+              style: const TextStyle(
                 fontFamily: 'PlayfairDisplay',
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
@@ -100,8 +101,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             barrierDismissible:
                                 false, // لا يمكن إغلاقها بالنقر على الخلفية
                             builder: (BuildContext context) {
-                              return const LoadingOverlay(
-                                  message: "Registering user...");
+                              return LoadingOverlay(message: '94'.tr);
                             },
                           );
 
@@ -132,9 +132,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             });
 
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text(
-                                      "Registration successful. Please verify your email.")),
+                              SnackBar(content: Text('95'.tr)),
                             );
 
                             // الانتقال إلى صفحة تسجيل الدخول بعد التسجيل
@@ -146,8 +144,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("Registration failed")),
+                              SnackBar(content: Text('96'.tr)),
                             );
                           }
                         }
@@ -161,10 +158,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             ? Colors.grey
                             : AppColors.primaryColor,
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Text(
-                          'Save',
-                          style: TextStyle(
+                          '55'.tr,
+                          style: const TextStyle(
                             fontSize: 18,
                             color: AppColors.scaffoldBackgroundColor,
                           ),

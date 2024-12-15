@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 
 class AppointmentDatePicker extends StatefulWidget {
   final String doctorId; // ID الطبيب المستخدم لاسترجاع البيانات
@@ -38,11 +39,11 @@ class _AppointmentDatePickerState extends State<AppointmentDatePicker> {
         final data = docSnapshot.data();
         print('Fetched doctor data: $data'); // طباعة البيانات للتحقق
         setState(() {
-          workingDays = List<String>.from(data?['working_days'] ?? []);
+          workingDays = List<String>.from(data?['72'.tr] ?? []);
           isLoading = false;
         });
       } else {
-        print('Doctor not found');
+        print('195'.tr);
         setState(() {
           isLoading = false;
         });
@@ -78,9 +79,9 @@ class _AppointmentDatePickerState extends State<AppointmentDatePicker> {
             children: [
               // اختيار اليوم
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Select a day',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: '196'.tr,
+                  border: const OutlineInputBorder(),
                 ),
                 value: selectedDay,
                 items: workingDays.map((day) {
@@ -100,15 +101,15 @@ class _AppointmentDatePickerState extends State<AppointmentDatePicker> {
 
               // اختيار الوقت
               if (selectedDay != null) ...[
-                const Text(
-                  'Select a time:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Text(
+                  '197'.tr,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 DropdownButtonFormField<TimeOfDay>(
-                  decoration: const InputDecoration(
-                    labelText: 'Select a time',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: '197'.tr,
+                    border: const OutlineInputBorder(),
                   ),
                   value: selectedTime,
                   items: timeSlots.map((slot) {

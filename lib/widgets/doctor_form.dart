@@ -1,10 +1,10 @@
-
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/widgets/set_picture.dart';
+import 'package:get/get.dart';
 import 'custom_text_fieled.dart';
 
 class DoctorForm extends StatefulWidget {
@@ -38,22 +38,30 @@ class _DoctorFormState extends State<DoctorForm> {
   File? selectedImage;
 
   final List<String> specialties = [
-    "Pediatrics",
-    "Obstetrics and Gynecology",
-    "Dermatology",
-    "Cardiology",
-    "Orthopedic Surgery",
-    "Psychiatry",
-    "Endocrinology",
-    "Gastroenterology",
-    "Respiratory Medicine",
-    "Nephrology and Urology",
+    '17'.tr,
+    '18'.tr,
+    '19'.tr,
+    '20'.tr,
+    '21'.tr,
+    '22'.tr,
+    '23'.tr,
+    '3'.tr,
+    '4'.tr,
+    '5'.tr,
   ];
 
   Future<void> _uploadDoctorData() async {
     try {
       List<String> selectedDays = [];
-      const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+      var days = [
+        '102'.tr,
+        '103'.tr,
+        '104'.tr,
+        '105'.tr,
+        '106'.tr,
+        '107'.tr,
+        '108'.tr
+      ];
       for (int i = 0; i < widget.daysSelected.value.length; i++) {
         if (widget.daysSelected.value[i]) {
           selectedDays.add(days[i]);
@@ -83,7 +91,7 @@ class _DoctorFormState extends State<DoctorForm> {
 
       // عرض رسالة نجاح بعد رفع البيانات
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('تم الحفظ')),
+        SnackBar(content: Text('136'.tr)),
       );
     } catch (error) {
       print("Failed to upload doctor data: $error");
@@ -128,18 +136,21 @@ class _DoctorFormState extends State<DoctorForm> {
             ),
             const SizedBox(height: 10),
             CustomTextField(
-              text: "Doctor Name",
+              text: '74'.tr,
               controller: widget.nameController,
-              icon: const Icon(Icons.person_outline_outlined, color: AppColors.primaryColor),
-              validator: (value) => value == null || value.isEmpty ? 'Please enter doctor name' : null,
+              icon: const Icon(Icons.person_outline_outlined,
+                  color: AppColors.primaryColor),
+              validator: (value) =>
+                  value == null || value.isEmpty ? '137'.tr : null,
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
               value: selectedSpecialty,
-              decoration: const InputDecoration(
-                labelText: "Specialty",
-                prefixIcon: Icon(Icons.medical_services, color: AppColors.primaryColor),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: '75'.tr,
+                prefixIcon: const Icon(Icons.medical_services,
+                    color: AppColors.primaryColor),
+                border: const OutlineInputBorder(),
               ),
               items: specialties.map((specialty) {
                 return DropdownMenuItem(
@@ -152,20 +163,21 @@ class _DoctorFormState extends State<DoctorForm> {
                   selectedSpecialty = value;
                 });
               },
-              validator: (value) => value == null ? 'Please select a specialty' : null,
+              validator: (value) => value == null ? '138'.tr : null,
             ),
             const SizedBox(height: 12),
             CustomTextField(
               keyboardType: TextInputType.number,
-              text: "Experience Years",
+              text: '73'.tr,
               controller: widget.experienceController,
               icon: const Icon(Icons.more_time, color: AppColors.primaryColor),
-              validator: (value) => value == null || value.isEmpty ? 'Please enter experience years' : null,
+              validator: (value) =>
+                  value == null || value.isEmpty ? '139'.tr : null,
             ),
             const SizedBox(height: 15),
-            const Text(
-              "Working Days:",
-              style: TextStyle(
+            Text(
+              '72'.tr,
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: AppColors.primaryColor,
@@ -177,7 +189,15 @@ class _DoctorFormState extends State<DoctorForm> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List<Widget>.generate(7, (index) {
-                  const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+                  var days = [
+                    '102'.tr,
+                    '103'.tr,
+                    '104'.tr,
+                    '105'.tr,
+                    '106'.tr,
+                    '107'.tr,
+                    '108'.tr
+                  ];
                   return ValueListenableBuilder<List<bool>>(
                     valueListenable: widget.daysSelected,
                     builder: (context, daysList, child) {
@@ -196,7 +216,8 @@ class _DoctorFormState extends State<DoctorForm> {
                             color: daysList[index]
                                 ? AppColors.primaryColor
                                 : Colors.white,
-                            border: Border.all(color: AppColors.primaryColor, width: 2),
+                            border: Border.all(
+                                color: AppColors.primaryColor, width: 2),
                           ),
                           child: Center(
                             child: Text(
@@ -225,11 +246,11 @@ class _DoctorFormState extends State<DoctorForm> {
                   _uploadDoctorData();
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please fill all fields.')),
+                    SnackBar(content: Text('140'.tr)),
                   );
                 }
               },
-              child: const Text("Save Doctor"),
+              child: Text('70'.tr),
             ),
           ],
         ),
@@ -253,27 +274,26 @@ class DoctorList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return doctorForms.isEmpty
-        ? const Center(
-      child: Text(
-        "No doctors added yet. Please add a doctor to continue.",
-        style: TextStyle(fontSize: 18, color: AppColors.textColor),
-        textAlign: TextAlign.center,
-      ),
-    )
+        ? Center(
+            child: Text(
+              '141'.tr,
+              style: const TextStyle(fontSize: 18, color: AppColors.textColor),
+              textAlign: TextAlign.center,
+            ),
+          )
         : Column(
-      children: doctorForms.map((form) {
-        return DoctorForm(
-          uniqueKey: form['key'],
-          formKey: form['formKey'],
-          daysSelected: form['daysSelected'],
-          onDelete: () => onRemove(form['key']),
-          nameController: form['nameController'],
-          specialtyController: form['specialtyController'],
-          experienceController: form['experienceController'],
-          clinicId: clinicId,
-        );
-      }).toList(),
-    );
+            children: doctorForms.map((form) {
+              return DoctorForm(
+                uniqueKey: form['key'],
+                formKey: form['formKey'],
+                daysSelected: form['daysSelected'],
+                onDelete: () => onRemove(form['key']),
+                nameController: form['nameController'],
+                specialtyController: form['specialtyController'],
+                experienceController: form['experienceController'],
+                clinicId: clinicId,
+              );
+            }).toList(),
+          );
   }
 }
-
