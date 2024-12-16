@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 
 class AppointmentDatePicker extends StatefulWidget {
   final String doctorId;
@@ -52,13 +53,17 @@ class _AppointmentDatePickerState extends State<AppointmentDatePicker> {
       if (docSnapshot.exists) {
         final data = docSnapshot.data();
         setState(() {
-          workingDays = List<String>.from(data?['working_days'] ?? []);
+          workingDays = List<String>.from(data?['72'.tr] ?? []);
           isLoading = false;
         });
 
         // بعد تحميل أيام العمل، نحقق من المواعيد المحجوزة
         _fetchBookedTimes();
       } else {
+<<<<<<< HEAD
+=======
+        print('195'.tr);
+>>>>>>> 34f042e98cbaa20aa330f8e9f0958ced816bf940
         setState(() {
           isLoading = false;
         });
@@ -236,6 +241,7 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
   Widget build(BuildContext context) {
     List<TimeOfDay> timeSlots = _generateTimeSlots();
 
+<<<<<<< HEAD
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -270,5 +276,77 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
           ),
       ],
     );
+=======
+    return isLoading
+        ? const Center(child: CircularProgressIndicator()) // تحميل البيانات
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // اختيار اليوم
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: '196'.tr,
+                  border: const OutlineInputBorder(),
+                ),
+                value: selectedDay,
+                items: workingDays.map((day) {
+                  return DropdownMenuItem<String>(
+                    value: day,
+                    child: Text(day),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedDay = value;
+                    selectedTime = null; // إعادة تعيين الوقت عند تغيير اليوم
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+
+              // اختيار الوقت
+              if (selectedDay != null) ...[
+                Text(
+                  '197'.tr,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                DropdownButtonFormField<TimeOfDay>(
+                  decoration: InputDecoration(
+                    labelText: '197'.tr,
+                    border: const OutlineInputBorder(),
+                  ),
+                  value: selectedTime,
+                  items: timeSlots.map((slot) {
+                    return DropdownMenuItem<TimeOfDay>(
+                      value: slot,
+                      child: Text(slot.format(context)),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedTime = value;
+                    });
+                  },
+                ),
+              ],
+              const SizedBox(height: 20),
+
+              // عرض النتيجة المختارة
+              if (selectedDay != null && selectedTime != null) ...[
+                Text(
+                  'Selected Day: $selectedDay',
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'Selected Time: ${selectedTime!.format(context)}',
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ],
+          );
+>>>>>>> 34f042e98cbaa20aa330f8e9f0958ced816bf940
   }
 }

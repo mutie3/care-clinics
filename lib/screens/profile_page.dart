@@ -1,5 +1,6 @@
 import 'package:care_clinic/screens/setting_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -46,7 +47,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
           });
         }
       } else {
-        print("No user is currently logged in.");
+        print('150'.tr);
       }
     } catch (e) {
       print('Error fetching user data: $e');
@@ -103,7 +104,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
           ),
           child: AppBar(
             title: Text(
-              'الملف الشخصي',
+              '40'.tr,
               style: GoogleFonts.robotoSlab(
                 fontWeight: FontWeight.w600,
                 fontSize: 24.0,
@@ -180,12 +181,11 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              _buildInfoCard(Icons.phone_android, 'الرقم', '0$phone',
+              _buildInfoCard(Icons.phone_android, '41'.tr, '0$phone',
                   isDarkMode: isDarkMode),
-              _buildInfoCard(
-                  Icons.event_available, 'تاريخ الميلاد', birthday ?? '',
+              _buildInfoCard(Icons.event_available, '51'.tr, birthday ?? '',
                   isDarkMode: isDarkMode),
-              _buildInfoCard(Icons.calendar_today, 'المواعيد', '',
+              _buildInfoCard(Icons.calendar_today, '42'.tr, '',
                   isDarkMode: isDarkMode, onTap: () {
                 Navigator.push(
                   context,
@@ -248,7 +248,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
           ),
           onPressed: _sendWhatsAppMessage,
           icon: const Icon(Icons.help),
-          label: const Text('احصل على المساعدة'),
+          label: Text('44'.tr),
         ),
         ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
@@ -266,7 +266,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
             );
           },
           icon: const Icon(Icons.info),
-          label: const Text('حول التطبيق'),
+          label: Text('45'.tr),
         ),
       ],
     );

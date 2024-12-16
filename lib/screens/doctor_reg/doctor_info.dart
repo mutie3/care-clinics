@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/widgets/add_doctor_button.dart';
 import 'package:care_clinic/widgets/doctor_form.dart';
+import 'package:get/get.dart';
 import 'loading_overlay.dart';
 
 class ClincInfo extends StatefulWidget {
@@ -48,6 +49,7 @@ class _ClincInfoState extends State<ClincInfo> {
       doctorForms.removeWhere((form) => form['key'] == uniqueKey);
     });
   }
+
   Future<void> _saveDoctorData() async {
     if (isSaving) return;
 
@@ -60,7 +62,7 @@ class _ClincInfoState extends State<ClincInfo> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return const LoadingOverlay(message: "Saving doctor data...");
+        return LoadingOverlay(message: '101'.tr);
       },
     );
 
@@ -69,7 +71,8 @@ class _ClincInfoState extends State<ClincInfo> {
         GlobalKey<FormState> formKey = form['formKey'];
         TextEditingController nameController = form['nameController'];
         TextEditingController specialtyController = form['specialtyController'];
-        TextEditingController experienceController = form['experienceController'];
+        TextEditingController experienceController =
+            form['experienceController'];
         ValueNotifier<List<bool>> daysSelected = form['daysSelected'];
         File? imageFile = form['imageFile'];
 
@@ -79,7 +82,7 @@ class _ClincInfoState extends State<ClincInfo> {
             specialtyController.text.isEmpty ||
             experienceController.text.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Please fill all the fields')),
+            SnackBar(content: Text('140'.tr)),
           );
           continue;
         }
@@ -104,7 +107,15 @@ class _ClincInfoState extends State<ClincInfo> {
 
         // Collect selected working days
         List<String> selectedDays = [];
-        const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+        var days = [
+          '102'.tr,
+          '103'.tr,
+          '104'.tr,
+          '105'.tr,
+          '106'.tr,
+          '107'.tr,
+          '108'.tr
+        ];
         for (int i = 0; i < daysSelected.value.length; i++) {
           if (daysSelected.value[i]) {
             selectedDays.add(days[i]);
@@ -115,7 +126,8 @@ class _ClincInfoState extends State<ClincInfo> {
         var doctorData = {
           'name': nameController.text,
           'specialty': specialtyController.text,
-          'experience': int.tryParse(experienceController.text) ?? 0, // Parse experience to integer
+          'experience': int.tryParse(experienceController.text) ??
+              0, // Parse experience to integer
           'working_days': selectedDays,
           'image_url': imageUrl,
         };
@@ -127,7 +139,7 @@ class _ClincInfoState extends State<ClincInfo> {
             .collection('doctors')
             .add(doctorData);
 
-        print("Doctor data uploaded successfully");
+        print('109'.tr);
       }
 
       // Clear forms after saving
@@ -137,7 +149,7 @@ class _ClincInfoState extends State<ClincInfo> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Doctors saved successfully')),
+        SnackBar(content: Text('110'.tr)),
       );
     } catch (e) {
       print('Error saving doctors: $e');
@@ -152,16 +164,15 @@ class _ClincInfoState extends State<ClincInfo> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            "Doctor Information",
-            style: TextStyle(color: AppColors.textColor),
+          title: Text(
+            '69'.tr,
+            style: const TextStyle(color: AppColors.textColor),
           ),
           backgroundColor: AppColors.primaryColor,
           leading: IconButton(
@@ -193,7 +204,6 @@ class _ClincInfoState extends State<ClincInfo> {
                   ],
                 ),
                 const SizedBox(height: 20),
-
               ],
             ),
           ),

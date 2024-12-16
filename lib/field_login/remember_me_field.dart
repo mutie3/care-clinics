@@ -1,6 +1,7 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
 import '../screens/forgot_password_page.dart';
@@ -61,9 +62,9 @@ class _RememberMeAndForgotPasswordRowState
                       : AppColors.primaryColor,
                   checkColor: AppColors.scaffoldBackgroundColor,
                 ),
-                const Text(
-                  'Remember Me?',
-                  style: TextStyle(color: AppColors.textBox),
+                Text(
+                  '62'.tr,
+                  style: const TextStyle(color: AppColors.textBox),
                 ),
               ],
             ),
@@ -76,7 +77,7 @@ class _RememberMeAndForgotPasswordRowState
                 );
               },
               child: Text(
-                'Forgot Password?',
+                '63'.tr,
                 style: TextStyle(
                   fontFamily: 'Tajawal',
                   color: themeProvider.isDarkMode

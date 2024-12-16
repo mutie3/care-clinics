@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 
 class RatingPage extends StatefulWidget {
   final String doctorId;
@@ -27,7 +28,7 @@ class RatingPageState extends State<RatingPage> {
         'timestamp': FieldValue.serverTimestamp(),
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Rating submitted successfully!')),
+        SnackBar(content: Text('173'.tr)),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -39,7 +40,7 @@ class RatingPageState extends State<RatingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Rate Doctor")),
+      appBar: AppBar(title: Text('174'.tr)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -67,9 +68,9 @@ class RatingPageState extends State<RatingPage> {
             // حقل التعليق
             TextField(
               controller: _commentController,
-              decoration: const InputDecoration(
-                labelText: "Add a comment",
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: '175'.tr,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 3,
             ),
@@ -77,7 +78,7 @@ class RatingPageState extends State<RatingPage> {
             // زر إرسال التقييم
             ElevatedButton(
               onPressed: submitRating,
-              child: const Text("Submit Rating"),
+              child: Text('176'.tr),
             ),
           ],
         ),

@@ -1,6 +1,7 @@
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -38,12 +39,12 @@ class ClinicsState extends State<Clinics> {
       List<Placemark> placemarks =
           await placemarkFromCoordinates(latitude, longitude);
       if (placemarks.isNotEmpty) {
-        return placemarks[0].locality ?? 'Unknown Location';
+        return placemarks[0].locality ?? '158'.tr;
       }
     } catch (e) {
-      return 'Unknown Location';
+      return '157'.tr;
     }
-    return 'Unknown Location';
+    return '157'.tr;
   }
 
   Future<void> _fetchClinicsData() async {
@@ -143,7 +144,7 @@ class ClinicsState extends State<Clinics> {
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              "عياداتنا",
+              '159'.tr,
               style: TextStyle(
                 color: themeProvider.isDarkMode ? Colors.white : Colors.black,
               ),
@@ -159,7 +160,7 @@ class ClinicsState extends State<Clinics> {
                 child: TextField(
                   controller: searchController,
                   decoration: InputDecoration(
-                    hintText: 'ابحث عن عيادة...',
+                    hintText: '123'.tr,
                     hintStyle: TextStyle(
                       color: themeProvider.isDarkMode
                           ? Colors.grey[400]

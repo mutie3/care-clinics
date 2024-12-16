@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../constants/colors_page.dart';
@@ -23,77 +24,58 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
   final PageController _pageController = PageController();
   int _currentIndex = 0;
 
-  List<Map<String, dynamic>> medicalSpecialties = [
-    {
-      "name": "ALL",
-      "icon": FontAwesomeIcons.listAlt
-    }, // أيقونة شاملة لجميع التخصصات
-    {
-      "name": "General Medicine",
-      "icon": FontAwesomeIcons.medkit
-    }, // أيقونة لمجموعة أدوات طبية
-    {
-      "name": "Internal Medicine",
-      "icon": FontAwesomeIcons.userInjured
-    }, // أيقونة مريض مصاب
-    {"name": "Pediatrics", "icon": FontAwesomeIcons.child}, // أيقونة طفل
-    {
-      "name": "Obstetrics and Gynecology",
-      "icon": FontAwesomeIcons.venusMars
-    }, // أيقونة ولادة وجنس
-    {
-      "name": "Dermatology",
-      "icon": FontAwesomeIcons.handHoldingHeart
-    }, // أيقونة للعناية بالبشرة
-    {
-      "name": "Cardiology",
-      "icon": FontAwesomeIcons.heartPulse
-    }, // أيقونة نبض القلب
-    {
-      "name": "Orthopedic Surgery",
-      "icon": FontAwesomeIcons.hammer
-    }, // أيقونة جراحة العظام
-    {"name": "Psychiatry", "icon": FontAwesomeIcons.brain}, // أيقونة الدماغ
-    {
-      "name": "Endocrinology",
-      "icon": FontAwesomeIcons.bottleDroplet
-    }, // أيقونة هرمون أو غدة
-    {
-      "name": "Gastroenterology",
-      "icon": FontAwesomeIcons.utensils
-    }, // أيقونة غذاء أو معدة
-    {
-      "name": "Respiratory Medicine",
-      "icon": FontAwesomeIcons.lungs
-    }, // أيقونة الرئتين
-    {
-      "name": "Nephrology and Urology",
-      "icon": FontAwesomeIcons.toilet
-    }, // أيقونة للحمام أو البول
-    {
-      "name": "Oncology and Radiotherapy",
-      "icon": FontAwesomeIcons.capsules
-    }, // أيقونة علاج إشعاعي
-    {
-      "name": "Sports Medicine",
-      "icon": FontAwesomeIcons.running
-    }, // أيقونة رياضية
-    {"name": "Hematology", "icon": FontAwesomeIcons.syringe}, // أيقونة حقنة
-    {"name": "Hepatology", "icon": FontAwesomeIcons.pills}, // أيقونة أقراص دواء
-    {
-      "name": "Infectious Diseases",
-      "icon": FontAwesomeIcons.virus
-    }, // أيقونة فيروس
-    {
-      "name": "Nutrition and Dietetics",
-      "icon": FontAwesomeIcons.carrot
-    }, // أيقونة خضار
-    {"name": "Ophthalmology", "icon": FontAwesomeIcons.eye}, // أيقونة عين
-    {
-      "name": "ENT (Ear, Nose, and Throat)",
-      "icon": FontAwesomeIcons.headSideCough
-    } // أيقونة رأس
-  ];
+  List<Map<String, dynamic>> getMedicalSpecialties() {
+    return [
+      {
+        "name": '14'.tr,
+        "icon": FontAwesomeIcons.listAlt
+      }, // أيقونة شاملة لجميع التخصصات
+      {
+        "name": '15'.tr,
+        "icon": FontAwesomeIcons.medkit
+      }, // أيقونة لمجموعة أدوات طبية
+      {
+        "name": '16'.tr,
+        "icon": FontAwesomeIcons.userInjured
+      }, // أيقونة مريض مصاب
+      {"name": '17'.tr, "icon": FontAwesomeIcons.child}, // أيقونة طفل
+      {
+        "name": '18'.tr,
+        "icon": FontAwesomeIcons.venusMars
+      }, // أيقونة ولادة وجنس
+      {
+        "name": '19'.tr,
+        "icon": FontAwesomeIcons.handHoldingHeart
+      }, // أيقونة للعناية بالبشرة
+      {
+        "name": '20'.tr,
+        "icon": FontAwesomeIcons.heartPulse
+      }, // أيقونة نبض القلب
+      {"name": '21'.tr, "icon": FontAwesomeIcons.hammer}, // أيقونة جراحة العظام
+      {"name": '22'.tr, "icon": FontAwesomeIcons.brain}, // أيقونة الدماغ
+      {
+        "name": '23'.tr,
+        "icon": FontAwesomeIcons.bottleDroplet
+      }, // أيقونة هرمون أو غدة
+      {
+        "name": '3'.tr,
+        "icon": FontAwesomeIcons.utensils
+      }, // أيقونة غذاء أو معدة
+      {"name": '4'.tr, "icon": FontAwesomeIcons.lungs}, // أيقونة الرئتين
+      {
+        "name": '5'.tr,
+        "icon": FontAwesomeIcons.toilet
+      }, // أيقونة للحمام أو البول
+      {"name": '6'.tr, "icon": FontAwesomeIcons.capsules}, // أيقونة علاج إشعاعي
+      {"name": '7'.tr, "icon": FontAwesomeIcons.running}, // أيقونة رياضية
+      {"name": '8'.tr, "icon": FontAwesomeIcons.syringe}, // أيقونة حقنة
+      {"name": '9'.tr, "icon": FontAwesomeIcons.pills}, // أيقونة أقراص دواء
+      {"name": '10'.tr, "icon": FontAwesomeIcons.virus}, // أيقونة فيروس
+      {"name": '11'.tr, "icon": FontAwesomeIcons.carrot}, // أيقونة خضار
+      {"name": '12'.tr, "icon": FontAwesomeIcons.eye}, // أيقونة عين
+      {"name": '13'.tr, "icon": FontAwesomeIcons.headSideCough} // أيقونة رأس
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +164,7 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
         ),
         child: AppBar(
           title: Text(
-            'Medical Specialties',
+            '2'.tr,
             style: GoogleFonts.robotoSlab(
               fontWeight: FontWeight.w600,
               fontSize: 24.0,
@@ -218,9 +200,9 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
         mainAxisSpacing: 16.0,
         childAspectRatio: 0.8,
       ),
-      itemCount: medicalSpecialties.length,
+      itemCount: getMedicalSpecialties().length,
       itemBuilder: (context, index) {
-        return _buildSpecialtyCard(medicalSpecialties[index], context);
+        return _buildSpecialtyCard(getMedicalSpecialties()[index], context);
       },
     );
   }
@@ -232,7 +214,7 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
       builder: (context, themeProvider, child) {
         return GestureDetector(
           onTap: () {
-            if (widget.isGustLogin && specialtyName != "ALL") {
+            if (widget.isGustLogin && specialtyName != '14'.tr) {
               _showVisitorMessage(context);
             } else {
               Navigator.push(
@@ -240,7 +222,7 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
                 MaterialPageRoute(
                   builder: (context) => Clinics(
                     selectedSpecialty:
-                        specialtyName == "ALL" ? '' : specialtyName,
+                        specialtyName == '14'.tr ? '' : specialtyName,
                     isGustLogin: widget.isGustLogin,
                   ),
                 ),
@@ -301,8 +283,8 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Login Required'),
-          content: const Text('Please log in first to access this feature.'),
+          title: Text('125'.tr),
+          content: Text('126'.tr),
           actions: [
             TextButton(
               onPressed: () {
@@ -312,13 +294,13 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
                   MaterialPageRoute(builder: (context) => const LoginPage()),
                 );
               },
-              child: const Text('Login'),
+              child: Text('60'.tr),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: Text('117'.tr),
             ),
           ],
         );
@@ -331,15 +313,14 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Access Restricted'),
-          content: const Text(
-              'As a guest, you can only access general information. Please log in for more features.'),
+          title: Text('168'.tr),
+          content: Text('169'.tr),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('OK'),
+              child: Text('148'.tr),
             ),
           ],
         );

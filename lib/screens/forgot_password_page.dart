@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:care_clinic/constants/colors_page.dart';
+import 'package:get/get.dart';
 import '../widgets/custom_text_fieled.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -18,7 +19,7 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Forgot Password'),
+        title: Text('63'.tr),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -27,12 +28,12 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
           child: Column(
             children: [
               CustomTextField(
-                text: 'Email',
+                text: '160'.tr,
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
+                    return '84'.tr;
                   }
                   return null;
                 },
@@ -48,8 +49,8 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       );
 
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Password reset email sent.'),
+                        SnackBar(
+                          content: Text('161'.tr),
                         ),
                       );
                       Navigator.pop(context);
@@ -57,22 +58,19 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       String errorMessage = '';
                       switch (e.code) {
                         case 'invalid-email':
-                          errorMessage = 'The email address is not valid.';
+                          errorMessage = '162'.tr;
                           break;
                         case 'user-not-found':
-                          errorMessage = 'No user found for that email.';
+                          errorMessage = '163'.tr;
                           break;
                         case 'too-many-requests':
-                          errorMessage =
-                              'Too many requests. Please try again later.';
+                          errorMessage = '164'.tr;
                           break;
                         case 'network-request-failed':
-                          errorMessage =
-                              'Network error. Please check your internet connection.';
+                          errorMessage = '165'.tr;
                           break;
                         default:
-                          errorMessage =
-                              'An unknown error occurred. Please try again.';
+                          errorMessage = '166'.tr;
                       }
 
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -97,9 +95,9 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                   backgroundColor: AppColors.primaryColor,
                 ),
-                child: const Text(
-                  'Send Reset Email',
-                  style: TextStyle(
+                child: Text(
+                  '167'.tr,
+                  style: const TextStyle(
                       fontSize: 18, color: AppColors.scaffoldBackgroundColor),
                 ),
               ),

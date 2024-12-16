@@ -4,6 +4,7 @@ import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:care_clinic/patient/regestration_page_Info.dart';
 import 'package:care_clinic/screens/doctor_reg/clinic_info.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class RegAsSelect extends StatefulWidget {
@@ -28,7 +29,7 @@ class _RegAsSelectState extends State<RegAsSelect> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Registration as:',
+                    '66'.tr,
                     style: TextStyle(
                       fontFamily: 'PlayfairDisplay',
                       fontSize: 24,
@@ -65,7 +66,7 @@ class _RegAsSelectState extends State<RegAsSelect> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            'Clinic',
+                            '67'.tr,
                             style: TextStyle(
                               fontFamily: 'PlayfairDisplay',
                               fontSize: 18,
@@ -102,7 +103,7 @@ class _RegAsSelectState extends State<RegAsSelect> {
 
                           const SizedBox(height: 10),
                           Text(
-                            'Person',
+                            '68'.tr,
                             style: TextStyle(
                               fontFamily: 'PlayfairDisplay',
                               fontSize: 18,

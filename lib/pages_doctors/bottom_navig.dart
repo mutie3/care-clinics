@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/theme_dark_mode.dart';
@@ -111,13 +112,13 @@ class CustomBottomNavigationBar extends StatelessWidget {
   String _getLabel(int index) {
     switch (index) {
       case 0:
-        return 'Home';
+        return '144'.tr;
       case 1:
-        return 'Search';
+        return '145'.tr;
       case 2:
-        return 'Chat';
+        return '146'.tr;
       case 3:
-        return 'Profile';
+        return '147'.tr;
       default:
         return '';
     }

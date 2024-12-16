@@ -11,6 +11,7 @@ import 'package:care_clinic/widgets/custom_location_picker.dart';
 import 'package:care_clinic/widgets/custom_text_fieled.dart';
 import 'package:care_clinic/widgets/set_picture.dart';
 import 'package:care_clinic/screens/doctor_reg/doctor_info.dart';
+import 'package:get/get.dart';
 
 import '../../widgets/custom_phone_field.dart';
 import 'loading_overlay.dart';
@@ -54,7 +55,7 @@ class _RegPageState extends State<RegPage> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return const LoadingOverlay(message: "Registering clinic...");
+        return LoadingOverlay(message: '98'.tr);
       },
     );
 
@@ -100,7 +101,7 @@ class _RegPageState extends State<RegPage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Clinic data uploaded successfully')),
+        SnackBar(content: Text('99'.tr)),
       );
 
       // Wait for uploads (optional, see point 2)
@@ -121,7 +122,7 @@ class _RegPageState extends State<RegPage> {
                 onPressed: () {
                   Navigator.of(context).pop(); // Close the dialog
                 },
-                child: const Text("OK"),
+                child: Text('148'.tr),
               ),
             ],
           );
@@ -136,9 +137,9 @@ class _RegPageState extends State<RegPage> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            "Clinic Information",
-            style: TextStyle(
+          title: Text(
+            '56'.tr,
+            style: const TextStyle(
               color: AppColors.textColor,
               fontFamily: 'PlayfairDisplay',
             ),
@@ -166,7 +167,7 @@ class _RegPageState extends State<RegPage> {
                   ),
                   const SizedBox(height: 20),
                   CustomTextField(
-                    text: "Clinic Name",
+                    text: '57'.tr,
                     controller: nameController,
                     icon: const Icon(Icons.local_hospital_outlined,
                         color: AppColors.primaryColor),
@@ -175,22 +176,22 @@ class _RegPageState extends State<RegPage> {
                   CustomPhoneField(controller: phoneController),
                   const SizedBox(height: 20),
                   CustomEmailTextField(
-                    text: 'Email',
+                    text: '50'.tr,
                     controller: emailController,
                     icon:
                         const Icon(Icons.email, color: AppColors.primaryColor),
                   ),
                   const SizedBox(height: 20),
                   CustomTextField(
-                    text: "Password",
+                    text: '49'.tr,
                     controller: passwordController,
                     obscureText: true,
                     icon: const Icon(Icons.lock, color: AppColors.primaryColor),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
+                        return '87'.tr;
                       } else if (value.length < 6) {
-                        return 'Password must be at least 6 characters long';
+                        return '88'.tr;
                       }
                       return null;
                     },
@@ -211,9 +212,9 @@ class _RegPageState extends State<RegPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primaryColor,
                     ),
-                    child: const Text(
-                      'Register Clinic',
-                      style: TextStyle(color: AppColors.textColor),
+                    child: Text(
+                      '100'.tr,
+                      style: const TextStyle(color: AppColors.textColor),
                     ),
                   ),
                 ],

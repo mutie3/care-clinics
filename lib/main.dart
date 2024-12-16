@@ -1,8 +1,11 @@
 import 'package:care_clinic/constants/theme_dark_mode.dart';
+import 'package:care_clinic/localization/local_controllet.dart';
+import 'package:care_clinic/localization/locale.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'constants/gemini_provider.dart';
@@ -37,7 +40,8 @@ class CareClink extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
-        return MaterialApp(
+        Get.put(MyLocaleController());
+        return GetMaterialApp(
           title: 'Care Clinic',
           debugShowCheckedModeBanner: false,
           theme: themeProvider.currentTheme.copyWith(
@@ -84,6 +88,8 @@ class CareClink extends StatelessWidget {
               ),
             ),
           ),
+          locale: Get.deviceLocale,
+          translations: MyLocale(),
           home: const VideoPlayerScreen(),
         );
       },

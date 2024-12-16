@@ -4,6 +4,7 @@ import 'package:care_clinic/widgets/custom_text_fieled.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,7 @@ class AccountInfoScreen extends StatefulWidget {
 class AccountInfoScreenState extends State<AccountInfoScreen> {
   bool isEditing = false;
   DateTime? birthDate;
-  String gender = 'ذكر';
+  String gender = '33'.tr;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
@@ -34,7 +35,7 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
   Future<void> _fetchUserData() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
-      if (user == null) throw Exception("No user logged in");
+      if (user == null) throw Exception('150'.tr);
 
       final snapshot = await FirebaseFirestore.instance
           .collection('users')
@@ -62,7 +63,7 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
   Future<void> _updateUserData() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
-      if (user == null) throw Exception("No user logged in");
+      if (user == null) throw Exception('150'.tr);
 
       final formattedDate = birthDate != null
           ? DateFormat('yyyy-MM-dd').format(birthDate!)
@@ -85,7 +86,7 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('تم تحديث البيانات بنجاح')),
+        SnackBar(content: Text('150'.tr)),
       );
     } catch (e) {
       print("Error updating user data: $e");
@@ -98,14 +99,14 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('تأكيد حذف الحساب'),
+        title: Text('154'.tr),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('يرجى إدخال كلمة المرور لتأكيد الحذف.'),
+            Text('152'.tr),
             const SizedBox(height: 16),
             CustomTextField(
-              text: 'كلمة المرور',
+              text: '49'.tr,
               controller: passwordController,
               icon: const Icon(Icons.lock),
               obscureText: true,
@@ -115,14 +116,14 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('إلغاء'),
+            child: Text('117'.tr),
           ),
           TextButton(
             onPressed: () async {
               final password = passwordController.text;
               if (password.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('يرجى إدخال كلمة المرور')),
+                  SnackBar(content: Text('153'.tr)),
                 );
                 return;
               }
@@ -148,13 +149,13 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
                 );
               } catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('كلمة المرور غير صحيحة'),
+                  SnackBar(
+                    content: Text('155'.tr),
                   ),
                 );
               }
             },
-            child: const Text('حذف'),
+            child: Text('78'.tr),
           ),
         ],
       ),
@@ -182,7 +183,7 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
       builder: (context, themeProvider, child) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('معلومات الحساب'),
+            title: Text('25'.tr),
             backgroundColor: themeProvider.isDarkMode
                 ? AppColors.textBox
                 : AppColors.primaryColor,
@@ -206,21 +207,21 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
             child: Column(
               children: [
                 CustomTextField(
-                  text: 'البريد الإلكتروني',
+                  text: '26'.tr,
                   controller: emailController,
                   icon: const Icon(Icons.email),
                   enabled: isEditing,
                 ),
                 const SizedBox(height: 16),
                 CustomTextField(
-                  text: 'الاسم الأول',
+                  text: '47'.tr,
                   controller: firstNameController,
                   icon: const Icon(Icons.person),
                   enabled: isEditing,
                 ),
                 const SizedBox(height: 16),
                 CustomTextField(
-                  text: 'الاسم الأخير',
+                  text: '48'.tr,
                   controller: lastNameController,
                   icon: const Icon(Icons.person_outline),
                   enabled: isEditing,
@@ -233,14 +234,14 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
                     }
                   },
                   child: InputDecorator(
-                    decoration: const InputDecoration(
-                      labelText: 'تاريخ الميلاد',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.calendar_today),
+                    decoration: InputDecoration(
+                      labelText: '51'.tr,
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.calendar_today),
                     ),
                     child: Text(
                       birthDate == null
-                          ? 'اختر تاريخ الميلاد'
+                          ? '156'.tr
                           : DateFormat('yyyy-MM-dd').format(birthDate!),
                     ),
                   ),
@@ -252,7 +253,7 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
                     foregroundColor: Colors.white,
                   ),
                   icon: const Icon(Icons.delete),
-                  label: const Text('حذف الحساب'),
+                  label: Text('157'.tr),
                   onPressed: _showDeleteAccountDialog,
                 ),
               ],

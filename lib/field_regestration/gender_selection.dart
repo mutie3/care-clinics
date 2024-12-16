@@ -1,5 +1,6 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class GenderSelection extends StatefulWidget {
   final TextEditingController controller;
@@ -17,9 +18,9 @@ class _GenderSelectionState extends State<GenderSelection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'What is your gender?',
-          style: TextStyle(
+        Text(
+          '52'.tr,
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: AppColors.textColor,
@@ -32,26 +33,26 @@ class _GenderSelectionState extends State<GenderSelection> {
             GestureDetector(
               onTap: () {
                 setState(() {
-                  _gender = 'Male';
+                  _gender = '53'.tr;
                   widget.controller.text = _gender!; // حفظ القيمة في controller
                 });
               },
               child: Column(
                 children: [
                   CircleAvatar(
-                    backgroundColor: _gender == 'Male'
+                    backgroundColor: _gender == '53'.tr
                         ? AppColors.primaryColor
                         : Colors.grey[200],
                     radius: 30,
                     child: Icon(
                       Icons.male,
                       size: 40,
-                      color: _gender == 'Male' ? Colors.white : Colors.grey,
+                      color: _gender == '53'.tr ? Colors.white : Colors.grey,
                     ),
                   ),
                   const SizedBox(height: 5),
-                  const Text('Male',
-                      style: TextStyle(color: AppColors.textColor)),
+                  Text('53'.tr,
+                      style: const TextStyle(color: AppColors.textColor)),
                 ],
               ),
             ),
@@ -59,26 +60,26 @@ class _GenderSelectionState extends State<GenderSelection> {
             GestureDetector(
               onTap: () {
                 setState(() {
-                  _gender = 'Female';
+                  _gender = '54'.tr;
                   widget.controller.text = _gender!; // حفظ القيمة في controller
                 });
               },
               child: Column(
                 children: [
                   CircleAvatar(
-                    backgroundColor: _gender == 'Female'
+                    backgroundColor: _gender == '54'.tr
                         ? AppColors.primaryColor
                         : Colors.grey[200],
                     radius: 30,
                     child: Icon(
                       Icons.female,
                       size: 40,
-                      color: _gender == 'Female' ? Colors.white : Colors.grey,
+                      color: _gender == '54'.tr ? Colors.white : Colors.grey,
                     ),
                   ),
                   const SizedBox(height: 5),
-                  const Text('Female',
-                      style: TextStyle(color: AppColors.textColor)),
+                  Text('54'.tr,
+                      style: const TextStyle(color: AppColors.textColor)),
                 ],
               ),
             ),

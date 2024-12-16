@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../pages_doctors/date_picker_widget.dart';
@@ -86,7 +87,7 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
             .removeWhere((appointment) => appointment['id'] == appointmentId);
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Appointment deleted successfully')),
+        SnackBar(content: Text('50'.tr)),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -116,7 +117,7 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: const Text('Edit Appointment'),
+              title: Text('181'.tr),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -130,9 +131,9 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    const Text(
-                      'Select Time',
-                      style: TextStyle(
+                    Text(
+                      '92'.tr,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
                       ),
@@ -158,7 +159,7 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
+                  child: Text('117'.tr),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -181,8 +182,7 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
 
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Appointment updated successfully')),
+                        SnackBar(content: Text('182'.tr)),
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -191,7 +191,7 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
                       );
                     }
                   },
-                  child: const Text('Save'),
+                  child: Text('55'.tr),
                 ),
               ],
             );
@@ -212,7 +212,7 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Appointments'),
+        title: Text('183'.tr),
         backgroundColor: Colors.indigo,
         elevation: 5,
         centerTitle: true,
@@ -224,7 +224,8 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.error_outline, color: Colors.red, size: 80),
+                      const Icon(Icons.error_outline,
+                          color: Colors.red, size: 80),
                       const SizedBox(height: 15),
                       Text(
                         errorMessage!,
@@ -239,7 +240,7 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
                       ElevatedButton.icon(
                         onPressed: _fetchAppointments,
                         icon: const Icon(Icons.refresh),
-                        label: const Text('Retry'),
+                        label: Text('184'.tr),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.indigo,
                           shape: RoundedRectangleBorder(
@@ -251,10 +252,10 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
                   ),
                 )
               : appointments.isEmpty
-                  ? const Center(
+                  ? Center(
                       child: Text(
-                        'No appointments found.',
-                        style: TextStyle(
+                        '185'.tr,
+                        style: const TextStyle(
                           fontSize: 20,
                           color: Colors.grey,
                           fontWeight: FontWeight.w500,

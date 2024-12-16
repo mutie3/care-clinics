@@ -2,6 +2,7 @@ import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:care_clinic/widgets/custom_text_fieled.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class BirthdayField extends StatefulWidget {
@@ -38,7 +39,7 @@ class _BirthdayFieldState extends State<BirthdayField> {
           },
           child: AbsorbPointer(
             child: CustomTextField(
-              text: 'Birthday',
+              text: '51'.tr,
               icon: Icon(
                 Icons.calendar_today,
                 color: themeProvider.isDarkMode

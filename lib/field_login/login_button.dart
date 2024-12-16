@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:care_clinic/screens/home_page.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class LoginButtons extends StatelessWidget {
@@ -31,10 +32,10 @@ class LoginButtons extends StatelessWidget {
                     ? Colors.grey
                     : AppColors.primaryColor,
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
-                  'Login',
-                  style: TextStyle(
+                  '60'.tr,
+                  style: const TextStyle(
                     fontFamily: 'Tajawal',
                     fontSize: 18,
                     color: AppColors.scaffoldBackgroundColor,
@@ -45,7 +46,7 @@ class LoginButtons extends StatelessWidget {
             const SizedBox(height: 10),
             Center(
               child: Text(
-                'OR',
+                '86'.tr,
                 style: TextStyle(
                   fontFamily: 'Tajawal',
                   fontSize: 16,
@@ -68,10 +69,10 @@ class LoginButtons extends StatelessWidget {
                     ? Colors.grey
                     : AppColors.primaryColor,
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
-                  'Guest Login',
-                  style: TextStyle(
+                  '61'.tr,
+                  style: const TextStyle(
                     fontFamily: 'Tajawal',
                     fontSize: 18,
                     color: AppColors.scaffoldBackgroundColor,

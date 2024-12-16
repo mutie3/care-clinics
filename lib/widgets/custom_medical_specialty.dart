@@ -1,28 +1,29 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CustomMedicalSpacialty extends StatelessWidget {
   final List<String> medicalSpecialties = [
-    "General Medicine / Family Medicine",
-    "Internal Medicine",
-    "Pediatrics",
-    "Obstetrics and Gynecology",
-    "Dermatology",
-    "Cardiology",
-    "Orthopedic Surgery",
-    "Psychiatry",
-    "Endocrinology",
-    "Gastroenterology",
-    "Respiratory Medicine",
-    "Nephrology and Urology",
-    "Oncology and Radiotherapy",
-    "Sports Medicine",
-    "Hematology",
-    "Hepatology",
-    "Infectious Diseases",
-    "Nutrition and Dietetics",
-    "Ophthalmology",
-    "Otorhinolaryngology (ENT - Ear, Nose, and Throat)",
+    '15'.tr,
+    '16'.tr,
+    '17'.tr,
+    '18'.tr,
+    '19'.tr,
+    '20'.tr,
+    '21'.tr,
+    '22'.tr,
+    '23'.tr,
+    '3'.tr,
+    '4'.tr,
+    '5'.tr,
+    '6'.tr,
+    '7'.tr,
+    '8'.tr,
+    '9'.tr,
+    '10'.tr,
+    '11'.tr,
+    '12'.tr,
+    '13'.tr,
   ];
 
   CustomMedicalSpacialty({super.key});
@@ -35,12 +36,12 @@ class CustomMedicalSpacialty extends StatelessWidget {
           Icons.medical_services_outlined,
           color: AppColors.primaryColor,
         ),
-        hintText: "Medical Specialty",
+        hintText: '2'.tr,
         hintStyle: const TextStyle(
           color: AppColors.textColor,
           fontFamily: 'Tajawal',
         ),
-        labelText: "Medical Specialty",
+        labelText: '2'.tr,
         labelStyle: const TextStyle(
           color: AppColors.textColor,
           fontFamily: 'Tajawal',

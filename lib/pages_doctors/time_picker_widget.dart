@@ -1,6 +1,7 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class TimePickerWidget extends StatelessWidget {
@@ -22,9 +23,9 @@ class TimePickerWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Select Time',
-                style: TextStyle(
+              Text(
+                '92'.tr,
+                style: const TextStyle(
                   color: Color(0xff363636),
                   fontSize: 25,
                   fontWeight: FontWeight.w700,
