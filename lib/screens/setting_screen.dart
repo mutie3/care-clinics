@@ -1,5 +1,6 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
+import 'package:care_clinic/localization/local_controllet.dart';
 import 'package:care_clinic/screens/accont_info_screen.dart';
 import 'package:care_clinic/screens/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,9 +19,11 @@ class SettingsScreen extends StatefulWidget {
 class SettingsScreenState extends State<SettingsScreen> {
   bool isDarkMode = false;
   bool notificationsEnabled = false;
+  String currentLanguage = 'العربية';
 
   @override
   Widget build(BuildContext context) {
+    MyLocaleController controllerLang = Get.find();
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(
@@ -91,7 +94,13 @@ class SettingsScreenState extends State<SettingsScreen> {
           _buildCustomTile(
             title: '30'.tr,
             subtitle: '178'.tr,
-            onTap: () {},
+            onTap: () {
+              if (Get.locale?.languageCode == 'ar') {
+                controllerLang.changelang('en'); // التبديل للإنجليزية
+              } else {
+                controllerLang.changelang('ar'); // التبديل للعربية
+              }
+            },
           ),
           _buildThemeListTile(themeProvider),
           _buildCustomTile(

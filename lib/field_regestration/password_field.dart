@@ -50,7 +50,7 @@ class PasswordFieldState extends State<PasswordField> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomTextField(
-              text: 'Password',
+              text: '49'.tr,
               controller: widget.controller,
               icon: Icon(
                 Icons.lock,
