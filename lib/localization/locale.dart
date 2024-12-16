@@ -397,7 +397,7 @@ class MyLocale implements Translations {
           "175": "Add a comment",
           "176": "Submit Rating",
           "177": "Search by clinic name or specialty...",
-          "178": "Arabic",
+          "178": "English",
           "179": "isLoggedIn",
           "180": "Appointment deleted successfully",
           "181": "Edit Appointment",

@@ -24,41 +24,58 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
   final PageController _pageController = PageController();
   int _currentIndex = 0;
 
-  List<Map<String, dynamic>> medicalSpecialties = [
-    {
-      "name": '14'.tr,
-      "icon": FontAwesomeIcons.listAlt
-    }, // أيقونة شاملة لجميع التخصصات
-    {
-      "name": '15'.tr,
-      "icon": FontAwesomeIcons.medkit
-    }, // أيقونة لمجموعة أدوات طبية
-    {"name": '16'.tr, "icon": FontAwesomeIcons.userInjured}, // أيقونة مريض مصاب
-    {"name": '17'.tr, "icon": FontAwesomeIcons.child}, // أيقونة طفل
-    {"name": '18'.tr, "icon": FontAwesomeIcons.venusMars}, // أيقونة ولادة وجنس
-    {
-      "name": '19'.tr,
-      "icon": FontAwesomeIcons.handHoldingHeart
-    }, // أيقونة للعناية بالبشرة
-    {"name": '20'.tr, "icon": FontAwesomeIcons.heartPulse}, // أيقونة نبض القلب
-    {"name": '21'.tr, "icon": FontAwesomeIcons.hammer}, // أيقونة جراحة العظام
-    {"name": '22'.tr, "icon": FontAwesomeIcons.brain}, // أيقونة الدماغ
-    {
-      "name": '23'.tr,
-      "icon": FontAwesomeIcons.bottleDroplet
-    }, // أيقونة هرمون أو غدة
-    {"name": '3'.tr, "icon": FontAwesomeIcons.utensils}, // أيقونة غذاء أو معدة
-    {"name": '4'.tr, "icon": FontAwesomeIcons.lungs}, // أيقونة الرئتين
-    {"name": '5'.tr, "icon": FontAwesomeIcons.toilet}, // أيقونة للحمام أو البول
-    {"name": '6'.tr, "icon": FontAwesomeIcons.capsules}, // أيقونة علاج إشعاعي
-    {"name": '7'.tr, "icon": FontAwesomeIcons.running}, // أيقونة رياضية
-    {"name": '8'.tr, "icon": FontAwesomeIcons.syringe}, // أيقونة حقنة
-    {"name": '9'.tr, "icon": FontAwesomeIcons.pills}, // أيقونة أقراص دواء
-    {"name": '10'.tr, "icon": FontAwesomeIcons.virus}, // أيقونة فيروس
-    {"name": '11'.tr, "icon": FontAwesomeIcons.carrot}, // أيقونة خضار
-    {"name": '12'.tr, "icon": FontAwesomeIcons.eye}, // أيقونة عين
-    {"name": '13'.tr, "icon": FontAwesomeIcons.headSideCough} // أيقونة رأس
-  ];
+  List<Map<String, dynamic>> getMedicalSpecialties() {
+    return [
+      {
+        "name": '14'.tr,
+        "icon": FontAwesomeIcons.listAlt
+      }, // أيقونة شاملة لجميع التخصصات
+      {
+        "name": '15'.tr,
+        "icon": FontAwesomeIcons.medkit
+      }, // أيقونة لمجموعة أدوات طبية
+      {
+        "name": '16'.tr,
+        "icon": FontAwesomeIcons.userInjured
+      }, // أيقونة مريض مصاب
+      {"name": '17'.tr, "icon": FontAwesomeIcons.child}, // أيقونة طفل
+      {
+        "name": '18'.tr,
+        "icon": FontAwesomeIcons.venusMars
+      }, // أيقونة ولادة وجنس
+      {
+        "name": '19'.tr,
+        "icon": FontAwesomeIcons.handHoldingHeart
+      }, // أيقونة للعناية بالبشرة
+      {
+        "name": '20'.tr,
+        "icon": FontAwesomeIcons.heartPulse
+      }, // أيقونة نبض القلب
+      {"name": '21'.tr, "icon": FontAwesomeIcons.hammer}, // أيقونة جراحة العظام
+      {"name": '22'.tr, "icon": FontAwesomeIcons.brain}, // أيقونة الدماغ
+      {
+        "name": '23'.tr,
+        "icon": FontAwesomeIcons.bottleDroplet
+      }, // أيقونة هرمون أو غدة
+      {
+        "name": '3'.tr,
+        "icon": FontAwesomeIcons.utensils
+      }, // أيقونة غذاء أو معدة
+      {"name": '4'.tr, "icon": FontAwesomeIcons.lungs}, // أيقونة الرئتين
+      {
+        "name": '5'.tr,
+        "icon": FontAwesomeIcons.toilet
+      }, // أيقونة للحمام أو البول
+      {"name": '6'.tr, "icon": FontAwesomeIcons.capsules}, // أيقونة علاج إشعاعي
+      {"name": '7'.tr, "icon": FontAwesomeIcons.running}, // أيقونة رياضية
+      {"name": '8'.tr, "icon": FontAwesomeIcons.syringe}, // أيقونة حقنة
+      {"name": '9'.tr, "icon": FontAwesomeIcons.pills}, // أيقونة أقراص دواء
+      {"name": '10'.tr, "icon": FontAwesomeIcons.virus}, // أيقونة فيروس
+      {"name": '11'.tr, "icon": FontAwesomeIcons.carrot}, // أيقونة خضار
+      {"name": '12'.tr, "icon": FontAwesomeIcons.eye}, // أيقونة عين
+      {"name": '13'.tr, "icon": FontAwesomeIcons.headSideCough} // أيقونة رأس
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -183,9 +200,9 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
         mainAxisSpacing: 16.0,
         childAspectRatio: 0.8,
       ),
-      itemCount: medicalSpecialties.length,
+      itemCount: getMedicalSpecialties().length,
       itemBuilder: (context, index) {
-        return _buildSpecialtyCard(medicalSpecialties[index], context);
+        return _buildSpecialtyCard(getMedicalSpecialties()[index], context);
       },
     );
   }
