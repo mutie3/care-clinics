@@ -6,11 +6,11 @@ import 'package:care_clinic/field_regestration/gender_selection.dart';
 import 'package:care_clinic/field_regestration/name_field.dart';
 import 'package:care_clinic/field_regestration/password_field.dart';
 import 'package:care_clinic/field_regestration/phone_field.dart';
-import 'package:care_clinic/screens/verify_phone_number_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../screens/doctor_reg/loading_overlay.dart';
+import '../screens/login_page.dart';
 import 'auth_service.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -138,11 +138,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             );
 
                             // الانتقال إلى صفحة تسجيل الدخول بعد التسجيل
-                            Navigator.pushReplacement(
+                            Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      VerifyPhoneNumberPage()),
+                                  builder: (context) => const LoginPage()),
+                              (Route<dynamic> route) =>
+                                  false, // حذف جميع الصفحات السابقة
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(

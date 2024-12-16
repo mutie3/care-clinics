@@ -65,7 +65,7 @@ class LoginPageState extends State<LoginPage>
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => const BlankPage(),
+            builder: (context) => BlankPage(),
           ),
           (Route<dynamic> route) => false,
         );
@@ -130,7 +130,7 @@ class LoginPageState extends State<LoginPage>
         Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const BlankPage()),
+          MaterialPageRoute(builder: (context) => BlankPage()),
           (Route<dynamic> route) => false,
         );
       } else {

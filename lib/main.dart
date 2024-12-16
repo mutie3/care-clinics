@@ -5,12 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
-
-import 'bloc/appointment_bloc.dart';
 import 'constants/gemini_provider.dart';
 import 'constants/media_provider.dart';
 import 'cubit/navigation_cubit.dart';
-import 'data/appointment_repository.dart';
 import 'screens/login_page.dart';
 import 'firebase_options.dart';
 
@@ -20,7 +17,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  final appointmentRepository = AppointmentRepository();
   runApp(
     MultiProvider(
       providers: [
@@ -28,9 +24,6 @@ void main() async {
         BlocProvider(create: (_) => NavigationCubit()),
         ChangeNotifierProvider(create: (_) => GeminiProvider()),
         ChangeNotifierProvider(create: (_) => MediaProvider()),
-        BlocProvider(
-          create: (context) => AppointmentBloc(appointmentRepository),
-        ),
       ],
       child: const CareClink(),
     ),

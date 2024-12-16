@@ -1,13 +1,10 @@
-import 'package:care_clinic/widgets/video.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'date_picker_widget.dart';
+import '../screens/appointment_booking_page.dart';
 
 class DoctorDetailPage extends StatefulWidget {
   final String clinicId;
@@ -17,7 +14,6 @@ class DoctorDetailPage extends StatefulWidget {
   final String rating;
   final double latitude;
   final double longitude;
-
   const DoctorDetailPage({
     super.key,
     required this.clinicId,
@@ -28,7 +24,6 @@ class DoctorDetailPage extends StatefulWidget {
     required this.latitude,
     required this.longitude,
   });
-
   @override
   _DoctorDetailPageState createState() => _DoctorDetailPageState();
 }
@@ -63,30 +58,10 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
     await Future.wait([
       _fetchClinicData(),
       _fetchDoctors(),
-      _fetchUserData(),
     ]);
     setState(() {
       isLoading = false;
     });
-  }
-
-  Future<void> _fetchUserData() async {
-    try {
-      User? currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null) {
-        String uid = currentUser.uid;
-        DocumentSnapshot userDoc =
-            await FirebaseFirestore.instance.collection('users').doc(uid).get();
-        if (userDoc.exists) {
-          setState(() {
-            patientFirstName = userDoc['firstName'] as String?;
-            patientLastName = userDoc['lastName'] as String?;
-          });
-        }
-      }
-    } catch (e) {
-      print('Error fetching user data: $e');
-    }
   }
 
   Future<void> _fetchClinicData() async {
@@ -119,6 +94,7 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                   'name': doc.data()['name'] ?? 'No Name',
                   'specialty': doc.data()['specialty'] ?? 'No Specialty',
                   'image_url': doc.data()['image_url'] ?? '',
+                  'experience_years': doc.data()['experience'] ?? 0,
                 })
             .toList();
       });
@@ -127,33 +103,35 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
     }
   }
 
-  Future<void> _fetchAppointments() async {
-    if (selectedDoctorIndex == null) return;
-
-    try {
-      final doctorId = doctors[selectedDoctorIndex!]['id'];
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('appointments')
-          .where('doctorId', isEqualTo: doctorId)
-          .get();
-      setState(() {
-        appointments = querySnapshot.docs
-            .map((doc) => doc.data() as Map<String, dynamic>)
-            .toList();
-      });
-    } catch (e) {
-      print('Error fetching appointments: $e');
-    }
-  }
-
   void _onDoctorSelected(int index) {
-    setState(() {
-      selectedDoctorIndex = index;
-      selectedTime = null;
-      appointments = [];
-    });
-    _fetchAppointments();
-    _controller.forward();
+    final selectedDoctor = doctors[index];
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return AppointmentBookingPage(
+            doctorId: selectedDoctor['id'],
+            doctorName: selectedDoctor['name'],
+            doctorSpecialty: selectedDoctor['specialty'],
+            experienceYears: selectedDoctor['experience_years'],
+            clinicId: widget.clinicId,
+            doctorImageUrl: selectedDoctor['image_url'],
+            clinicImageUrl: widget.imgPath,
+          );
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(position: offsetAnimation, child: child);
+        },
+      ),
+    );
   }
 
   Future<void> _openMap() async {
@@ -175,54 +153,8 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
     }
   }
 
-  bool isTimeSlotBooked(String time) {
-    return appointments.any((appointment) =>
-        appointment['time'] == time &&
-        DateTime.parse(appointment['date']).isAtSameMomentAs(selectedDate));
-  }
-
-  void _makeAppointment() {
-    if (selectedDoctorIndex == null || selectedTime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please select a doctor, date, and time."),
-        ),
-      );
-      return;
-    }
-
-    final selectedDoctor = doctors[selectedDoctorIndex!];
-    final appointment = {
-      'doctorName': selectedDoctor['name'],
-      'doctorId': selectedDoctor['id'],
-      'clinicId': widget.clinicId,
-      'date': selectedDate.toIso8601String(),
-      'time': selectedTime,
-      'patientName':
-          '${patientFirstName ?? 'Unknown'} ${patientLastName ?? ''}',
-    };
-
-    FirebaseFirestore.instance
-        .collection('appointments')
-        .add(appointment)
-        .then((_) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => VideoPage()),
-      );
-    }).catchError((error) {
-      print('Error making appointment: $error');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Failed to make appointment. Try again."),
-        ),
-      );
-    });
-  }
-
   Widget _buildDoctorCardContent(Map<String, dynamic> doctor) {
     final String? imageUrl = doctor['image_url'];
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -243,15 +175,6 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
         ),
       ],
     );
-  }
-
-  List<String> _generateTimeSlots() {
-    return List<String>.generate(20, (index) {
-      final startTime = DateTime(selectedDate.year, selectedDate.month,
-          selectedDate.day, 9, 0); // يبدأ من الساعة 9 صباحًا
-      final timeSlot = startTime.add(Duration(minutes: 30 * index));
-      return "${timeSlot.hour.toString().padLeft(2, '0')}:${timeSlot.minute.toString().padLeft(2, '0')}";
-    });
   }
 
   @override
@@ -280,32 +203,30 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                 placeholder: kTransparentImage,
                                 image: widget.imgPath.isNotEmpty
                                     ? widget.imgPath
-                                    : 'https://via.placeholder.com/150', // صورة افتراضية
-                                height: 250, // ارتفاع الصورة
+                                    : 'https://via.placeholder.com/150',
+                                height: 250,
                                 width: double.infinity,
-                                fit: BoxFit.cover, // ملائمة الصورة داخل الإطار
+                                fit: BoxFit.cover,
                               ),
                             ),
-                            // المساحة الشفافة التي تغطي الصورة بالكامل
                             Positioned.fill(
                               child: Container(
-                                color: Colors.black54, // خلفية شفافة داكنة
+                                color: Colors.black54,
                               ),
                             ),
-                            // عرض المعلومات والأزرار داخل الصورة ولكن في الأسفل
                             Positioned(
-                              bottom: 10, // تحديد المسافة من الأسفل
+                              bottom: 10,
                               left: 10,
                               right: 10,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    widget.doctorName, // اسم العيادة
+                                    widget.doctorName,
                                     style: const TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white, // اللون الأبيض للنص
+                                      color: Colors.white,
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -400,7 +321,6 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                   final doctor = doctors[index];
                                   bool isSelected = selectedDoctorIndex ==
                                       index; // تحقق إذا كان هذا الطبيب هو المحدد
-
                                   return GestureDetector(
                                     onTap: () {
                                       _onDoctorSelected(
@@ -501,16 +421,13 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                                           );
                                                         },
                                                       ), // مسافة بين النص والتقييم
-                                                      // Row لإظهار التقييم
                                                       Row(
                                                         children: [
                                                           const Icon(
-                                                            Icons
-                                                                .star, // أيقونة النجمة
-                                                            color: Colors
-                                                                .yellow, // اللون الذهبي للنجمة
-                                                            size:
-                                                                20, // حجم الأيقونة
+                                                            Icons.star,
+                                                            color:
+                                                                Colors.yellow,
+                                                            size: 20,
                                                           ),
                                                           const SizedBox(
                                                               width:
@@ -542,89 +459,6 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                             )
                           : const Text('No doctors available'),
                       const SizedBox(height: 20),
-                      SizeTransition(
-                        sizeFactor: _animation,
-                        axisAlignment: -1.0,
-                        child: Column(
-                          children: [
-                            DatePickerWidget(
-                              selectedDate: selectedDate,
-                              onSelectDate: (date) {
-                                setState(() => selectedDate = date);
-                                _fetchAppointments();
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            SizedBox(
-                              width: 200, // تحديد العرض ليكون أقل
-                              child: DropdownButtonFormField<String>(
-                                value: selectedTime, // الوقت المختار
-                                hint: const Text("Select Time",
-                                    style: TextStyle(color: Colors.white)),
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16), // تحديد شكل النص
-                                decoration: InputDecoration(
-                                  filled: true, // تعبئة الخلفية
-                                  fillColor:
-                                      Colors.blue, // اللون الأزرق للخلفية
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        10), // شكل الحواف المدورة
-                                    borderSide: BorderSide.none, // إزالة الحدود
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 14), // تحديد الهوامش الداخلية
-                                ),
-                                items: _generateTimeSlots().map((String time) {
-                                  return DropdownMenuItem<String>(
-                                    value: time,
-                                    child: Text(
-                                      time,
-                                      style: const TextStyle(
-                                          fontSize: 16,
-                                          color: AppColors.textColor),
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newTime) {
-                                  setState(() {
-                                    selectedTime =
-                                        newTime; // تعيين الوقت الجديد المختار
-                                  });
-                                },
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            ElevatedButton(
-                              onPressed: _makeAppointment,
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor:
-                                    Colors.blue, // اللون عند التفاعل (أبيض)
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 14,
-                                    horizontal: 32), // تباعد داخلي أكبر
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      30), // جعل الزر ذو حواف مدورة بشكل عصري
-                                ),
-                                elevation: 8, // إضافة ظل لإعطاء تأثير عميق
-                                shadowColor: Colors.blueAccent, // لون الظل
-                                textStyle: const TextStyle(
-                                  fontSize: 18, // تكبير النص ليبدو أكثر وضوحًا
-                                  fontWeight: FontWeight.bold, // جعل النص عريض
-                                ),
-                              ),
-                              child: const Text("Make Appointment"),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            )
-                          ],
-                        ),
-                      )
                     ],
                   ),
                 ),
