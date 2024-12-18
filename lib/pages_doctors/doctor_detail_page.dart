@@ -44,8 +44,9 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
   String clinicPhoneNumber = '';
   String? userId;
   List<String> workingDays = [];
-  String? selectedDay; // تعريف المتغير الذي سيخزن اليوم المحدد
+  String? selectedDay;
   String? selectedTime;
+  List<String> availableTimes = [];
 
   @override
   void initState() {
@@ -94,24 +95,21 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
 
   Future<void> _makeAppointment(int? selectedDoctorIndex) async {
     try {
-      // الحصول على مرجع لـ Firestore
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
       await firestore.collection('appointments').add({
-        'clinicId': widget.clinicId, // ID العيادة
-        'doctorId': doctors[selectedDoctorIndex!]['id'], // ID الطبيب
-        'patientId': userId, // اسم المريض
-        'appointmentDate': selectedDay, // تاريخ الموعد
-        'appointmentTime': selectedTime, // وقت الموعد
-        'createdAt': FieldValue.serverTimestamp(), // تاريخ الإنشاء
+        'clinicId': widget.clinicId,
+        'doctorId': doctors[selectedDoctorIndex!]['id'],
+        'patientId': userId,
+        'appointmentDate': selectedDay,
+        'appointmentTime': selectedTime,
+        'createdAt': FieldValue.serverTimestamp(),
       });
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => VideoPage()),
       );
-      // إذا كانت العملية ناجحة
       print("Appointment successfully created!");
     } catch (e) {
-      // التعامل مع الأخطاء في حال فشل العملية
       print("Error making appointment: $e");
     }
   }
@@ -157,6 +155,8 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
   void _onDoctorSelected(int index) {
     setState(() {
       selectedDoctorIndex = index;
+      selectedTime = null;
+      selectedDay = null;
     });
     _fetchWorkingDays(doctors[index]['id']);
     _controller.forward();
@@ -183,8 +183,8 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
 
   List<String> generateTimeSlots() {
     List<String> timeSlots = [];
-    DateTime startTime = DateTime(2024, 12, 18, 9, 0); // 9 AM
-    DateTime endTime = DateTime(2024, 12, 18, 17, 0); // 5 PM
+    DateTime startTime = DateTime(2024, 12, 18, 9, 0);
+    DateTime endTime = DateTime(2024, 12, 18, 17, 0);
 
     while (startTime.isBefore(endTime)) {
       String formattedTime =
@@ -196,355 +196,425 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
     return timeSlots;
   }
 
+  Future<void> _checkBookedTimes() async {
+    try {
+      if (selectedDay != null) {
+        final appointmentsSnapshot = await FirebaseFirestore.instance
+            .collection('appointments')
+            .where('appointmentDate', isEqualTo: selectedDay)
+            .get();
+        Set<String> bookedTimes = {};
+
+        for (var doc in appointmentsSnapshot.docs) {
+          bookedTimes.add(doc['appointmentTime']);
+        }
+
+        setState(() {
+          availableTimes = generateTimeSlots()
+              .where((time) => !bookedTimes.contains(time))
+              .toList();
+        });
+      }
+    } catch (e) {
+      print('Error checking booked times: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return Scaffold(
+            appBar: AppBar(
+              title: Text("Clinic"),
+              backgroundColor: AppColors.primaryColor,
+            ),
             body: WillPopScope(
-          onWillPop: () async {
-            Navigator.pop(context);
-            return true;
-          },
-          child: isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : SingleChildScrollView(
-                  child: Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Stack(
+              onWillPop: () async {
+                Navigator.pop(context);
+                return true;
+              },
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : SingleChildScrollView(
+                      child: Column(
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: FadeInImage.memoryNetwork(
-                              placeholder: kTransparentImage,
-                              image: widget.imgPath.isNotEmpty
-                                  ? widget.imgPath
-                                  : 'https://via.placeholder.com/150',
-                              height: 250,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned.fill(
-                            child: Container(
-                              color: Colors.black54,
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 10,
-                            left: 10,
-                            right: 10,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          // const SizedBox(height: 20),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Stack(
                               children: [
-                                Text(
-                                  widget.doctorName,
-                                  style: const TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  'Rank: ${widget.rating}',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white70,
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: FadeInImage.memoryNetwork(
+                                    placeholder: kTransparentImage,
+                                    image: widget.imgPath.isNotEmpty
+                                        ? widget.imgPath
+                                        : 'https://via.placeholder.com/150',
+                                    height: 250,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    ElevatedButton.icon(
-                                      onPressed: _openMap,
-                                      icon: const Icon(Icons.location_on,
-                                          size: 20),
-                                      label: const Text(
-                                        'Location',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: themeProvider
-                                                .isDarkMode
-                                            ? Colors.blueGrey.withOpacity(0.7)
-                                            : Colors.blue.withOpacity(0.8),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 12),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
+                                Positioned.fill(
+                                  child: Container(
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 10,
+                                  left: 10,
+                                  right: 10,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        widget.doctorName,
+                                        style: const TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
                                         ),
-                                        elevation: 4,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    ElevatedButton.icon(
-                                      onPressed: () =>
-                                          _makeCall(clinicPhoneNumber),
-                                      icon: const Icon(Icons.phone, size: 20),
-                                      label: const Text(
-                                        'Call',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            themeProvider.isDarkMode
-                                                ? Colors.greenAccent
-                                                    .withOpacity(0.7)
-                                                : Colors.green.withOpacity(0.8),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 12),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
+                                      const SizedBox(height: 5),
+                                      Text(
+                                        'Rank: ${widget.rating}',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white70,
                                         ),
-                                        elevation: 4,
                                       ),
-                                    ),
-                                  ],
+                                      const SizedBox(height: 10),
+                                      Row(
+                                        children: [
+                                          ElevatedButton.icon(
+                                            onPressed: _openMap,
+                                            icon: const Icon(Icons.location_on,
+                                                size: 20),
+                                            label: const Text(
+                                              'Location',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  themeProvider.isDarkMode
+                                                      ? Colors.blueGrey
+                                                          .withOpacity(0.7)
+                                                      : Colors.blue
+                                                          .withOpacity(0.8),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 12),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                              ),
+                                              elevation: 4,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          ElevatedButton.icon(
+                                            onPressed: () =>
+                                                _makeCall(clinicPhoneNumber),
+                                            icon: const Icon(Icons.phone,
+                                                size: 20),
+                                            label: const Text(
+                                              'Call',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  themeProvider.isDarkMode
+                                                      ? Colors.greenAccent
+                                                          .withOpacity(0.7)
+                                                      : Colors.green
+                                                          .withOpacity(0.8),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 12),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                              ),
+                                              elevation: 4,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    const Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Text(
-                        'Select a Doctor: ',
-                        style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    doctors.isNotEmpty
-                        ? SizedBox(
-                            height: 180,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: doctors.length,
-                              itemBuilder: (context, index) {
-                                final doctor = doctors[index];
-                                bool isSelected = selectedDoctorIndex == index;
-
-                                return GestureDetector(
-                                  onTap: () {
-                                    _onDoctorSelected(index);
-                                  },
-                                  child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                    transform: isSelected
-                                        ? (Matrix4.identity()..scale(1.1))
-                                        : (Matrix4.identity()..scale(0.9)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                      child: Card(
-                                        elevation: isSelected ? 10 : 5,
-                                        color: isSelected
-                                            ? Colors.blueAccent.withOpacity(0.5)
-                                            : Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                        child: Stack(
-                                          children: [
-                                            FadeInImage.memoryNetwork(
-                                              placeholder: kTransparentImage,
-                                              image: doctor['image_url'] ?? '',
-                                              height: 150,
-                                              width: 120,
-                                              fit: BoxFit.cover,
-                                            ),
-                                            Positioned(
-                                              bottom: 10,
-                                              left: 10,
-                                              right: 10,
-                                              child: Container(
-                                                color: Colors.black54,
-                                                padding:
-                                                    const EdgeInsets.all(5),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    LayoutBuilder(
-                                                      builder: (context,
-                                                          constraints) {
-                                                        return SingleChildScrollView(
-                                                          scrollDirection:
-                                                              Axis.horizontal,
-                                                          child: Text(
-                                                            doctor['name'],
-                                                            style:
-                                                                const TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        );
-                                                      },
-                                                    ),
-                                                    Text(
-                                                      doctor['specialty'],
-                                                      style: const TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color: Colors.white70,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
+                          const Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              'Select a Doctor ',
+                              style: TextStyle(
+                                  fontSize: 22, fontWeight: FontWeight.bold),
                             ),
-                          )
-                        : const Center(
-                            child: Text('No doctors available at the moment'),
                           ),
-                    const SizedBox(height: 30),
-                    if (selectedDoctorIndex != null)
-                      AnimatedBuilder(
-                        animation: _controller,
-                        builder: (context, child) {
-                          return SizeTransition(
-                            sizeFactor: _animation,
-                            axisAlignment: -1.0,
-                            child: Column(
-                              children: [
-                                const Text(
-                                  'Available Days:',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                if (workingDays.isEmpty)
-                                  const Text('No working days available'),
-                                // استخدام Row لعرض الأيام بجانب بعضهم
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: workingDays
-                                      .map(
-                                        (day) => GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              // تعيين اليوم المختار
-                                              selectedDay = day;
-                                            });
-                                          },
+                          const SizedBox(height: 20),
+                          doctors.isNotEmpty
+                              ? SizedBox(
+                                  height: 180,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: doctors.length,
+                                    itemBuilder: (context, index) {
+                                      final doctor = doctors[index];
+                                      bool isSelected =
+                                          selectedDoctorIndex == index;
+
+                                      return GestureDetector(
+                                        onTap: () {
+                                          _onDoctorSelected(index);
+                                        },
+                                        child: AnimatedContainer(
+                                          duration:
+                                              const Duration(milliseconds: 300),
+                                          curve: Curves.easeInOut,
+                                          transform: isSelected
+                                              ? (Matrix4.identity()..scale(1.1))
+                                              : (Matrix4.identity()
+                                                ..scale(0.9)),
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 8.0),
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8,
-                                                      horizontal: 4),
-                                              decoration: BoxDecoration(
-                                                color: selectedDay == day
-                                                    ? Colors.blueAccent
-                                                        .withOpacity(0.7)
-                                                    : Colors.grey
-                                                        .withOpacity(0.3),
+                                            child: Card(
+                                              elevation: isSelected ? 10 : 5,
+                                              color: isSelected
+                                                  ? Colors.blueAccent
+                                                      .withOpacity(0.5)
+                                                  : Colors.white,
+                                              shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(12),
                                               ),
-                                              child: Text(
-                                                day,
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: selectedDay == day
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                ),
+                                              child: Stack(
+                                                children: [
+                                                  FadeInImage.memoryNetwork(
+                                                    placeholder:
+                                                        kTransparentImage,
+                                                    image:
+                                                        doctor['image_url'] ??
+                                                            '',
+                                                    height: 150,
+                                                    width: 120,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                  Positioned(
+                                                    bottom: 10,
+                                                    left: 10,
+                                                    right: 10,
+                                                    child: Container(
+                                                      color: Colors.black54,
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              5),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          LayoutBuilder(
+                                                            builder: (context,
+                                                                constraints) {
+                                                              return SingleChildScrollView(
+                                                                scrollDirection:
+                                                                    Axis.horizontal,
+                                                                child: Text(
+                                                                  doctor[
+                                                                      'name'],
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              );
+                                                            },
+                                                          ),
+                                                          Text(
+                                                            doctor['specialty'],
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color: Colors
+                                                                  .white70,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ),
                                         ),
-                                      )
-                                      .toList(),
-                                ),
-                                SizedBox(
-                                  width: 250, // حدد العرض المناسب
-                                  height: 200, // حدد الارتفاع المناسب
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0,
-                                        vertical:
-                                            10.0), // تحديد الـ padding حول الـ widget
-                                    child: RotatingDropdown(
-                                      selectedValue:
-                                          selectedTime ?? 'Select Time',
-                                      items:
-                                          generateTimeSlots(), // تمرير قائمة المواعيد
-                                      onChanged: (selectedTime) {
-                                        setState(() {
-                                          this.selectedTime = selectedTime;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                ElevatedButton(
-                                  onPressed: selectedDay != null &&
-                                          selectedTime != null
-                                      ? () {
-                                          _makeAppointment(selectedDoctorIndex);
-                                        }
-                                      : null, // تعطيل الزر إذا لم يتم تحديد اليوم أو الوقت
-                                  style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 14, horizontal: 20),
-                                    backgroundColor: Colors.blueAccent,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    'Book Appointment',
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
+                                      );
+                                    },
                                   ),
                                 )
-                              ],
+                              : const Center(
+                                  child: Text(
+                                      'No doctors available at the moment'),
+                                ),
+                          const SizedBox(height: 30),
+                          if (selectedDoctorIndex != null)
+                            AnimatedBuilder(
+                              animation: _controller,
+                              builder: (context, child) {
+                                return SizeTransition(
+                                  sizeFactor: _animation,
+                                  axisAlignment: -1.0,
+                                  child: Column(
+                                    children: [
+                                      const Text(
+                                        'Available Days:',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      if (workingDays.isEmpty)
+                                        const Text('No working days available'),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: workingDays
+                                            .map(
+                                              (day) => GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    selectedDay = day;
+                                                    selectedTime = null;
+                                                  });
+                                                  _checkBookedTimes();
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 8.0),
+                                                  child: Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 8,
+                                                        horizontal: 4),
+                                                    decoration: BoxDecoration(
+                                                      color: selectedDay == day
+                                                          ? Colors.blueAccent
+                                                              .withOpacity(0.7)
+                                                          : Colors.grey
+                                                              .withOpacity(0.3),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12),
+                                                    ),
+                                                    child: Text(
+                                                      day,
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        color:
+                                                            selectedDay == day
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                      ),
+                                      SizedBox(
+                                        width: 300,
+                                        height: 200,
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16.0, vertical: 10.0),
+                                          child: RotatingDropdown(
+                                            selectedValue:
+                                                selectedTime ?? 'Select Time',
+                                            items: availableTimes,
+                                            onChanged: (selectedTime) {
+                                              setState(() {
+                                                this.selectedTime =
+                                                    selectedTime;
+                                              });
+                                              _controller
+                                                  .forward(); // Start animation when selecting time
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      AnimatedOpacity(
+                                        opacity: selectedTime != null
+                                            ? 1.0
+                                            : 0.0, // Show button only if time is selected
+                                        duration:
+                                            const Duration(milliseconds: 300),
+                                        child: ElevatedButton(
+                                          onPressed: selectedDay != null &&
+                                                  selectedTime != null
+                                              ? () {
+                                                  _makeAppointment(
+                                                      selectedDoctorIndex);
+                                                }
+                                              : null,
+                                          style: ElevatedButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 14, horizontal: 20),
+                                            backgroundColor: Colors.blueAccent,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            'Book Appointment',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
+
+                          const SizedBox(
+                            height: 18,
+                          )
+                        ],
                       ),
-                  ],
-                )),
-        ));
+                    ),
+            ));
       },
     );
   }

@@ -83,14 +83,15 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
       builder: (context, themeProvider, child) {
         return WillPopScope(
           onWillPop: () async {
+            print("Back button pressed");
             if (_currentIndex != 0) {
               setState(() {
                 _currentIndex = 0;
                 _pageController.jumpToPage(0);
               });
-              return false;
+              return false; // لا تغلق التطبيق
             }
-            return true;
+            return true; // أغلق التطبيق
           },
           child: Scaffold(
             body: Column(
