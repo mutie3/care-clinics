@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
-import 'package:care_clinic/screens/home_page.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -10,10 +9,10 @@ class LoginButtons extends StatelessWidget {
   final VoidCallback onGuestLoginPressed;
 
   const LoginButtons({
-    Key? key,
+    super.key,
     required this.onLoginPressed,
     required this.onGuestLoginPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

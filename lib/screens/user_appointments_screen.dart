@@ -10,10 +10,10 @@ class UserAppointmentsPage extends StatefulWidget {
   const UserAppointmentsPage({super.key});
 
   @override
-  _UserAppointmentsPageState createState() => _UserAppointmentsPageState();
+  UserAppointmentsPageState createState() => UserAppointmentsPageState();
 }
 
-class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
+class UserAppointmentsPageState extends State<UserAppointmentsPage> {
   String? patientName;
   List<Map<String, dynamic>> appointments = [];
   bool isLoading = true;
