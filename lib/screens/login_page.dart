@@ -6,7 +6,6 @@ import 'package:care_clinic/field_login/sign_up_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'blank_page.dart';
@@ -51,52 +50,50 @@ class LoginPageState extends State<LoginPage>
     });
   }
 
+// أضف هذا في _checkLoginState
   Future<void> _checkLoginState() async {
-    User? user = _auth.currentUser;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isRemembered = prefs.getBool('isRemembered') ?? false;
 
-    if (user != null) {
-      String email = user.email ?? '';
+    if (isRemembered) {
+      User? user = _auth.currentUser;
 
-      final clinicSnapshot = await FirebaseFirestore.instance
-          .collection('clinics')
-          .where('email', isEqualTo: email)
-          .get();
+      if (user != null) {
+        String email = user.email ?? '';
 
-      if (clinicSnapshot.docs.isNotEmpty) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BlankPage(),
-          ),
-          (Route<dynamic> route) => false,
-        );
-      } else {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomePageSpecializations(
-              isGustLogin: false,
+        final clinicSnapshot = await FirebaseFirestore.instance
+            .collection('clinics')
+            .where('email', isEqualTo: email)
+            .get();
+
+        if (clinicSnapshot.docs.isNotEmpty) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BlankPage(),
             ),
-          ),
-          (Route<dynamic> route) => false,
-        );
+            (Route<dynamic> route) => false,
+          );
+        } else {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomePageSpecializations(
+                isGustLogin: false,
+              ),
+            ),
+            (Route<dynamic> route) => false,
+          );
+        }
       }
     }
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    _emailController.dispose();
-
-    _passwordController.dispose();
-    super.dispose();
-  }
-
+// أضف هذا التعديل في _login
   Future<void> _login() async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('127'.tr)),
+        const SnackBar(content: Text("Please enter email and password")),
       );
       return;
     }
@@ -120,6 +117,12 @@ class LoginPageState extends State<LoginPage>
       // استرداد البريد الإلكتروني للمستخدم الذي سجل الدخول
       final String email = _emailController.text.trim();
 
+      // حفظ حالة "Remember Me" إذا تم اختياره
+      if (rememberMe) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isRemembered', true);
+      }
+
       // التحقق من البريد الإلكتروني في Firestore
       final clinicSnapshot = await FirebaseFirestore.instance
           .collection('clinics')
@@ -127,7 +130,6 @@ class LoginPageState extends State<LoginPage>
           .get();
 
       if (clinicSnapshot.docs.isNotEmpty) {
-        // البريد الإلكتروني موجود في مجموعة clinics
         Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
         Navigator.pushAndRemoveUntil(
           context,
@@ -142,7 +144,6 @@ class LoginPageState extends State<LoginPage>
             .get();
 
         if (userSnapshot.docs.isNotEmpty) {
-          // البريد الإلكتروني موجود في مجموعة users
           Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
           Navigator.pushAndRemoveUntil(
             context,
@@ -156,7 +157,7 @@ class LoginPageState extends State<LoginPage>
         } else {
           Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('170'.tr)),
+            const SnackBar(content: Text("Email not found")),
           );
         }
       }
@@ -164,17 +165,38 @@ class LoginPageState extends State<LoginPage>
       if (!mounted) return;
 
       Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
-      String errorMessage = '171'.tr;
+      String errorMessage = 'Login failed. Please try again.';
       if (e.code == 'user-not-found') {
-        errorMessage = '163'.tr;
+        errorMessage = 'No user found for that email.';
       } else if (e.code == 'wrong-password') {
-        errorMessage = '172'.tr;
+        errorMessage = 'Wrong password provided.';
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errorMessage)),
       );
     }
+  }
+
+// إعادة تعيين rememberMe في تسجيل الخروج
+  Future<void> _logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isRemembered', false);
+    await _auth.signOut();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+      (Route<dynamic> route) => false,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _emailController.dispose();
+
+    _passwordController.dispose();
+    super.dispose();
   }
 
   void _guestLogin() {
@@ -277,10 +299,10 @@ class LoginButtons extends StatelessWidget {
                     ? Colors.grey
                     : AppColors.primaryColor,
               ),
-              child: Center(
+              child: const Center(
                 child: Text(
-                  '60'.tr,
-                  style: const TextStyle(
+                  'Login',
+                  style: TextStyle(
                     fontSize: 18,
                     color: AppColors.scaffoldBackgroundColor,
                   ),
@@ -290,7 +312,7 @@ class LoginButtons extends StatelessWidget {
             const SizedBox(height: 10),
             Center(
               child: Text(
-                '86'.tr,
+                'OR',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -312,10 +334,10 @@ class LoginButtons extends StatelessWidget {
                     ? Colors.grey
                     : AppColors.primaryColor,
               ),
-              child: Center(
+              child: const Center(
                 child: Text(
-                  '61'.tr,
-                  style: const TextStyle(
+                  'Guest Login',
+                  style: TextStyle(
                     fontSize: 18,
                     color: AppColors.scaffoldBackgroundColor,
                   ),

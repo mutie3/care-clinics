@@ -1,15 +1,17 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
+import 'package:care_clinic/screens/home_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import '../pages_doctors/doctor_card.dart';
 import '../pages_doctors/doctor_detail_page.dart';
-import 'home_page.dart';
 
 class Search extends StatefulWidget {
-  const Search({super.key});
+  const Search({super.key, this.selectedSpecialty = ''});
+
+  final String selectedSpecialty;
 
   @override
   State<Search> createState() => _SearchState();
@@ -33,22 +35,67 @@ class _SearchState extends State<Search> {
       QuerySnapshot<Map<String, dynamic>> clinicsSnapshot =
           await FirebaseFirestore.instance.collection('clinics').get();
 
-      final List<Map<String, dynamic>> allClinics =
-          clinicsSnapshot.docs.map((doc) {
-        final data = doc.data();
-        return {
-          "id": doc.id,
-          "img": data['imageUrl'] ?? 'images/default_image.png',
-          "name": data['name'] ?? 'No Name',
-          "speciality": data['specialty'] ?? 'No Specialty',
-          "rating": data['rating'] ?? '0',
-          "location": data['location'] ?? 'No Location',
-        };
-      }).toList();
+      List<Map<String, dynamic>> allClinics = [];
+
+      for (var clinicDoc in clinicsSnapshot.docs) {
+        var clinicData = clinicDoc.data();
+        String clinicId = clinicDoc.id;
+
+        double latitude = 0.0;
+        double longitude = 0.0;
+
+        if (clinicData['location'] != null &&
+            clinicData['location'] is String) {
+          final locationString = clinicData['location'] as String;
+          final latLngMatch = RegExp(r'Lat:\s*([\d.-]+),\s*Lng:\s*([\d.-]+)')
+              .firstMatch(locationString);
+
+          if (latLngMatch != null) {
+            latitude = double.parse(latLngMatch.group(1) ?? '0.0');
+            longitude = double.parse(latLngMatch.group(2) ?? '0.0');
+          }
+        }
+
+        // Simulate location name fetch
+        String locationName = await _getLocationName(latitude, longitude);
+
+        if (widget.selectedSpecialty.isEmpty) {
+          allClinics.add({
+            "id": clinicId,
+            "name": clinicData['name'] ?? 'No Name',
+            "speciality": clinicData['speciality'] ?? 'No Specialty',
+            "location": locationName,
+            "img": clinicData['imageUrl'] ?? '',
+            "rating": clinicData['rating']?.toString() ?? '0',
+            "latitude": latitude,
+            "longitude": longitude,
+          });
+        } else {
+          QuerySnapshot<Map<String, dynamic>> doctorsSnapshot =
+              await FirebaseFirestore.instance
+                  .collection('clinics')
+                  .doc(clinicId)
+                  .collection('doctors')
+                  .where("specialty", isEqualTo: widget.selectedSpecialty)
+                  .get();
+
+          if (doctorsSnapshot.docs.isNotEmpty) {
+            allClinics.add({
+              "id": clinicId,
+              "name": clinicData['name'] ?? 'No Name',
+              "location": locationName,
+              "img": clinicData['imageUrl'] ?? '',
+              "rating": clinicData['rating']?.toString() ?? '0',
+              "latitude": latitude,
+              "longitude": longitude,
+            });
+          }
+        }
+      }
 
       setState(() {
         clinics = allClinics;
-        filteredClinics = allClinics;
+        filteredClinics = clinics;
         isLoading = false;
       });
     } catch (e) {
@@ -57,6 +104,11 @@ class _SearchState extends State<Search> {
         isLoading = false;
       });
     }
+  }
+
+  Future<String> _getLocationName(double latitude, double longitude) async {
+    // Replace with your geocoding logic
+    return "Location ($latitude, $longitude)";
   }
 
   void _filterClinics() {
@@ -74,7 +126,7 @@ class _SearchState extends State<Search> {
   PreferredSizeWidget _buildCurvedAppBar(
       BuildContext context, ThemeProvider themeProvider) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(100),
+      preferredSize: const Size.fromHeight(100),
       child: ClipPath(
         clipper: AppBarClipper(),
         child: Container(
@@ -132,8 +184,7 @@ class _SearchState extends State<Search> {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return Scaffold(
-          appBar: _buildCurvedAppBar(
-              context, themeProvider), // Using the PreferredSizeWidget here
+          appBar: _buildCurvedAppBar(context, themeProvider),
           body: isLoading
               ? const Center(child: CircularProgressIndicator())
               : filteredClinics.isEmpty
@@ -170,7 +221,7 @@ class _SearchState extends State<Search> {
                                   clinicId: clinic["id"],
                                   imgPath: clinic["img"],
                                   doctorName: clinic["name"],
-                                  doctorSpeciality: clinic["location"],
+                                  doctorSpeciality: clinic["speciality"],
                                   rating: clinic["rating"],
                                   latitude: clinic["latitude"],
                                   longitude: clinic["longitude"],

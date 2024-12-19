@@ -41,7 +41,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
           setState(() {
             firstName = userDoc['firstName'] as String?;
             lastName = userDoc['lastName'] as String?;
-            phone = userDoc['phone'] as String?;
+            phone = "0" + userDoc['phone'] as String?;
             email = userDoc['email'] as String?;
             birthday = userDoc['birthday'] as String?;
           });
@@ -181,7 +181,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              _buildInfoCard(Icons.phone_android, '41'.tr, '0$phone',
+              _buildInfoCard(Icons.phone_android, '41'.tr, phone ?? '',
                   isDarkMode: isDarkMode),
               _buildInfoCard(Icons.event_available, '51'.tr, birthday ?? '',
                   isDarkMode: isDarkMode),
