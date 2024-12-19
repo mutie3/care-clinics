@@ -1,8 +1,8 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:ui';
@@ -10,11 +10,13 @@ import 'dart:ui';
 import 'doctor_reg/doctor_info.dart';
 
 class BlankPage extends StatefulWidget {
+  const BlankPage({super.key});
+
   @override
-  _BlankPageState createState() => _BlankPageState();
+  BlankPageState createState() => BlankPageState();
 }
 
-class _BlankPageState extends State<BlankPage> {
+class BlankPageState extends State<BlankPage> {
   bool isEditingClinic = false;
   Map<String, dynamic> clinicData = {
     'name': '',
@@ -44,25 +46,21 @@ class _BlankPageState extends State<BlankPage> {
   }
 
   Future<void> fetchClinicData() async {
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        clinicId = user.uid;
-        var doc = await FirebaseFirestore.instance
-            .collection('clinics')
-            .doc(clinicId)
-            .get();
-        if (doc.exists) {
-          setState(() {
-            clinicData = doc.data()!;
-            nameController.text = clinicData['name'];
-            phoneController.text = clinicData['phone'];
-            locationController.text = clinicData['location'];
-          });
-        }
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      clinicId = user.uid;
+      var doc = await FirebaseFirestore.instance
+          .collection('clinics')
+          .doc(clinicId)
+          .get();
+      if (doc.exists) {
+        setState(() {
+          clinicData = doc.data()!;
+          nameController.text = clinicData['name'];
+          phoneController.text = clinicData['phone'];
+          locationController.text = clinicData['location'];
+        });
       }
-    } catch (e) {
-      print('Error fetching clinic data: $e');
     }
   }
 
@@ -79,11 +77,15 @@ class _BlankPageState extends State<BlankPage> {
       setState(() {
         isEditingClinic = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('تم حفظ التعديلات بنجاح!')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم حفظ التعديلات بنجاح!')),
+        );
+      }
     } catch (e) {
-      print('Error saving clinic data: $e');
+      if (kDebugMode) {
+        print('Error saving clinic data: $e');
+      }
     }
   }
 
@@ -108,16 +110,21 @@ class _BlankPageState extends State<BlankPage> {
         'working_days': selectedDays,
         'experience': int.tryParse(experienceController.text) ?? 0,
       });
-      Navigator.pop(context);
-      setState(() {
-        isDoctorEditing = false;
-        selectedDoctor = null;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('تم حفظ التعديلات للطبيب بنجاح!')),
-      );
+      if (mounted) {
+        Navigator.pop(context);
+        setState(() {
+          isDoctorEditing = false;
+          selectedDoctor = null;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم حفظ التعديلات للطبيب بنجاح!')),
+        );
+      }
     } catch (e) {
-      print('Error saving doctor data: $e');
+      if (kDebugMode) {
+        print('Error saving doctor data: $e');
+      }
     }
   }
 
@@ -295,12 +302,15 @@ class _BlankPageState extends State<BlankPage> {
           .collection('doctors')
           .doc(doctorId)
           .delete();
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('تم حذف الطبيب بنجاح!')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم حذف الطبيب بنجاح!')),
+        );
+      }
     } catch (e) {
-      print('Error deleting doctor: $e');
+      if (kDebugMode) {
+        print('Error deleting doctor: $e');
+      }
     }
   }
 

@@ -67,23 +67,27 @@ class LoginPageState extends State<LoginPage>
             .get();
 
         if (clinicSnapshot.docs.isNotEmpty) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BlankPage(),
-            ),
-            (Route<dynamic> route) => false,
-          );
-        } else {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const HomePageSpecializations(
-                isGustLogin: false,
+          if (mounted) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const BlankPage(),
               ),
-            ),
-            (Route<dynamic> route) => false,
-          );
+              (Route<dynamic> route) => false,
+            );
+          }
+        } else {
+          if (mounted) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomePageSpecializations(
+                  isGustLogin: false,
+                ),
+              ),
+              (Route<dynamic> route) => false,
+            );
+          }
         }
       }
     }
@@ -128,12 +132,14 @@ class LoginPageState extends State<LoginPage>
           .get();
 
       if (clinicSnapshot.docs.isNotEmpty) {
-        Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => BlankPage()),
-          (Route<dynamic> route) => false,
-        );
+        if (mounted) {
+          Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => BlankPage()),
+            (Route<dynamic> route) => false,
+          );
+        }
       } else {
         final userSnapshot = await FirebaseFirestore.instance
             .collection('users')
@@ -141,21 +147,25 @@ class LoginPageState extends State<LoginPage>
             .get();
 
         if (userSnapshot.docs.isNotEmpty) {
-          Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const HomePageSpecializations(
-                isGustLogin: false,
+          if (mounted) {
+            Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomePageSpecializations(
+                  isGustLogin: false,
+                ),
               ),
-            ),
-            (Route<dynamic> route) => false,
-          );
+              (Route<dynamic> route) => false,
+            );
+          }
         } else {
-          Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Email not found")),
-          );
+          if (mounted) {
+            Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Email not found")),
+            );
+          }
         }
       }
     } on FirebaseAuthException catch (e) {

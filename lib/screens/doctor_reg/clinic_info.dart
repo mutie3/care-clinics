@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -90,7 +92,6 @@ class _RegPageState extends State<RegPage> {
 
       // Save clinic data to Firestore
       final clinicId = userCredential.user!.uid;
-      print(clinicId);
       await FirebaseFirestore.instance.collection('clinics').doc(clinicId).set({
         'name': nameController.text,
         'email': emailController.text,
@@ -100,34 +101,40 @@ class _RegPageState extends State<RegPage> {
         // 'fileUrl': fileUrl,
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('99'.tr)),
-      );
-
-      // Wait for uploads (optional, see point 2)
-      // await Future.wait([imageUrl != null ? Future.value(null) : imageUrl!.future, fileUrl != null ? Future.value(null) : fileUrl!.future]);
-
-      Navigator.of(context).pop(); // Dismiss loading overlay
-      Navigator.of(context).push(animateRoute(ClincInfo(clinicId: clinicId)));
+      if (mounted) {
+        // Check if the widget is still mounted
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('99'.tr)),
+        );
+        Navigator.of(context).pop(); // Dismiss loading overlay
+        Navigator.of(context).push(animateRoute(ClincInfo(clinicId: clinicId)));
+      }
     } catch (e) {
-      Navigator.of(context).pop(); // Dismiss loading overlay
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("Error"),
-            content: Text("An error occurred: ${e.toString()} ,"),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-                child: Text('148'.tr),
-              ),
-            ],
-          );
-        },
-      );
+      if (mounted) {
+        // Check if the widget is still mounted
+        Navigator.of(context).pop(); // Dismiss loading overlay
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Error"),
+              content: Text("An error occurred: ${e.toString()} ,"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    if (mounted) {
+                      // Ensure the widget is still mounted before calling Navigator
+                      Navigator.of(context).pop(); // Close the dialog
+                    }
+                  },
+                  child: Text('148'.tr),
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
   }
 

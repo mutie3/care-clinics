@@ -18,10 +18,10 @@ class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
 
   @override
-  _RegistrationPageState createState() => _RegistrationPageState();
+  RegistrationPageState createState() => RegistrationPageState();
 }
 
-class _RegistrationPageState extends State<RegistrationPage> {
+class RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _birthdayController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -105,20 +105,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             },
                           );
 
-                          // محاولة التسجيل
                           bool result = await authService.signup(
                             _emailController.text,
                             _passwordController.text,
                           );
 
-                          // إخفاء شاشة التحميل بعد الانتهاء
+                          // ignore: use_build_context_synchronously
                           Navigator.of(context).pop();
 
                           if (result) {
-                            // الحصول على المستخدم الحالي
                             final user = authService.user;
 
-                            // إضافة بيانات المستخدم إلى Firestore
                             await FirebaseFirestore.instance
                                 .collection('users')
                                 .doc(user?.uid)
@@ -131,22 +128,27 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               'gender': _gendercontroller.text,
                             });
 
+                            // ignore: use_build_context_synchronously
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('95'.tr)),
                             );
 
-                            // الانتقال إلى صفحة تسجيل الدخول بعد التسجيل
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginPage()),
-                              (Route<dynamic> route) =>
-                                  false, // حذف جميع الصفحات السابقة
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('96'.tr)),
-                            );
+                            if (mounted) {
+                              Navigator.pushAndRemoveUntil(
+                                // ignore: use_build_context_synchronously
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const LoginPage()),
+                                (Route<dynamic> route) =>
+                                    false, // حذف جميع الصفحات السابقة
+                              );
+                            } else {
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('96'.tr)),
+                                );
+                              }
+                            }
                           }
                         }
                       },

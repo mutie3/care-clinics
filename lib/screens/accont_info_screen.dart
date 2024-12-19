@@ -3,6 +3,7 @@ import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:care_clinic/widgets/custom_text_fieled.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -56,7 +57,9 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
         });
       }
     } catch (e) {
-      print("Error fetching user data: $e");
+      if (kDebugMode) {
+        print("Error fetching user data: $e");
+      }
     }
   }
 
@@ -84,12 +87,15 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
       setState(() {
         isEditing = false;
       });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('150'.tr)),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('150'.tr)),
+        );
+      }
     } catch (e) {
-      print("Error updating user data: $e");
+      if (kDebugMode) {
+        print("Error updating user data: $e");
+      }
     }
   }
 
@@ -143,16 +149,19 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
                     .doc(user.uid)
                     .delete();
                 await user.delete();
-
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
+                if (mounted) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  );
+                }
               } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('155'.tr),
-                  ),
-                );
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('155'.tr),
+                    ),
+                  );
+                }
               }
             },
             child: Text('78'.tr),
