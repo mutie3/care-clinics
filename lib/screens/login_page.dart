@@ -175,18 +175,6 @@ class LoginPageState extends State<LoginPage>
     }
   }
 
-// // إعادة تعيين rememberMe في تسجيل الخروج
-//   Future<void> _logout() async {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     await prefs.setBool('isRemembered', false);
-//     await _auth.signOut();
-//     Navigator.pushAndRemoveUntil(
-//       context,
-//       MaterialPageRoute(builder: (context) => LoginPage()),
-//       (Route<dynamic> route) => false,
-//     );
-//   }
-
   @override
   void dispose() {
     _controller.dispose();
