@@ -111,18 +111,15 @@ class SettingsScreenState extends State<SettingsScreen> {
               size: 28,
             ),
             onTap: () async {
-              try {
-                final prefs = await SharedPreferences.getInstance();
-                prefs.remove('179'.tr);
-                await FirebaseAuth.instance.signOut();
-                if (context.mounted) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
-                  );
-                }
-              } catch (e) {
-                print('Error during logout: $e');
+              final prefs = await SharedPreferences.getInstance();
+              prefs.remove('userLoggedIn');
+              await FirebaseAuth.instance.signOut();
+              if (context.mounted) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  (Route<dynamic> route) => false,
+                );
               }
             },
             showTrailing: false,
