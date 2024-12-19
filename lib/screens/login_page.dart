@@ -46,11 +46,11 @@ class LoginPageState extends State<LoginPage>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.forward();
-      // _checkLoginState();
+      _checkLoginState(); // التحقق من حالة التذكر
     });
   }
 
-// أضف هذا في _checkLoginState
+  // التحقق من حالة التذكر
   Future<void> _checkLoginState() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isRemembered = prefs.getBool('isRemembered') ?? false;
@@ -89,7 +89,7 @@ class LoginPageState extends State<LoginPage>
     }
   }
 
-// أضف هذا التعديل في _login
+  // تسجيل الدخول
   Future<void> _login() async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -114,7 +114,6 @@ class LoginPageState extends State<LoginPage>
 
       if (!mounted) return;
 
-      // استرداد البريد الإلكتروني للمستخدم الذي سجل الدخول
       final String email = _emailController.text.trim();
 
       // حفظ حالة "Remember Me" إذا تم اختياره
@@ -123,7 +122,6 @@ class LoginPageState extends State<LoginPage>
         await prefs.setBool('isRemembered', true);
       }
 
-      // التحقق من البريد الإلكتروني في Firestore
       final clinicSnapshot = await FirebaseFirestore.instance
           .collection('clinics')
           .where('email', isEqualTo: email)
@@ -137,7 +135,6 @@ class LoginPageState extends State<LoginPage>
           (Route<dynamic> route) => false,
         );
       } else {
-        // التحقق في مجموعة users
         final userSnapshot = await FirebaseFirestore.instance
             .collection('users')
             .where('email', isEqualTo: email)
@@ -178,17 +175,17 @@ class LoginPageState extends State<LoginPage>
     }
   }
 
-// إعادة تعيين rememberMe في تسجيل الخروج
-  Future<void> _logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isRemembered', false);
-    await _auth.signOut();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
-      (Route<dynamic> route) => false,
-    );
-  }
+// // إعادة تعيين rememberMe في تسجيل الخروج
+//   Future<void> _logout() async {
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     await prefs.setBool('isRemembered', false);
+//     await _auth.signOut();
+//     Navigator.pushAndRemoveUntil(
+//       context,
+//       MaterialPageRoute(builder: (context) => LoginPage()),
+//       (Route<dynamic> route) => false,
+//     );
+//   }
 
   @override
   void dispose() {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'rating_page.dart';
 
 class UserAppointmentsPage extends StatefulWidget {
   const UserAppointmentsPage({super.key});
@@ -40,11 +41,9 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           String doctorName = await _fetchDoctorName(data['doctorId']);
 
-          // تحويل النص المخزن في appointmentDate إلى تاريخ باستخدام convertToDate
           DateTime? appointmentDateTime =
               convertToDate(data['appointmentDate']);
 
-          // تنسيق التاريخ إذا كان التحويل ناجحًا
           String formattedDate = appointmentDateTime != null
               ? DateFormat('yyyy-MM-dd').format(appointmentDateTime)
               : 'Invalid Date';
@@ -115,39 +114,29 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
         appointments
             .removeWhere((appointment) => appointment['id'] == appointmentId);
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Appointment deleted successfully')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Appointment deleted successfully')),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete appointment: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to delete appointment: $e')),
+        );
+      }
     }
   }
 
-  /// Check if the appointment is less than 8 hours away
   bool _isAppointmentTooClose(String appointmentDate) {
     DateTime appointmentDateTime = DateTime.parse(appointmentDate);
     DateTime currentDateTime = DateTime.now();
 
-    // Calculate the difference between current time and appointment time
     Duration difference = appointmentDateTime.difference(currentDateTime);
-    return difference.isNegative ||
-        difference.inHours < 8; // Appointment is too close
-  }
-
-  /// Format date
-  String _formatDate(String date) {
-    try {
-      DateTime parsedDate = DateTime.parse(date);
-      return DateFormat('yyyy-MM-dd').format(parsedDate);
-    } catch (e) {
-      return date;
-    }
+    return difference.isNegative || difference.inHours < 8;
   }
 
   DateTime? convertToDate(String dayString) {
-    // خريطة لتحويل النصوص إلى أرقام تمثل أيام الأسبوع
     final Map<String, int> dayMap = {
       "SUN": DateTime.sunday,
       "MON": DateTime.monday,
@@ -158,26 +147,21 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
       "SAT": DateTime.saturday,
     };
 
-    // التأكد من صحة النص
     if (!dayMap.containsKey(dayString.toUpperCase())) {
       print("Invalid day string: $dayString");
-      return null; // إذا لم يكن النص صالحًا
+      return null;
     }
 
-    // الحصول على اليوم الحالي
     DateTime now = DateTime.now();
     int currentWeekday = now.weekday;
 
-    // تحديد اليوم المستهدف
     int targetWeekday = dayMap[dayString.toUpperCase()]!;
 
-    // حساب الفرق بين اليوم الحالي واليوم المستهدف
     int daysToAdd = (targetWeekday - currentWeekday) % 7;
     if (daysToAdd < 0) {
-      daysToAdd += 7; // إذا كان اليوم المستهدف في الأسبوع القادم
+      daysToAdd += 7;
     }
 
-    // إرجاع التاريخ الموافق للنص
     return now.add(Duration(days: daysToAdd));
   }
 
@@ -185,9 +169,13 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your Appointments'),
+        title: const Text(
+          'Your Appointments',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: AppColors.primaryColor,
         centerTitle: true,
+        elevation: 5, // إضافة تأثير ظل للـ AppBar
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -195,41 +183,88 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
               ? Center(
                   child: Text(
                     errorMessage!,
-                    style: const TextStyle(color: Colors.red, fontSize: 18),
+                    style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
                   ),
                 )
               : appointments.isEmpty
                   ? const Center(
-                      child: Text('No appointments found'),
+                      child: Text(
+                        'No appointments found',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w500),
+                      ),
                     )
                   : ListView.builder(
                       itemCount: appointments.length,
                       itemBuilder: (context, index) {
                         final appointment = appointments[index];
+                        // تحديد إذا كان الموعد قد انتهى
+                        DateTime appointmentDateTime =
+                            DateTime.parse(appointment['appointmentDate']);
+                        bool isPastAppointment =
+                            appointmentDateTime.isBefore(DateTime.now());
 
                         return Card(
                           margin: const EdgeInsets.symmetric(
                               horizontal: 15, vertical: 10),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(
+                                15), // زاوية دائرية أكبر للبطاقات
                           ),
+                          elevation: 3, // إضافة ظل للبطاقات لتمييزها
                           child: ListTile(
-                            leading: const Icon(Icons.calendar_today,
-                                color: Colors.indigo),
+                            contentPadding: const EdgeInsets.all(
+                                15), // إضافة مسافة داخلية داخل الـ ListTile
+                            leading: const Icon(
+                              Icons.calendar_today,
+                              color: AppColors.primaryColor,
+                              size: 30,
+                            ),
                             title: Text(
                               'Doctor: ${appointment['doctorName']}',
                               style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: Colors.black),
                             ),
                             subtitle: Text(
-                              'Date: ${appointment['date']}\nTime: ${appointment['time']}',
+                              'Date: ${appointment['date']}\nTime: ${appointment['time']}\nDay:',
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.grey),
                             ),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => _deleteAppointment(
-                                  appointment['id'],
-                                  appointment['appointmentDate']),
-                            ),
+
+                            trailing: isPastAppointment
+                                ? IconButton(
+                                    icon: const Icon(Icons.rate_review,
+                                        color: Colors.blue),
+                                    onPressed: () {
+                                      // الانتقال إلى صفحة التقييم
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => RatingPage(
+                                            appointmentId: appointment['id'],
+                                            doctorName:
+                                                appointment['doctorName'],
+                                            appointmentDate:
+                                                appointment['date'],
+                                            appointmentTime:
+                                                appointment['time'],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  )
+                                : IconButton(
+                                    icon: const Icon(Icons.delete,
+                                        color: Colors.red, size: 28),
+                                    onPressed: () => _deleteAppointment(
+                                        appointment['id'],
+                                        appointment['appointmentDate']),
+                                  ),
                           ),
                         );
                       },

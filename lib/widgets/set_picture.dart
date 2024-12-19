@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:care_clinic/constants/colors_page.dart';
 
 class SetProfilePicture extends StatefulWidget {
   final Function(File) onImagePicked;
@@ -31,7 +30,7 @@ class _SetProfilePictureState extends State<SetProfilePicture> {
       child: CircleAvatar(
         radius: 60,
         backgroundImage: image.isEmpty
-            ? AssetImage('images/patient.png')
+            ? const AssetImage('images/patient.png')
             : FileImage(File(image)) as ImageProvider,
       ),
     );
