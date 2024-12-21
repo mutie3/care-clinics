@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'package:care_clinic/widgets/appointments_doc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:ui';
@@ -240,6 +242,20 @@ class ClinicPageState extends State<ClinicPage> {
                           },
                         ),
                         const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DoctorAppointmentsPage(
+                                  doctorId: doctorId,
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Text('عرض المرضى'),
+                        ),
+                        const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: () {
                             saveDoctorData(doctorId);
