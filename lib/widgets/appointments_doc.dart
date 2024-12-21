@@ -37,13 +37,12 @@ class _DoctorAppointmentsPageState extends State<DoctorAppointmentsPage> {
             .collection('appointments')
             .where('doctorId', isEqualTo: dId)
             .get();
-        // log(querySnapshot.docs.toString());
         List<Map<String, dynamic>> fetchedAppointments = [];
 
         for (var doc in querySnapshot.docs) {
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-          String doctorName = await _fetchDoctorName(data['doctorId']);
+          String patientName = await _fetchPatientName(data['patientId']);
 
           DateTime? appointmentDateTime =
               convertToDate(data['appointmentDate']);
@@ -54,7 +53,9 @@ class _DoctorAppointmentsPageState extends State<DoctorAppointmentsPage> {
 
           fetchedAppointments.add({
             'id': doc.id,
-            'doctorName': doctorName,
+            'patientName': patientName,
+            'doctorName': await _fetchDoctorName(data['doctorId']),
+            // 'doctorName': doctorName,
             'date': formattedDate,
             'time': data['appointmentTime'] ?? 'N/A',
             'appointmentDate': appointmentDateTime?.toIso8601String() ?? 'N/A',
@@ -76,32 +77,38 @@ class _DoctorAppointmentsPageState extends State<DoctorAppointmentsPage> {
   }
 
   /// Fetch doctor name
-  Future<String> _fetchDoctorName(String patientId) async {
+  Future<String> _fetchDoctorName(String doctorId) async {
     try {
-      //   QuerySnapshot clinicsSnapshot =
-      //       await FirebaseFirestore.instance.collection('clinics').get();
+      QuerySnapshot clinicsSnapshot =
+          await FirebaseFirestore.instance.collection('clinics').get();
 
-      //   for (var clinicDoc in clinicsSnapshot.docs) {
-      //     QuerySnapshot doctorsSnapshot = await clinicDoc.reference
-      //         .collection('doctors')
-      //         .where(FieldPath.documentId, isEqualTo: doctorId)
-      //         .get();
+      for (var clinicDoc in clinicsSnapshot.docs) {
+        QuerySnapshot doctorsSnapshot = await clinicDoc.reference
+            .collection('doctors')
+            .where(FieldPath.documentId, isEqualTo: doctorId)
+            .get();
 
-      //     if (doctorsSnapshot.docs.isNotEmpty) {
-      //       return doctorsSnapshot.docs.first['name'] ?? 'Unknown Doctor';
-      //     }
-      //   }
-      // } catch (e) {
-      //   print('Error fetching doctor name: $e');
-      // }
-      // return 'Unknown Doctor';
+        if (doctorsSnapshot.docs.isNotEmpty) {
+          return doctorsSnapshot.docs.first['name'] ?? 'Unknown Doctor';
+        }
+      }
+    } catch (e) {
+      print('Error fetching doctor name: $e');
+    }
+    return 'Unknown Doctor';
+  }
+
+  Future<String> _fetchPatientName(String patientId) async {
+    try {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('appointments')
+          .collection('users')
           .doc(patientId)
           .get();
 
       if (userDoc.exists) {
-        return userDoc['name'] ?? 'Unknown Patient';
+        String firstName = userDoc['firstName'] ?? '';
+        String lastName = userDoc['lastName'] ?? '';
+        return '$firstName $lastName';
       }
     } catch (e) {
       print('Error fetching patient name: $e');
@@ -170,7 +177,7 @@ class _DoctorAppointmentsPageState extends State<DoctorAppointmentsPage> {
         ),
         backgroundColor: AppColors.primaryColor,
         centerTitle: true,
-        elevation: 5, // إضافة تأثير ظل للـ AppBar
+        elevation: 5,
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -252,7 +259,8 @@ class _DoctorAppointmentsPageState extends State<DoctorAppointmentsPage> {
                     size: 30,
                   ),
                   title: Text(
-                    'Doctor: ${appointment['doctorName']}',
+                    'Patient: ${appointment['patientName']}',
+                    // 'Doctor: ${appointment['doctorName']}',
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
