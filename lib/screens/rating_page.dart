@@ -3,17 +3,18 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RatingPage extends StatefulWidget {
-  final String appointmentId; // معرف الموعد
-  final String doctorName; // اسم الطبيب
-  final String appointmentDate; // تاريخ الموعد
-  final String appointmentTime; // وقت الموعد
-
+  final String appointmentId;
+  final String doctorName;
+  final String appointmentDate;
+  final String appointmentTime;
+  final String doctorId;
   const RatingPage({
     super.key,
     required this.appointmentId,
     required this.doctorName,
     required this.appointmentDate,
     required this.appointmentTime,
+    required this.doctorId,
   });
 
   @override
@@ -21,24 +22,23 @@ class RatingPage extends StatefulWidget {
 }
 
 class RatingPageState extends State<RatingPage> {
-  double _rating = 0; // التقييم الافتراضي
-  bool _isSubmitting = false; // حالة الزر
+  double _rating = 0;
+  bool _isSubmitting = false;
 
-  // دالة لحفظ التقييم في Firebase
   Future<void> _submitRating() async {
     setState(() {
-      _isSubmitting = true; // تغيير حالة الزر إلى "إرسال"
+      _isSubmitting = true;
     });
+    print("Doctor ID: ${widget.doctorId}");
 
     try {
-      await FirebaseFirestore.instance
-          .collection('appointments')
-          .doc(widget.appointmentId)
-          .update({
-        'rating': _rating, // حفظ التقييم في Firestore
-        'ratingSubmitted': true, // تحديد ما إذا كان التقييم قد تم تقديمه
+      await FirebaseFirestore.instance.collection('ratings').add({
+        'appointmentId': widget.appointmentId,
+        'rating': _rating,
+        'ratingSubmitted': true,
+        'doctorId': widget.doctorId
       });
-
+      await _calculateAndStoreDoctorRating(widget.doctorId);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Rating submitted successfully!')),
       );
@@ -51,6 +51,69 @@ class RatingPageState extends State<RatingPage> {
       setState(() {
         _isSubmitting = false; // إعادة حالة الزر بعد الإرسال
       });
+    }
+  }
+
+  Future<void> _calculateAndStoreDoctorRating(String doctorId) async {
+    try {
+      // 1. جلب التقييمات الخاصة بالطبيب من مجموعة ratings
+      QuerySnapshot ratingsSnapshot = await FirebaseFirestore.instance
+          .collection('ratings')
+          .where('doctorId', isEqualTo: doctorId)
+          .get();
+
+      // 2. حساب المتوسط
+      num totalRating = 0;
+      int ratingCount = 0;
+
+      for (var doc in ratingsSnapshot.docs) {
+        var ratingData = doc.data() as Map<String, dynamic>;
+        if (ratingData['rating'] != null) {
+          totalRating += ratingData['rating'];
+          ratingCount++;
+        }
+      }
+
+      if (ratingCount > 0) {
+        double averageRating = totalRating / ratingCount;
+
+        // 3. البحث عن العيادات التي تحتوي على الطبيب باستخدام doctorId
+        QuerySnapshot clinicSnapshot = await FirebaseFirestore.instance
+            .collection('clinics')
+            .get(); // احصل على جميع العيادات
+
+        bool doctorFoundInClinic = false;
+
+        for (var clinicDoc in clinicSnapshot.docs) {
+          // التحقق من وجود الطبيب في مجموعة 'doctors' داخل العيادة
+          DocumentSnapshot doctorDoc = await clinicDoc.reference
+              .collection('doctors')
+              .doc(doctorId)
+              .get();
+
+          if (doctorDoc.exists) {
+            // إذا تم العثور على الطبيب في العيادة، نقوم بتحديث التقييم
+            await clinicDoc.reference
+                .collection('doctors')
+                .doc(doctorId)
+                .update({
+              'averageRating': averageRating,
+            });
+
+            doctorFoundInClinic = true;
+            print('The average rating for doctor $doctorId is: $averageRating');
+            break; // لا حاجة للبحث في العيادات الأخرى
+          }
+        }
+
+        if (!doctorFoundInClinic) {
+          print('No clinic found for doctor $doctorId');
+        }
+      } else {
+        print('No ratings available for doctor $doctorId');
+      }
+    } catch (e) {
+      print('Error calculating and storing doctor rating: $e');
     }
   }
 

@@ -82,7 +82,7 @@ class ClinicsState extends State<Clinics> {
             "name": clinicData['name'] ?? 'No Name',
             "location": locationName,
             "img": clinicData['imageUrl'] ?? '',
-            "rating": clinicData['rating']?.toString() ?? '0',
+            "rating": clinicData['clinicRating']?.toString() ?? '0',
             "latitude": latitude,
             "longitude": longitude,
           });

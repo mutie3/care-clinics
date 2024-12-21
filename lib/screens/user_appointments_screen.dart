@@ -1,5 +1,4 @@
 import 'package:care_clinic/constants/colors_page.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,7 +18,7 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
   List<Map<String, dynamic>> appointments = [];
   bool isLoading = true;
   String? errorMessage;
-
+  String? doctorId;
   @override
   void initState() {
     super.initState();
@@ -33,17 +32,24 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
       if (currentUser != null) {
         String uid = currentUser.uid;
 
-        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        // جلب المواعيد من مجموعة appointments
+        QuerySnapshot upcomingSnapshot = await FirebaseFirestore.instance
             .collection('appointments')
+            .where('patientId', isEqualTo: uid)
+            .get();
+
+        // جلب المواعيد من مجموعة appointmentsisdone
+        QuerySnapshot pastSnapshot = await FirebaseFirestore.instance
+            .collection('appointmentsisdone')
             .where('patientId', isEqualTo: uid)
             .get();
 
         List<Map<String, dynamic>> fetchedAppointments = [];
 
-        for (var doc in querySnapshot.docs) {
+        // معالجة المواعيد القادمة
+        for (var doc in upcomingSnapshot.docs) {
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           String doctorName = await _fetchDoctorName(data['doctorId']);
-
           DateTime? appointmentDateTime =
               convertToDate(data['appointmentDate']);
 
@@ -58,6 +64,29 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
             'time': data['appointmentTime'] ?? 'N/A',
             'appointmentDate': appointmentDateTime?.toIso8601String() ?? 'N/A',
             'appointmentTime': data['appointmentTime'],
+            'status': AppointmentStatus.upcoming,
+          });
+        }
+
+        // معالجة المواعيد المنتهية
+        for (var doc in pastSnapshot.docs) {
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          String doctorName = await _fetchDoctorName(data['doctorId']);
+          String doctorId = data['doctorId'];
+          DateTime movedToDoneAt =
+              (data['movedToDoneAt'] as Timestamp).toDate();
+
+          String formattedDate = DateFormat('yyyy-MM-dd').format(movedToDoneAt);
+
+          fetchedAppointments.add({
+            'id': doc.id,
+            'doctorName': doctorName,
+            'doctorId': doctorId,
+            'date': formattedDate,
+            'time': data['appointmentTime'] ?? 'N/A',
+            'appointmentDate': movedToDoneAt.toIso8601String(),
+            'appointmentTime': data['appointmentTime'],
+            'status': AppointmentStatus.past,
           });
         }
 
@@ -91,9 +120,7 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
         }
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('Error fetching doctor name: $e');
-      }
+      print('Error fetching doctor name: $e');
     }
     return 'Unknown Doctor';
   }
@@ -110,6 +137,7 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
     };
 
     if (!dayMap.containsKey(dayString.toUpperCase())) {
+      print("Invalid day string: $dayString");
       return null;
     }
 
@@ -126,12 +154,100 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
     return now.add(Duration(days: daysToAdd));
   }
 
+  // دالة _getAppointmentStatus
   AppointmentStatus _getAppointmentStatus(DateTime appointmentDateTime) {
     if (appointmentDateTime.isBefore(DateTime.now())) {
       return AppointmentStatus.past;
     } else {
       return AppointmentStatus.upcoming;
     }
+  }
+
+  Future<void> _moveAppointmentToDone(
+      String appointmentId, Map<String, dynamic> appointmentData) async {
+    try {
+      // إضافة الموعد إلى مجموعة appointmentsisdone
+      await FirebaseFirestore.instance.collection('appointmentsisdone').add({
+        ...appointmentData,
+        'movedToDoneAt': FieldValue.serverTimestamp(), // إضافة تاريخ ووقت النقل
+      });
+
+      // حذف الموعد من مجموعة appointments
+      await FirebaseFirestore.instance
+          .collection('appointments')
+          .doc(appointmentId)
+          .delete();
+
+      // إزالة الموعد من الواجهة
+      setState(() {
+        appointments
+            .removeWhere((appointment) => appointment['id'] == appointmentId);
+      });
+
+      // إظهار رسالة تأكيد للمستخدم
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content:
+                Text('Appointment has been moved to "Done" successfully.')),
+      );
+    } catch (e) {
+      print('Error moving appointment: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to move appointment: $e')),
+      );
+    }
+  }
+
+  Future<void> _deleteAppointment(
+      String appointmentId, String appointmentDate) async {
+    try {
+      DateTime appointmentDateTime = DateTime.parse(appointmentDate);
+
+      // إذا كانت الموعد قد انتهى، نقله إلى appointmentsisdone بدلاً من حذفه
+      if (appointmentDateTime.isBefore(DateTime.now())) {
+        var appointmentData = appointments
+            .firstWhere((appointment) => appointment['id'] == appointmentId);
+        await _moveAppointmentToDone(appointmentId, appointmentData);
+      } else {
+        // إذا كانت الموعد لم ينتهي بعد، نقوم فقط بحذفه
+        if (_isAppointmentTooClose(appointmentDate)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content:
+                    Text('Cannot delete appointment less than 8 hours away')),
+          );
+          return;
+        }
+
+        await FirebaseFirestore.instance
+            .collection('appointments')
+            .doc(appointmentId)
+            .delete();
+
+        setState(() {
+          appointments
+              .removeWhere((appointment) => appointment['id'] == appointmentId);
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Appointment deleted successfully')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to delete appointment: $e')),
+        );
+      }
+    }
+  }
+
+  bool _isAppointmentTooClose(String appointmentDate) {
+    DateTime appointmentDateTime = DateTime.parse(appointmentDate);
+    DateTime currentDateTime = DateTime.now();
+
+    Duration difference = appointmentDateTime.difference(currentDateTime);
+    return difference.isNegative || difference.inHours < 8;
   }
 
   @override
@@ -158,7 +274,7 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
         ),
         backgroundColor: AppColors.primaryColor,
         centerTitle: true,
-        elevation: 5, // إضافة تأثير ظل للـ AppBar
+        elevation: 5,
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -207,9 +323,10 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
             child: Text(
               title,
               style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
           ),
           ListView.builder(
@@ -218,8 +335,15 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
             itemCount: appointments.length,
             itemBuilder: (context, index) {
               final appointment = appointments[index];
+              final String doctorName = appointment['doctorName'] ?? 'Unknown';
+              final String appointmentDate =
+                  appointment['appointmentDate'] ?? '';
+              final String time = appointment['time'] ?? 'N/A';
+              final String date = appointment['date'] ?? 'N/A';
+              final String id = appointment['id'] ?? '';
+
               DateTime appointmentDateTime =
-                  DateTime.parse(appointment['appointmentDate']);
+                  DateTime.tryParse(appointmentDate) ?? DateTime.now();
               bool isPastAppointment =
                   appointmentDateTime.isBefore(DateTime.now());
 
@@ -227,53 +351,56 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
                 margin:
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(15), // زاوية دائرية أكبر للبطاقات
+                  borderRadius: BorderRadius.circular(15),
                 ),
-                elevation: 3, // إضافة ظل للبطاقات لتمييزها
+                elevation: 3,
                 child: ListTile(
-                  contentPadding: const EdgeInsets.all(
-                      15), // إضافة مسافة داخلية داخل الـ ListTile
+                  contentPadding: const EdgeInsets.all(15),
                   leading: const Icon(
                     Icons.calendar_today,
                     color: AppColors.primaryColor,
                     size: 30,
                   ),
                   title: Text(
-                    'Doctor: ${appointment['doctorName']}',
+                    'Doctor: $doctorName',
                     style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Colors.black),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
                   ),
                   subtitle: Text(
-                    'Date: ${appointment['date']}\nTime: ${appointment['time']}',
+                    'Date: $date\nTime: $time',
                     style: const TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   trailing: isPastAppointment
                       ? IconButton(
+                          tooltip: 'Rate this appointment',
                           icon:
                               const Icon(Icons.rate_review, color: Colors.blue),
                           onPressed: () {
-                            // الانتقال إلى صفحة التقييم
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => RatingPage(
-                                  appointmentId: appointment['id'],
-                                  doctorName: appointment['doctorName'],
-                                  appointmentDate: appointment['date'],
-                                  appointmentTime: appointment['time'],
+                                  appointmentId: id,
+                                  appointmentDate: date,
+                                  appointmentTime: time,
+                                  doctorName: doctorName,
+                                  doctorId: appointment['doctorId'].toString(),
                                 ),
                               ),
                             );
                           },
                         )
                       : IconButton(
+                          tooltip: 'Delete this appointment',
                           icon: const Icon(Icons.delete,
                               color: Colors.red, size: 28),
-                          onPressed: () => _deleteAppointment(appointment['id'],
-                              appointment['appointmentDate']),
+                          onPressed: () => _confirmDelete(
+                            appointmentId: id,
+                            appointmentDate: appointmentDate,
+                          ),
                         ),
                 ),
               );
@@ -284,46 +411,31 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
     );
   }
 
-  Future<void> _deleteAppointment(
-      String appointmentId, String appointmentDate) async {
-    try {
-      if (_isAppointmentTooClose(appointmentDate)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content:
-                  Text('Cannot delete appointment less than 8 hours away')),
+// Method for delete confirmation
+  void _confirmDelete(
+      {required String appointmentId, required String appointmentDate}) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Confirm Delete'),
+          content: Text(
+              'Are you sure you want to delete the appointment on $appointmentDate?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                _deleteAppointment(appointmentId, appointmentDate);
+                Navigator.pop(context);
+              },
+              child: const Text('Delete'),
+            ),
+          ],
         );
-        return;
-      }
-
-      await FirebaseFirestore.instance
-          .collection('appointments')
-          .doc(appointmentId)
-          .delete();
-
-      setState(() {
-        appointments
-            .removeWhere((appointment) => appointment['id'] == appointmentId);
-      });
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Appointment deleted successfully')),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete appointment: $e')),
-        );
-      }
-    }
-  }
-
-  bool _isAppointmentTooClose(String appointmentDate) {
-    DateTime appointmentDateTime = DateTime.parse(appointmentDate);
-    DateTime currentDateTime = DateTime.now();
-
-    Duration difference = appointmentDateTime.difference(currentDateTime);
-    return difference.isNegative || difference.inHours < 8;
+      },
+    );
   }
 }

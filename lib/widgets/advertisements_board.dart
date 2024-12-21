@@ -48,7 +48,7 @@ class _AdvertisementsBoardState extends State<AdvertisementsBoard> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      height: 200, // تصغير حجم الإعلان
+      height: 250, // تصغير حجم الإعلان
       child: PageView.builder(
         itemCount: widget.advertisements.length,
         controller: _pageController,

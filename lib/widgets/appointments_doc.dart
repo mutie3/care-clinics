@@ -276,6 +276,7 @@ class _DoctorAppointmentsPageState extends State<DoctorAppointmentsPage> {
                                   doctorName: appointment['doctorName'],
                                   appointmentDate: appointment['date'],
                                   appointmentTime: appointment['time'],
+                                  doctorId: '2',
                                 ),
                               ),
                             );

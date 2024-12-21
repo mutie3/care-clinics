@@ -2,12 +2,14 @@ import 'package:care_clinic/widgets/video.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/rotating_dropdown.dart';
+import 'date_picker_widget.dart';
 
 class DoctorDetailPage extends StatefulWidget {
   final String clinicId;
@@ -30,10 +32,10 @@ class DoctorDetailPage extends StatefulWidget {
   });
 
   @override
-  DoctorDetailPageState createState() => DoctorDetailPageState();
+  _DoctorDetailPageState createState() => _DoctorDetailPageState();
 }
 
-class DoctorDetailPageState extends State<DoctorDetailPage>
+class _DoctorDetailPageState extends State<DoctorDetailPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -46,11 +48,12 @@ class DoctorDetailPageState extends State<DoctorDetailPage>
   String? selectedDay;
   String? selectedTime;
   List<String> availableTimes = [];
-
+  double clinicAverageRating = 0.0;
   @override
   void initState() {
     super.initState();
     _fetchInitialData();
+    _fetchAndCalculateClinicRating();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -66,17 +69,21 @@ class DoctorDetailPageState extends State<DoctorDetailPage>
   }
 
   Future<void> _fetchWorkingDays(String doctorId) async {
-    final doctorSnapshot = await FirebaseFirestore.instance
-        .collection('clinics')
-        .doc(widget.clinicId)
-        .collection('doctors')
-        .doc(doctorId)
-        .get();
-    if (doctorSnapshot.exists) {
-      setState(() {
-        workingDays =
-            List<String>.from(doctorSnapshot.data()?['working_days'] ?? []);
-      });
+    try {
+      final doctorSnapshot = await FirebaseFirestore.instance
+          .collection('clinics')
+          .doc(widget.clinicId)
+          .collection('doctors')
+          .doc(doctorId)
+          .get();
+      if (doctorSnapshot.exists) {
+        setState(() {
+          workingDays =
+              List<String>.from(doctorSnapshot.data()?['working_days'] ?? []);
+        });
+      }
+    } catch (e) {
+      print('Error fetching working days: $e');
     }
   }
 
@@ -89,51 +96,103 @@ class DoctorDetailPageState extends State<DoctorDetailPage>
   }
 
   Future<void> _makeAppointment(int? selectedDoctorIndex) async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    await firestore.collection('appointments').add({
-      'clinicId': widget.clinicId,
-      'doctorId': doctors[selectedDoctorIndex!]['id'],
-      'patientId': userId,
-      'appointmentDate': selectedDay,
-      'appointmentTime': selectedTime,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-    if (mounted) {
+    try {
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      await firestore.collection('appointments').add({
+        'clinicId': widget.clinicId,
+        'doctorId': doctors[selectedDoctorIndex!]['id'],
+        'patientId': userId,
+        'appointmentDate': selectedDay,
+        'appointmentTime': selectedTime,
+        'createdAt': FieldValue.serverTimestamp(),
+        'inTime': true,
+      });
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => VideoPage()),
+        MaterialPageRoute(builder: (context) => const VideoPage()),
       );
+      print("Appointment successfully created!");
+    } catch (e) {
+      print("Error making appointment: $e");
+    }
+  }
+
+  Future<void> _fetchAndCalculateClinicRating() async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('clinics')
+          .doc(widget.clinicId)
+          .collection('doctors')
+          .get();
+
+      double totalRating = 0;
+      int doctorCount = querySnapshot.docs.length;
+
+      // حساب مجموع التقييمات للأطباء
+      for (var doc in querySnapshot.docs) {
+        // تحويل التقييم إلى double إذا كان نوعه int
+        double doctorRating = (doc.data()['averageRating'] is int)
+            ? (doc.data()['averageRating'] as int).toDouble()
+            : (doc.data()['averageRating'] as double);
+        totalRating += doctorRating;
+      }
+
+      // حساب التقييم الكلي للعيادة
+      double clinicRating = doctorCount > 0 ? totalRating / doctorCount : 0.0;
+
+      // تحديث التقييم الكلي للعيادة في قاعدة البيانات
+      await FirebaseFirestore.instance
+          .collection('clinics')
+          .doc(widget.clinicId)
+          .update({
+        'clinicRating': clinicRating,
+      });
+
+      setState(() {
+        clinicAverageRating = clinicRating;
+      });
+    } catch (e) {
+      print('Error fetching or updating clinic rating: $e');
     }
   }
 
   Future<void> _fetchClinicData() async {
-    final clinicSnapshot = await FirebaseFirestore.instance
-        .collection('clinics')
-        .doc(widget.clinicId)
-        .get();
-    if (clinicSnapshot.exists) {
-      setState(() {
-        clinicPhoneNumber = clinicSnapshot.data()?['phone'] ?? '';
-      });
+    try {
+      final clinicSnapshot = await FirebaseFirestore.instance
+          .collection('clinics')
+          .doc(widget.clinicId)
+          .get();
+      if (clinicSnapshot.exists) {
+        setState(() {
+          clinicPhoneNumber = clinicSnapshot.data()?['phone'] ?? '';
+        });
+      }
+    } catch (e) {
+      print('Error fetching clinic data: $e');
     }
   }
 
   Future<void> _fetchDoctors() async {
-    final querySnapshot = await FirebaseFirestore.instance
-        .collection('clinics')
-        .doc(widget.clinicId)
-        .collection('doctors')
-        .get();
-    setState(() {
-      doctors = querySnapshot.docs
-          .map((doc) => {
-                'id': doc.id,
-                'name': doc.data()['name'] ?? 'No Name',
-                'specialty': doc.data()['specialty'] ?? 'No Specialty',
-                'image_url': doc.data()['image_url'] ?? '',
-              })
-          .toList();
-    });
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('clinics')
+          .doc(widget.clinicId)
+          .collection('doctors')
+          .get();
+      setState(() {
+        doctors = querySnapshot.docs
+            .map((doc) => {
+                  'id': doc.id,
+                  'name': doc.data()['name'] ?? 'No Name',
+                  'specialty': doc.data()['specialty'] ?? 'No Specialty',
+                  'image_url': doc.data()['image_url'] ?? '',
+                  'averageRating': doc.data()['averageRating'] ?? "0"
+                })
+            .toList();
+      });
+    } catch (e) {
+      print('Error fetching doctors: $e');
+    }
   }
 
   void _onDoctorSelected(int index) {
@@ -181,22 +240,26 @@ class DoctorDetailPageState extends State<DoctorDetailPage>
   }
 
   Future<void> _checkBookedTimes() async {
-    if (selectedDay != null) {
-      final appointmentsSnapshot = await FirebaseFirestore.instance
-          .collection('appointments')
-          .where('appointmentDate', isEqualTo: selectedDay)
-          .get();
-      Set<String> bookedTimes = {};
+    try {
+      if (selectedDay != null) {
+        final appointmentsSnapshot = await FirebaseFirestore.instance
+            .collection('appointments')
+            .where('appointmentDate', isEqualTo: selectedDay)
+            .get();
+        Set<String> bookedTimes = {};
 
-      for (var doc in appointmentsSnapshot.docs) {
-        bookedTimes.add(doc['appointmentTime']);
+        for (var doc in appointmentsSnapshot.docs) {
+          bookedTimes.add(doc['appointmentTime']);
+        }
+
+        setState(() {
+          availableTimes = generateTimeSlots()
+              .where((time) => !bookedTimes.contains(time))
+              .toList();
+        });
       }
-
-      setState(() {
-        availableTimes = generateTimeSlots()
-            .where((time) => !bookedTimes.contains(time))
-            .toList();
-      });
+    } catch (e) {
+      print('Error checking booked times: $e');
     }
   }
 
@@ -259,13 +322,23 @@ class DoctorDetailPageState extends State<DoctorDetailPage>
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       const SizedBox(height: 5),
-                                      Text(
-                                        'Rank: ${widget.rating}',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white70,
+                                      RatingBar.builder(
+                                        initialRating: clinicAverageRating,
+                                        minRating: 1,
+                                        direction: Axis.horizontal,
+                                        allowHalfRating: true,
+                                        itemCount: 5, // عدد النجوم
+                                        itemSize: 24.0, // حجم النجوم
+                                        itemPadding: EdgeInsets.symmetric(
+                                            horizontal: 2.0),
+                                        itemBuilder: (context, _) => Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
                                         ),
+                                        onRatingUpdate: (rating) {
+                                          print(
+                                              rating); // يمكنك استخدام هذه الدالة لتحديث التقييم إذا كنت بحاجة
+                                        },
                                       ),
                                       const SizedBox(height: 10),
                                       Row(
@@ -445,6 +518,32 @@ class DoctorDetailPageState extends State<DoctorDetailPage>
                                                                   .white70,
                                                             ),
                                                           ),
+                                                          // إضافة التقييم هنا
+                                                          Row(
+                                                            children: [
+                                                              const Icon(
+                                                                Icons.star,
+                                                                color: Colors
+                                                                    .amber,
+                                                                size: 16,
+                                                              ),
+                                                              const SizedBox(
+                                                                  width: 5),
+                                                              Text(
+                                                                doctor['averageRating']
+                                                                    .toString(),
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: Colors
+                                                                      .white70,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          )
                                                         ],
                                                       ),
                                                     ),
