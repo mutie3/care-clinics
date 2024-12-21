@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:care_clinic/screens/login_page.dart';
 import 'package:care_clinic/widgets/appointments_doc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui';
 
 import 'doctor_reg/doctor_info.dart';
@@ -397,6 +399,59 @@ class ClinicPageState extends State<ClinicPage> {
                 if (!isEditingClinic) {
                   saveClinicData();
                 }
+              },
+            ),
+            ListTile(
+              title: const Text(
+                'تسجيل الخروج',
+                style: TextStyle(
+                  color: Colors.red, // لون النص
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              leading: const Icon(
+                Icons.logout,
+                color: Colors.red, // لون الأيقونة
+              ),
+              onTap: () {
+                // أضف هنا منطق تسجيل الخروج
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('تأكيد تسجيل الخروج'),
+                      content:
+                          const Text('هل أنت متأكد أنك تريد تسجيل الخروج؟'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context); // إغلاق نافذة التأكيد
+                          },
+                          child: const Text('إلغاء'),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            final prefs = await SharedPreferences.getInstance();
+                            prefs.remove('userLoggedIn');
+                            await FirebaseAuth.instance.signOut();
+                            if (context.mounted) {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const LoginPage()),
+                                (Route<dynamic> route) => false,
+                              );
+                            }
+                          },
+                          child: const Text(
+                            'تسجيل الخروج',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
           ],
