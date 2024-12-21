@@ -24,23 +24,25 @@ class HomePageSpecializations extends StatefulWidget {
 class HomePageSpecializationsState extends State<HomePageSpecializations> {
   final PageController _pageController = PageController();
   int _currentIndex = 0;
-  final List<Map<String, String>> advertisements = [
-    {
-      'title': '223'.tr,
-      'description': '224'.tr,
-      'image': 'images/logo.png', // تأكد من وجود الصورة
-    },
-    {
-      'title': '225'.tr,
-      'description': '226'.tr,
-      'image': 'images/chat.png', // تأكد من وجود الصورة
-    },
-    {
-      'title': '227'.tr,
-      'description': '228'.tr,
-      'image': 'images/med.png', // تأكد من وجود الصورة
-    },
-  ];
+  List<Map<String, String>> advertisements() {
+    return [
+      {
+        'title': '223'.tr,
+        'description': '224'.tr,
+        'image': 'images/logo.png', // تأكد من وجود الصورة
+      },
+      {
+        'title': '225'.tr,
+        'description': '226'.tr,
+        'image': 'images/chat.png', // تأكد من وجود الصورة
+      },
+      {
+        'title': '227'.tr,
+        'description': '228'.tr,
+        'image': 'images/med.png', // تأكد من وجود الصورة
+      },
+    ];
+  }
 
   List<Map<String, dynamic>> getMedicalSpecialties() {
     return [
@@ -224,7 +226,7 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
       slivers: [
         // لوحة الإعلانات كـ Sliver
         SliverToBoxAdapter(
-          child: AdvertisementsBoard(advertisements: advertisements),
+          child: AdvertisementsBoard(advertisements: advertisements()),
         ),
 
         // شبكة التخصصات كـ SliverGrid
