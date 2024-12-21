@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider extends ChangeNotifier {
   bool _isDarkMode = false;
@@ -16,8 +17,24 @@ class ThemeProvider extends ChangeNotifier {
           );
   }
 
+  ThemeProvider() {
+    _loadThemePreference(); // تحميل حالة الثيم عند الإنشاء
+  }
+
   void toggleTheme(bool isEnabled) {
     _isDarkMode = isEnabled;
-    notifyListeners(); // إعلام جميع المستمعين بتغيير الحالة
+    _saveThemePreference(isEnabled); // حفظ حالة الثيم
+    notifyListeners(); // إعلام المستمعين بالتغيير
+  }
+
+  Future<void> _loadThemePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    _isDarkMode = prefs.getBool('isDarkMode') ?? false; // الافتراضي: false
+    notifyListeners(); // إعلام المستمعين بعد التحميل
+  }
+
+  Future<void> _saveThemePreference(bool isEnabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkMode', isEnabled);
   }
 }

@@ -20,6 +20,23 @@ class SettingsScreenState extends State<SettingsScreen> {
   bool isDarkMode = false;
   bool notificationsEnabled = false;
   String currentLanguage = 'العربية';
+  @override
+  void initState() {
+    super.initState();
+    _loadDarkModePreference();
+  }
+
+  Future<void> _loadDarkModePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isDarkMode = prefs.getBool('isDarkMode') ?? false;
+    });
+  }
+
+  Future<void> _saveDarkModePreference(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkMode', value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -194,16 +211,19 @@ class SettingsScreenState extends State<SettingsScreen> {
   Widget _buildThemeListTile(ThemeProvider themeProvider) {
     return _buildCustomTile(
       title: '31'.tr,
-      subtitle: themeProvider.isDarkMode ? '82'.tr : '81'.tr,
+      subtitle: isDarkMode ? '82'.tr : '81'.tr,
       leading: Icon(
-        themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-        color:
-            themeProvider.isDarkMode ? Colors.orangeAccent : Colors.blueAccent,
+        isDarkMode ? Icons.dark_mode : Icons.light_mode,
+        color: isDarkMode ? Colors.orangeAccent : Colors.blueAccent,
       ),
       trailing: Switch(
-        value: themeProvider.isDarkMode,
+        value: isDarkMode,
         onChanged: (value) {
-          themeProvider.toggleTheme(value);
+          setState(() {
+            isDarkMode = value; // تحديث الحالة
+          });
+          _saveDarkModePreference(value); // تخزين الحالة
+          themeProvider.toggleTheme(value); // تطبيق الثيم
         },
         activeColor: Colors.orangeAccent,
         inactiveThumbColor: Colors.blueAccent,

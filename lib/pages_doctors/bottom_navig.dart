@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import '../constants/colors_page.dart';
 import '../constants/theme_dark_mode.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
@@ -19,13 +20,14 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         final isDarkMode = themeProvider.isDarkMode;
-        final primaryColor = isDarkMode ? Colors.tealAccent : Colors.blueAccent;
-        final secondaryColor = isDarkMode ? Colors.grey[850]! : Colors.white;
+        // Use a single color for primaryColor
+        final primaryColor = isDarkMode ? Colors.blueGrey : Colors.blueAccent;
+        final secondaryColor = isDarkMode ? AppColors.textBox : Colors.white;
 
         return Container(
           height: 70,
           decoration: BoxDecoration(
-            color: secondaryColor,
+            color: secondaryColor, // single color here
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(30),
               topRight: Radius.circular(30),
@@ -54,7 +56,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                     boxShadow: isActive
                         ? [
                             BoxShadow(
-                              color: primaryColor.withOpacity(0.4),
+                              color: primaryColor,
                               blurRadius: 15,
                               offset: const Offset(0, 6),
                             ),

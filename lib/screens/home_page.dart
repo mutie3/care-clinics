@@ -151,14 +151,9 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
         height: 100,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              themeProvider.isDarkMode
-                  ? AppColors.textBox
-                  : AppColors.primaryColor,
-              themeProvider.isDarkMode
-                  ? AppColors.textBox.withOpacity(0.7)
-                  : AppColors.primaryColor.withOpacity(0.8),
-            ],
+            colors: themeProvider.isDarkMode
+                ? [Colors.blueGrey, Colors.blueGrey.shade700]
+                : [AppColors.primaryColor, Colors.lightBlueAccent],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),

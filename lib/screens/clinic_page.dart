@@ -405,16 +405,15 @@ class ClinicPageState extends State<ClinicPage> {
               title: const Text(
                 'تسجيل الخروج',
                 style: TextStyle(
-                  color: Colors.red, // لون النص
+                  color: Colors.red,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               leading: const Icon(
                 Icons.logout,
-                color: Colors.red, // لون الأيقونة
+                color: Colors.red,
               ),
               onTap: () {
-                // أضف هنا منطق تسجيل الخروج
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -425,7 +424,7 @@ class ClinicPageState extends State<ClinicPage> {
                       actions: [
                         TextButton(
                           onPressed: () {
-                            Navigator.pop(context); // إغلاق نافذة التأكيد
+                            Navigator.pop(context);
                           },
                           child: const Text('إلغاء'),
                         ),
