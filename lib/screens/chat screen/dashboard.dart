@@ -20,6 +20,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final TextEditingController _messageController = TextEditingController();
   final List<Map<String, dynamic>> _messages = [];
+  // ignore: unused_field
   bool _isLoading = false;
 
   String cleanResponse(String response) {
@@ -112,7 +113,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   PreferredSizeWidget _buildCurvedAppBar(
       BuildContext context, ThemeProvider themeProvider) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(100),
+      preferredSize: const Size.fromHeight(100),
       child: ClipPath(
         clipper: AppBarClipper(),
         child: Container(

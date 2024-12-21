@@ -79,7 +79,6 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         ),
                       );
                     } catch (e) {
-                      // في حال حدوث أي خطأ آخر
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('An unexpected error occurred: $e'),

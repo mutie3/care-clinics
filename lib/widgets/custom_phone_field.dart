@@ -8,8 +8,7 @@ import 'package:provider/provider.dart';
 class CustomPhoneField extends StatelessWidget {
   final TextEditingController controller;
 
-  const CustomPhoneField({Key? key, required this.controller})
-      : super(key: key);
+  const CustomPhoneField({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {

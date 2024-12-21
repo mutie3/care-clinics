@@ -120,7 +120,8 @@ class RotatingDropdownState extends State<RotatingDropdown> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (leftArrow != null) leftArrow,
-                            SizedBox(width: 6), // Space between icon and text
+                            const SizedBox(
+                                width: 6), // Space between icon and text
                             Expanded(
                               child: Center(
                                 child: Text(

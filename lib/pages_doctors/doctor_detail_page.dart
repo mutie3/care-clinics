@@ -8,7 +8,6 @@ import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/rotating_dropdown.dart';
-import 'date_picker_widget.dart';
 
 class DoctorDetailPage extends StatefulWidget {
   final String clinicId;
@@ -31,10 +30,10 @@ class DoctorDetailPage extends StatefulWidget {
   });
 
   @override
-  _DoctorDetailPageState createState() => _DoctorDetailPageState();
+  DoctorDetailPageState createState() => DoctorDetailPageState();
 }
 
-class _DoctorDetailPageState extends State<DoctorDetailPage>
+class DoctorDetailPageState extends State<DoctorDetailPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -67,21 +66,17 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
   }
 
   Future<void> _fetchWorkingDays(String doctorId) async {
-    try {
-      final doctorSnapshot = await FirebaseFirestore.instance
-          .collection('clinics')
-          .doc(widget.clinicId)
-          .collection('doctors')
-          .doc(doctorId)
-          .get();
-      if (doctorSnapshot.exists) {
-        setState(() {
-          workingDays =
-              List<String>.from(doctorSnapshot.data()?['working_days'] ?? []);
-        });
-      }
-    } catch (e) {
-      print('Error fetching working days: $e');
+    final doctorSnapshot = await FirebaseFirestore.instance
+        .collection('clinics')
+        .doc(widget.clinicId)
+        .collection('doctors')
+        .doc(doctorId)
+        .get();
+    if (doctorSnapshot.exists) {
+      setState(() {
+        workingDays =
+            List<String>.from(doctorSnapshot.data()?['working_days'] ?? []);
+      });
     }
   }
 
@@ -94,62 +89,51 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
   }
 
   Future<void> _makeAppointment(int? selectedDoctorIndex) async {
-    try {
-      final FirebaseFirestore firestore = FirebaseFirestore.instance;
-      await firestore.collection('appointments').add({
-        'clinicId': widget.clinicId,
-        'doctorId': doctors[selectedDoctorIndex!]['id'],
-        'patientId': userId,
-        'appointmentDate': selectedDay,
-        'appointmentTime': selectedTime,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    await firestore.collection('appointments').add({
+      'clinicId': widget.clinicId,
+      'doctorId': doctors[selectedDoctorIndex!]['id'],
+      'patientId': userId,
+      'appointmentDate': selectedDay,
+      'appointmentTime': selectedTime,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+    if (mounted) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => VideoPage()),
       );
-      print("Appointment successfully created!");
-    } catch (e) {
-      print("Error making appointment: $e");
     }
   }
 
   Future<void> _fetchClinicData() async {
-    try {
-      final clinicSnapshot = await FirebaseFirestore.instance
-          .collection('clinics')
-          .doc(widget.clinicId)
-          .get();
-      if (clinicSnapshot.exists) {
-        setState(() {
-          clinicPhoneNumber = clinicSnapshot.data()?['phone'] ?? '';
-        });
-      }
-    } catch (e) {
-      print('Error fetching clinic data: $e');
+    final clinicSnapshot = await FirebaseFirestore.instance
+        .collection('clinics')
+        .doc(widget.clinicId)
+        .get();
+    if (clinicSnapshot.exists) {
+      setState(() {
+        clinicPhoneNumber = clinicSnapshot.data()?['phone'] ?? '';
+      });
     }
   }
 
   Future<void> _fetchDoctors() async {
-    try {
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('clinics')
-          .doc(widget.clinicId)
-          .collection('doctors')
-          .get();
-      setState(() {
-        doctors = querySnapshot.docs
-            .map((doc) => {
-                  'id': doc.id,
-                  'name': doc.data()['name'] ?? 'No Name',
-                  'specialty': doc.data()['specialty'] ?? 'No Specialty',
-                  'image_url': doc.data()['image_url'] ?? '',
-                })
-            .toList();
-      });
-    } catch (e) {
-      print('Error fetching doctors: $e');
-    }
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('clinics')
+        .doc(widget.clinicId)
+        .collection('doctors')
+        .get();
+    setState(() {
+      doctors = querySnapshot.docs
+          .map((doc) => {
+                'id': doc.id,
+                'name': doc.data()['name'] ?? 'No Name',
+                'specialty': doc.data()['specialty'] ?? 'No Specialty',
+                'image_url': doc.data()['image_url'] ?? '',
+              })
+          .toList();
+    });
   }
 
   void _onDoctorSelected(int index) {
@@ -190,33 +174,29 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
       String formattedTime =
           "${startTime.hour}:${startTime.minute == 0 ? '00' : '30'}";
       timeSlots.add(formattedTime);
-      startTime = startTime.add(Duration(minutes: 30));
+      startTime = startTime.add(const Duration(minutes: 30));
     }
 
     return timeSlots;
   }
 
   Future<void> _checkBookedTimes() async {
-    try {
-      if (selectedDay != null) {
-        final appointmentsSnapshot = await FirebaseFirestore.instance
-            .collection('appointments')
-            .where('appointmentDate', isEqualTo: selectedDay)
-            .get();
-        Set<String> bookedTimes = {};
+    if (selectedDay != null) {
+      final appointmentsSnapshot = await FirebaseFirestore.instance
+          .collection('appointments')
+          .where('appointmentDate', isEqualTo: selectedDay)
+          .get();
+      Set<String> bookedTimes = {};
 
-        for (var doc in appointmentsSnapshot.docs) {
-          bookedTimes.add(doc['appointmentTime']);
-        }
-
-        setState(() {
-          availableTimes = generateTimeSlots()
-              .where((time) => !bookedTimes.contains(time))
-              .toList();
-        });
+      for (var doc in appointmentsSnapshot.docs) {
+        bookedTimes.add(doc['appointmentTime']);
       }
-    } catch (e) {
-      print('Error checking booked times: $e');
+
+      setState(() {
+        availableTimes = generateTimeSlots()
+            .where((time) => !bookedTimes.contains(time))
+            .toList();
+      });
     }
   }
 
@@ -226,7 +206,7 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
       builder: (context, themeProvider, child) {
         return Scaffold(
             appBar: AppBar(
-              title: Text("Clinic"),
+              title: const Text("Clinic"),
               backgroundColor: AppColors.primaryColor,
             ),
             body: WillPopScope(

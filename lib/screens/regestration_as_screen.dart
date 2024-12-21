@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
-import 'package:care_clinic/patient/regestration_page_Info.dart';
+import 'package:care_clinic/patient/registration_page_info.dart';
 import 'package:care_clinic/screens/doctor_reg/clinic_info.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

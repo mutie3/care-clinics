@@ -25,7 +25,6 @@ class MediaProvider extends ChangeNotifier {
     } catch (e) {
       // Handle any errors
       reset();
-      print("Error picking image: $e");
     } finally {
       isLoading = false;
       notifyListeners();

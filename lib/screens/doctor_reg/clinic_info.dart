@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:care_clinic/constants/colors_page.dart';
-import 'package:care_clinic/widgets/Upload_File.dart';
+import 'package:care_clinic/widgets/upload_file.dart';
 import 'package:care_clinic/widgets/animate_navigation_route.dart';
 import 'package:care_clinic/widgets/custom_email_text_field.dart';
 import 'package:care_clinic/widgets/custom_location_picker.dart';

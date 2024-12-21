@@ -116,7 +116,7 @@ class VideoPlayerScreenState extends State<VideoPlayerScreen> {
         _controller.play();
         Future.delayed(const Duration(seconds: 2), () {
           // قم بتهيئة صفحة تسجيل الدخول بعد وقت قصير
-          precacheImage(AssetImage('images/logo.png'), context);
+          precacheImage(const AssetImage('images/logo.png'), context);
         });
         _controller.addListener(() {
           if (_controller.value.position == _controller.value.duration) {
@@ -126,7 +126,6 @@ class VideoPlayerScreenState extends State<VideoPlayerScreen> {
           }
         });
       }).catchError((error) {
-        print("Error initializing video: $error");
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const LoginPage()),
         );

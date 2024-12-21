@@ -1,10 +1,11 @@
 import 'dart:io';
+import 'package:care_clinic/screens/login_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/widgets/set_picture.dart';
-import 'package:get/get.dart';
+
 import 'custom_text_fieled.dart';
 
 class DoctorForm extends StatefulWidget {
@@ -16,6 +17,7 @@ class DoctorForm extends StatefulWidget {
   final TextEditingController specialtyController;
   final TextEditingController experienceController;
   final String clinicId;
+  final ValueChanged<File?> onImageChanged;
 
   const DoctorForm({
     super.key,
@@ -27,6 +29,7 @@ class DoctorForm extends StatefulWidget {
     required this.specialtyController,
     required this.experienceController,
     required this.clinicId,
+    required this.onImageChanged,
   });
 
   @override
@@ -38,70 +41,17 @@ class _DoctorFormState extends State<DoctorForm> {
   File? selectedImage;
 
   final List<String> specialties = [
-    '17'.tr,
-    '18'.tr,
-    '19'.tr,
-    '20'.tr,
-    '21'.tr,
-    '22'.tr,
-    '23'.tr,
-    '3'.tr,
-    '4'.tr,
-    '5'.tr,
+    "Pediatrics",
+    "Obstetrics and Gynecology",
+    "Dermatology",
+    "Cardiology",
+    "Orthopedic Surgery",
+    "Psychiatry",
+    "Endocrinology",
+    "Gastroenterology",
+    "Respiratory Medicine",
+    "Nephrology and Urology",
   ];
-
-  Future<void> _uploadDoctorData() async {
-    try {
-      List<String> selectedDays = [];
-      var days = [
-        '102'.tr,
-        '103'.tr,
-        '104'.tr,
-        '105'.tr,
-        '106'.tr,
-        '107'.tr,
-        '108'.tr
-      ];
-      for (int i = 0; i < widget.daysSelected.value.length; i++) {
-        if (widget.daysSelected.value[i]) {
-          selectedDays.add(days[i]);
-        }
-      }
-
-      String imageUrl = '';
-      if (selectedImage != null) {
-        final storageRef = FirebaseStorage.instance
-            .ref()
-            .child('doctor_images/${widget.uniqueKey}.jpg');
-        final uploadTask = await storageRef.putFile(selectedImage!);
-        imageUrl = await uploadTask.ref.getDownloadURL();
-      }
-
-      await FirebaseFirestore.instance
-          .collection('clinics')
-          .doc(widget.clinicId)
-          .collection('doctors')
-          .add({
-        'name': widget.nameController.text,
-        'specialty': selectedSpecialty ?? widget.specialtyController.text,
-        'experience': int.tryParse(widget.experienceController.text) ?? 0,
-        'working_days': selectedDays,
-        'image_url': imageUrl,
-      });
-
-      // عرض رسالة نجاح بعد رفع البيانات
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('136'.tr)),
-      );
-    } catch (error) {
-      print("Failed to upload doctor data: $error");
-
-      // عرض رسالة خطأ إذا فشل رفع البيانات
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('فشل الحفظ: $error')),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,26 +81,30 @@ class _DoctorFormState extends State<DoctorForm> {
                   setState(() {
                     selectedImage = file;
                   });
+                  widget.onImageChanged(file);
                 },
               ),
             ),
             const SizedBox(height: 10),
             CustomTextField(
-              text: '74'.tr,
+              text: "Doctor Name",
               controller: widget.nameController,
               icon: const Icon(Icons.person_outline_outlined,
                   color: AppColors.primaryColor),
-              validator: (value) =>
-                  value == null || value.isEmpty ? '137'.tr : null,
+              validator: (value) => value == null || value.isEmpty
+                  ? 'Please enter doctor name'
+                  : null,
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
-              value: selectedSpecialty,
-              decoration: InputDecoration(
-                labelText: '75'.tr,
-                prefixIcon: const Icon(Icons.medical_services,
-                    color: AppColors.primaryColor),
-                border: const OutlineInputBorder(),
+              value: widget.specialtyController.text.isNotEmpty
+                  ? widget.specialtyController.text
+                  : selectedSpecialty,
+              decoration: const InputDecoration(
+                labelText: "Specialty",
+                prefixIcon:
+                    Icon(Icons.medical_services, color: AppColors.primaryColor),
+                border: OutlineInputBorder(),
               ),
               items: specialties.map((specialty) {
                 return DropdownMenuItem(
@@ -161,23 +115,27 @@ class _DoctorFormState extends State<DoctorForm> {
               onChanged: (value) {
                 setState(() {
                   selectedSpecialty = value;
+                  widget.specialtyController.text = value ?? '';
                 });
               },
-              validator: (value) => value == null ? '138'.tr : null,
+              validator: (value) => value == null || value.isEmpty
+                  ? 'Please select a specialty'
+                  : null,
             ),
             const SizedBox(height: 12),
             CustomTextField(
               keyboardType: TextInputType.number,
-              text: '73'.tr,
+              text: "Experience Years",
               controller: widget.experienceController,
               icon: const Icon(Icons.more_time, color: AppColors.primaryColor),
-              validator: (value) =>
-                  value == null || value.isEmpty ? '139'.tr : null,
+              validator: (value) => value == null || value.isEmpty
+                  ? 'Please enter experience years'
+                  : null,
             ),
             const SizedBox(height: 15),
-            Text(
-              '72'.tr,
-              style: const TextStyle(
+            const Text(
+              "Working Days:",
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: AppColors.primaryColor,
@@ -189,14 +147,14 @@ class _DoctorFormState extends State<DoctorForm> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List<Widget>.generate(7, (index) {
-                  var days = [
-                    '102'.tr,
-                    '103'.tr,
-                    '104'.tr,
-                    '105'.tr,
-                    '106'.tr,
-                    '107'.tr,
-                    '108'.tr
+                  const days = [
+                    "SUN",
+                    "MON",
+                    "TUE",
+                    "WED",
+                    "THU",
+                    "FRI",
+                    "SAT"
                   ];
                   return ValueListenableBuilder<List<bool>>(
                     valueListenable: widget.daysSelected,
@@ -239,19 +197,6 @@ class _DoctorFormState extends State<DoctorForm> {
                 }),
               ),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                if (widget.formKey.currentState!.validate()) {
-                  _uploadDoctorData();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('140'.tr)),
-                  );
-                }
-              },
-              child: Text('70'.tr),
-            ),
           ],
         ),
       ),
@@ -259,7 +204,7 @@ class _DoctorFormState extends State<DoctorForm> {
   }
 }
 
-class DoctorList extends StatelessWidget {
+class DoctorList extends StatefulWidget {
   final List<Map<String, dynamic>> doctorForms;
   final Function(int) onRemove;
   final String clinicId;
@@ -272,28 +217,116 @@ class DoctorList extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return doctorForms.isEmpty
-        ? Center(
-            child: Text(
-              '141'.tr,
-              style: const TextStyle(fontSize: 18, color: AppColors.textColor),
-              textAlign: TextAlign.center,
-            ),
-          )
-        : Column(
-            children: doctorForms.map((form) {
-              return DoctorForm(
-                uniqueKey: form['key'],
-                formKey: form['formKey'],
-                daysSelected: form['daysSelected'],
-                onDelete: () => onRemove(form['key']),
-                nameController: form['nameController'],
-                specialtyController: form['specialtyController'],
-                experienceController: form['experienceController'],
-                clinicId: clinicId,
-              );
-            }).toList(),
+  _DoctorListState createState() => _DoctorListState();
+}
+
+class _DoctorListState extends State<DoctorList> {
+  Future<void> _saveAllDoctors() async {
+    bool hasError = false;
+
+    try {
+      for (var form in widget.doctorForms) {
+        if (form['formKey'].currentState!.validate()) {
+          List<String> selectedDays = [];
+          const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+          for (int i = 0; i < form['daysSelected'].value.length; i++) {
+            if (form['daysSelected'].value[i]) {
+              selectedDays.add(days[i]);
+            }
+          }
+
+          String imageUrl = '';
+          if (form['selectedImage'] != null) {
+            final storageRef = FirebaseStorage.instance
+                .ref()
+                .child('doctor_images/${form['key']}.jpg');
+            final uploadTask = await storageRef.putFile(form['selectedImage']);
+            imageUrl = await uploadTask.ref.getDownloadURL();
+          }
+
+          final specialty = form['specialtyController'].text;
+
+          if (specialty.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Please select a valid specialty.')),
+            );
+            hasError = true;
+            break;
+          }
+
+          await FirebaseFirestore.instance
+              .collection('clinics')
+              .doc(widget.clinicId)
+              .collection('doctors')
+              .add({
+            'name': form['nameController'].text,
+            'specialty': specialty,
+            'experience': int.tryParse(form['experienceController'].text) ?? 0,
+            'working_days': selectedDays,
+            'image_url': imageUrl,
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text(
+                    'تم حفظ الدكاترة سوف يتم التاكد من المعلومات خلال 24 ساعة.')),
           );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text('Please fill all fields for all doctors.')),
+          );
+          hasError = true;
+          break;
+        }
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save doctors: $error')),
+      );
+      hasError = true;
+    }
+
+    if (!hasError) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        widget.doctorForms.isEmpty
+            ? const Center(
+                child: Text(
+                  "No doctors added yet. Please add a doctor to continue.",
+                  style: TextStyle(fontSize: 18, color: AppColors.textColor),
+                  textAlign: TextAlign.center,
+                ),
+              )
+            : Column(
+                children: widget.doctorForms.map((form) {
+                  return DoctorForm(
+                    uniqueKey: form['key'],
+                    formKey: form['formKey'],
+                    daysSelected: form['daysSelected'],
+                    onDelete: () => widget.onRemove(form['key']),
+                    nameController: form['nameController'],
+                    specialtyController: form['specialtyController'],
+                    experienceController: form['experienceController'],
+                    clinicId: widget.clinicId,
+                    onImageChanged: (file) => form['selectedImage'] = file,
+                  );
+                }).toList(),
+              ),
+        ElevatedButton(
+          onPressed: _saveAllDoctors,
+          child: const Text("Save All Doctors"),
+        ),
+      ],
+    );
   }
 }

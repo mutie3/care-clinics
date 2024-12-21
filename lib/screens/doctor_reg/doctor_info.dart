@@ -6,7 +6,7 @@ import 'dart:math';
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/widgets/add_doctor_button.dart';
 import 'package:care_clinic/widgets/doctor_form.dart';
-import 'package:get/get.dart';
+
 import 'loading_overlay.dart';
 
 class ClincInfo extends StatefulWidget {
@@ -57,12 +57,11 @@ class _ClincInfoState extends State<ClincInfo> {
       isSaving = true;
     });
 
-    // Show loading overlay
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return LoadingOverlay(message: '101'.tr);
+        return const LoadingOverlay(message: "Saving doctor data...");
       },
     );
 
@@ -76,18 +75,16 @@ class _ClincInfoState extends State<ClincInfo> {
         ValueNotifier<List<bool>> daysSelected = form['daysSelected'];
         File? imageFile = form['imageFile'];
 
-        // Validate form fields
         if (!formKey.currentState!.validate() ||
             nameController.text.isEmpty ||
             specialtyController.text.isEmpty ||
             experienceController.text.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('140'.tr)),
+            const SnackBar(content: Text('Please fill all the fields')),
           );
           continue;
         }
 
-        // Upload image if available
         String imageUrl = '';
         if (imageFile != null) {
           try {
@@ -105,51 +102,38 @@ class _ClincInfoState extends State<ClincInfo> {
           }
         }
 
-        // Collect selected working days
         List<String> selectedDays = [];
-        var days = [
-          '102'.tr,
-          '103'.tr,
-          '104'.tr,
-          '105'.tr,
-          '106'.tr,
-          '107'.tr,
-          '108'.tr
-        ];
+        const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
         for (int i = 0; i < daysSelected.value.length; i++) {
           if (daysSelected.value[i]) {
             selectedDays.add(days[i]);
           }
         }
 
-        // Prepare doctor data with parsed experience
         var doctorData = {
           'name': nameController.text,
           'specialty': specialtyController.text,
-          'experience': int.tryParse(experienceController.text) ??
-              0, // Parse experience to integer
+          'experience': int.tryParse(experienceController.text) ?? 0,
           'working_days': selectedDays,
           'image_url': imageUrl,
         };
 
-        // Save doctor data to Firestore
         await FirebaseFirestore.instance
             .collection('clinics')
             .doc(widget.clinicId)
             .collection('doctors')
             .add(doctorData);
 
-        print('109'.tr);
+        print("Doctor data uploaded successfully");
       }
 
-      // Clear forms after saving
       setState(() {
         doctorForms.clear();
-        _addDoctorForm(); // Add a new form after saving
+        _addDoctorForm();
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('110'.tr)),
+        const SnackBar(content: Text('Doctors saved successfully')),
       );
     } catch (e) {
       print('Error saving doctors: $e');
@@ -157,7 +141,7 @@ class _ClincInfoState extends State<ClincInfo> {
         SnackBar(content: Text('Error saving doctors: $e')),
       );
     } finally {
-      Navigator.of(context).pop(); // Hide loading overlay
+      Navigator.of(context).pop();
       setState(() {
         isSaving = false;
       });
@@ -170,9 +154,9 @@ class _ClincInfoState extends State<ClincInfo> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: Text(
-            '69'.tr,
-            style: const TextStyle(color: AppColors.textColor),
+          title: const Text(
+            "Doctor Information",
+            style: TextStyle(color: AppColors.textColor),
           ),
           backgroundColor: AppColors.primaryColor,
           leading: IconButton(
@@ -201,9 +185,9 @@ class _ClincInfoState extends State<ClincInfo> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     AddDoctorButton(onPressed: _addDoctorForm),
+                    const SizedBox(width: 10),
                   ],
                 ),
-                const SizedBox(height: 20),
               ],
             ),
           ),

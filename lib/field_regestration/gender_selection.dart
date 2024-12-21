@@ -7,10 +7,10 @@ class GenderSelection extends StatefulWidget {
   const GenderSelection({super.key, required this.controller});
 
   @override
-  _GenderSelectionState createState() => _GenderSelectionState();
+  GenderSelectionState createState() => GenderSelectionState();
 }
 
-class _GenderSelectionState extends State<GenderSelection> {
+class GenderSelectionState extends State<GenderSelection> {
   String? _gender;
 
   @override

@@ -2,14 +2,14 @@ import 'package:care_clinic/constants/colors_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class selectWorkDays extends StatefulWidget {
-  const selectWorkDays({super.key});
+class SelectWorkDay extends StatefulWidget {
+  const SelectWorkDay({super.key});
 
   @override
-  State<selectWorkDays> createState() => _selectWorkDaysState();
+  State<SelectWorkDay> createState() => SelectWorkDayState();
 }
 
-class _selectWorkDaysState extends State<selectWorkDays> {
+class SelectWorkDayState extends State<SelectWorkDay> {
   List<String> days = [
     '102'.tr,
     '103'.tr,

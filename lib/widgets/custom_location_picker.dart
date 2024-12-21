@@ -7,33 +7,15 @@ import 'package:geolocator/geolocator.dart';
 class CustomLocationPicker extends StatefulWidget {
   final TextEditingController controller;
 
-  const CustomLocationPicker({Key? key, required this.controller})
-      : super(key: key);
+  const CustomLocationPicker({super.key, required this.controller});
 
   @override
-  _CustomLocationPickerState createState() => _CustomLocationPickerState();
+  CustomLocationPickerState createState() => CustomLocationPickerState();
 }
 
-class _CustomLocationPickerState extends State<CustomLocationPicker> {
+class CustomLocationPickerState extends State<CustomLocationPicker> {
+  // ignore: unused_field
   LatLng? _pickedLocation;
-
-  Future<void> _getCurrentLocation() async {
-    try {
-      bool hasPermission = await _handleLocationPermission();
-      if (!hasPermission) return;
-
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      setState(() {
-        _pickedLocation = LatLng(position.latitude, position.longitude);
-        widget.controller.text =
-            'Lat: ${position.latitude}, Lng: ${position.longitude}';
-      });
-      print("Current location obtained: $_pickedLocation");
-    } catch (e) {
-      print("Error getting current location: $e");
-    }
-  }
 
   Future<bool> _handleLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -126,7 +108,7 @@ class LocationMap extends StatefulWidget {
 
 class _LocationMapState extends State<LocationMap> {
   late GoogleMapController _mapController;
-  LatLng _currentLocation =
+  final LatLng _currentLocation =
       const LatLng(31.963158, 35.930359); // موقع افتراضي في عمان
   late LatLng _markerLocation; // استخدم late هنا
 

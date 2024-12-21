@@ -28,52 +28,67 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
     return [
       {
         "name": '14'.tr,
-        "icon": FontAwesomeIcons.listAlt
+        "icon": FontAwesomeIcons.hospitalUser
       }, // أيقونة شاملة لجميع التخصصات
       {
         "name": '15'.tr,
-        "icon": FontAwesomeIcons.medkit
-      }, // أيقونة لمجموعة أدوات طبية
+        "icon": FontAwesomeIcons.kitMedical
+      }, // أيقونة الإسعافات الأولية
       {
         "name": '16'.tr,
         "icon": FontAwesomeIcons.userInjured
-      }, // أيقونة مريض مصاب
-      {"name": '17'.tr, "icon": FontAwesomeIcons.child}, // أيقونة طفل
+      }, // أيقونة إصابات المرضى
+      {"name": '17'.tr, "icon": FontAwesomeIcons.baby}, // أيقونة طب الأطفال
       {
         "name": '18'.tr,
-        "icon": FontAwesomeIcons.venusMars
-      }, // أيقونة ولادة وجنس
+        "icon": FontAwesomeIcons.dna
+      }, // أيقونة الوراثة والعلوم الحيوية
       {
         "name": '19'.tr,
-        "icon": FontAwesomeIcons.handHoldingHeart
-      }, // أيقونة للعناية بالبشرة
+        "icon": FontAwesomeIcons.handshakeAngle
+      }, // أيقونة الدعم والرعاية
       {
         "name": '20'.tr,
         "icon": FontAwesomeIcons.heartPulse
-      }, // أيقونة نبض القلب
-      {"name": '21'.tr, "icon": FontAwesomeIcons.hammer}, // أيقونة جراحة العظام
-      {"name": '22'.tr, "icon": FontAwesomeIcons.brain}, // أيقونة الدماغ
+      }, // أيقونة أمراض القلب
+      {"name": '21'.tr, "icon": FontAwesomeIcons.bone}, // أيقونة جراحة العظام
+      {"name": '22'.tr, "icon": FontAwesomeIcons.brain}, // أيقونة طب الأعصاب
       {
         "name": '23'.tr,
-        "icon": FontAwesomeIcons.bottleDroplet
-      }, // أيقونة هرمون أو غدة
+        "icon": FontAwesomeIcons.flask
+      }, // أيقونة التحاليل والمختبرات
       {
         "name": '3'.tr,
         "icon": FontAwesomeIcons.utensils
-      }, // أيقونة غذاء أو معدة
-      {"name": '4'.tr, "icon": FontAwesomeIcons.lungs}, // أيقونة الرئتين
+      }, // أيقونة طب الجهاز الهضمي
+      {"name": '4'.tr, "icon": FontAwesomeIcons.lungs}, // أيقونة أمراض الرئة
       {
         "name": '5'.tr,
-        "icon": FontAwesomeIcons.toilet
-      }, // أيقونة للحمام أو البول
-      {"name": '6'.tr, "icon": FontAwesomeIcons.capsules}, // أيقونة علاج إشعاعي
-      {"name": '7'.tr, "icon": FontAwesomeIcons.running}, // أيقونة رياضية
-      {"name": '8'.tr, "icon": FontAwesomeIcons.syringe}, // أيقونة حقنة
-      {"name": '9'.tr, "icon": FontAwesomeIcons.pills}, // أيقونة أقراص دواء
-      {"name": '10'.tr, "icon": FontAwesomeIcons.virus}, // أيقونة فيروس
-      {"name": '11'.tr, "icon": FontAwesomeIcons.carrot}, // أيقونة خضار
-      {"name": '12'.tr, "icon": FontAwesomeIcons.eye}, // أيقونة عين
-      {"name": '13'.tr, "icon": FontAwesomeIcons.headSideCough} // أيقونة رأس
+        "icon": FontAwesomeIcons.toiletPaper
+      }, // أيقونة أمراض المسالك البولية
+      {
+        "name": '6'.tr,
+        "icon": FontAwesomeIcons.radiation
+      }, // أيقونة العلاج الإشعاعي
+      {
+        "name": '7'.tr,
+        "icon": FontAwesomeIcons.personRunning
+      }, // أيقونة الطب الرياضي
+      {
+        "name": '8'.tr,
+        "icon": FontAwesomeIcons.syringe
+      }, // أيقونة الحقن والعلاجات
+      {"name": '9'.tr, "icon": FontAwesomeIcons.pills}, // أيقونة الأدوية
+      {
+        "name": '10'.tr,
+        "icon": FontAwesomeIcons.virus
+      }, // أيقونة الأمراض المعدية
+      {"name": '11'.tr, "icon": FontAwesomeIcons.carrot}, // أيقونة التغذية
+      {"name": '12'.tr, "icon": FontAwesomeIcons.eye}, // أيقونة طب العيون
+      {
+        "name": '13'.tr,
+        "icon": FontAwesomeIcons.headSideCough
+      } // أيقونة طب الجهاز التنفسي
     ];
   }
 
@@ -83,7 +98,6 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
       builder: (context, themeProvider, child) {
         return WillPopScope(
           onWillPop: () async {
-            print("Back button pressed");
             if (_currentIndex != 0) {
               setState(() {
                 _currentIndex = 0;

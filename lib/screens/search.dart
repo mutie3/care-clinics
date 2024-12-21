@@ -99,7 +99,6 @@ class _SearchState extends State<Search> {
         isLoading = false;
       });
     } catch (e) {
-      print("Error fetching clinics data: $e");
       setState(() {
         isLoading = false;
       });

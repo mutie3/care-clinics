@@ -1,5 +1,6 @@
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -114,7 +115,9 @@ class ClinicsState extends State<Clinics> {
         isLoading = false;
       });
     } catch (e) {
-      print("Error fetching clinics data: $e");
+      if (kDebugMode) {
+        print("Error fetching clinics data: $e");
+      }
       setState(() {
         isLoading = false;
       });

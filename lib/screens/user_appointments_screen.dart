@@ -1,4 +1,5 @@
 import 'package:care_clinic/constants/colors_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -90,7 +91,9 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
         }
       }
     } catch (e) {
-      print('Error fetching doctor name: $e');
+      if (kDebugMode) {
+        print('Error fetching doctor name: $e');
+      }
     }
     return 'Unknown Doctor';
   }
@@ -107,7 +110,6 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
     };
 
     if (!dayMap.containsKey(dayString.toUpperCase())) {
-      print("Invalid day string: $dayString");
       return null;
     }
 

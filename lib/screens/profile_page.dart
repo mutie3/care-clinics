@@ -1,4 +1,6 @@
+import 'package:care_clinic/screens/drug_info_page.dart';
 import 'package:care_clinic/screens/setting_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -41,16 +43,20 @@ class UserProfileScreenState extends State<UserProfileScreen> {
           setState(() {
             firstName = userDoc['firstName'] as String?;
             lastName = userDoc['lastName'] as String?;
-            phone = "0" + userDoc['phone'] as String?;
+            phone = '0${userDoc['phone']}';
             email = userDoc['email'] as String?;
             birthday = userDoc['birthday'] as String?;
           });
         }
       } else {
-        print('150'.tr);
+        if (kDebugMode) {
+          print('150'.tr);
+        }
       }
     } catch (e) {
-      print('Error fetching user data: $e');
+      if (kDebugMode) {
+        print('Error fetching user data: $e');
+      }
     }
   }
 
@@ -69,7 +75,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
   PreferredSizeWidget _buildCurvedAppBar(
       BuildContext context, ThemeProvider themeProvider) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(100),
+      preferredSize: const Size.fromHeight(100),
       child: ClipPath(
         clipper: AppBarClipper(),
         child: Container(
@@ -116,7 +122,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
             backgroundColor: Colors.transparent,
             actions: [
               IconButton(
-                icon: Icon(Icons.settings, color: Colors.white),
+                icon: const Icon(Icons.settings, color: Colors.white),
                 onPressed: () {
                   // التوجيه إلى صفحة الإعدادات
                   Navigator.push(
@@ -191,6 +197,15 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => const UserAppointmentsPage()),
+                );
+              }),
+              _buildInfoCard(
+                  Icons.medication_outlined, 'Search for medicines', '',
+                  isDarkMode: isDarkMode, onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const DrugInfoSearchPage()),
                 );
               }),
               const SizedBox(height: 20),

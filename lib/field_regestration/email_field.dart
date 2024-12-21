@@ -8,7 +8,7 @@ import '../widgets/custom_text_fieled.dart';
 class EmailField extends StatelessWidget {
   final TextEditingController controller;
 
-  const EmailField({Key? key, required this.controller}) : super(key: key);
+  const EmailField({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {

@@ -9,14 +9,14 @@ import 'dart:ui';
 
 import 'doctor_reg/doctor_info.dart';
 
-class BlankPage extends StatefulWidget {
-  const BlankPage({super.key});
+class ClinicPage extends StatefulWidget {
+  const ClinicPage({super.key});
 
   @override
-  BlankPageState createState() => BlankPageState();
+  ClinicPageState createState() => ClinicPageState();
 }
 
-class BlankPageState extends State<BlankPage> {
+class ClinicPageState extends State<ClinicPage> {
   bool isEditingClinic = false;
   Map<String, dynamic> clinicData = {
     'name': '',

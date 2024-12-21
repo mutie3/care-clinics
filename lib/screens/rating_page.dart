@@ -9,18 +9,18 @@ class RatingPage extends StatefulWidget {
   final String appointmentTime; // وقت الموعد
 
   const RatingPage({
-    Key? key,
+    super.key,
     required this.appointmentId,
     required this.doctorName,
     required this.appointmentDate,
     required this.appointmentTime,
-  }) : super(key: key);
+  });
 
   @override
-  _RatingPageState createState() => _RatingPageState();
+  RatingPageState createState() => RatingPageState();
 }
 
-class _RatingPageState extends State<RatingPage> {
+class RatingPageState extends State<RatingPage> {
   double _rating = 0; // التقييم الافتراضي
   bool _isSubmitting = false; // حالة الزر
 

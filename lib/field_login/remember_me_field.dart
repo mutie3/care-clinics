@@ -17,11 +17,11 @@ class RememberMeAndForgotPasswordRow extends StatefulWidget {
   });
 
   @override
-  _RememberMeAndForgotPasswordRowState createState() =>
-      _RememberMeAndForgotPasswordRowState();
+  RememberMeAndForgotPasswordRowState createState() =>
+      RememberMeAndForgotPasswordRowState();
 }
 
-class _RememberMeAndForgotPasswordRowState
+class RememberMeAndForgotPasswordRowState
     extends State<RememberMeAndForgotPasswordRow> {
   late bool rememberMe;
 

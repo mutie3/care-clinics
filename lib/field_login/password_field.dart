@@ -8,7 +8,7 @@ import '../widgets/custom_text_fieled.dart';
 class PasswordField extends StatefulWidget {
   final TextEditingController controller; // إضافة متحكم TextEditingController
 
-  const PasswordField({Key? key, required this.controller}) : super(key: key);
+  const PasswordField({super.key, required this.controller});
 
   @override
   PasswordFieldState createState() => PasswordFieldState();

@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'blank_page.dart';
+import 'clinic_page.dart';
 import 'doctor_reg/loading_overlay.dart';
 import 'home_page.dart';
 import 'package:care_clinic/constants/colors_page.dart';
@@ -71,7 +71,7 @@ class LoginPageState extends State<LoginPage>
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => const BlankPage(),
+                builder: (context) => const ClinicPage(),
               ),
               (Route<dynamic> route) => false,
             );
@@ -136,7 +136,7 @@ class LoginPageState extends State<LoginPage>
           Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => BlankPage()),
+            MaterialPageRoute(builder: (context) => const ClinicPage()),
             (Route<dynamic> route) => false,
           );
         }
@@ -172,11 +172,11 @@ class LoginPageState extends State<LoginPage>
       if (!mounted) return;
 
       Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
-      String errorMessage = 'Login failed. Please try again.';
+      String errorMessage = 'Wrong Email or Password';
       if (e.code == 'user-not-found') {
         errorMessage = 'No user found for that email.';
       } else if (e.code == 'wrong-password') {
-        errorMessage = 'Wrong password provided.';
+        errorMessage = 'Wrong Email or Password';
       }
 
       ScaffoldMessenger.of(context).showSnackBar(

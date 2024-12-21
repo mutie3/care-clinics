@@ -8,13 +8,13 @@ import 'package:get/get.dart';
 class UploadFile extends StatefulWidget {
   final Function(File)? onFilePicked; // باراميتر onFilePicked
 
-  const UploadFile({this.onFilePicked, Key? key}) : super(key: key);
+  const UploadFile({super.key, this.onFilePicked});
 
   @override
-  _UploadFileState createState() => _UploadFileState();
+  UploadFileState createState() => UploadFileState();
 }
 
-class _UploadFileState extends State<UploadFile> {
+class UploadFileState extends State<UploadFile> {
   File? file;
   PlatformFile? platformFile;
 

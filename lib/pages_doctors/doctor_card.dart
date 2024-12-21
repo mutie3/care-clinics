@@ -10,13 +10,13 @@ class DoctorCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const DoctorCard({
-    Key? key,
+    super.key,
     required this.imgPath,
     required this.doctorName,
     required this.doctorSpeciality,
     required this.rating,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +54,13 @@ class DoctorCard extends StatelessWidget {
                         fit: BoxFit.cover,
                         width: double.infinity,
                         errorBuilder: (context, error, stackTrace) {
-                          return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+                          return const Icon(Icons.broken_image,
+                              size: 50, color: Colors.grey);
                         },
                       ),
                     ),
                   ),
-                  const SizedBox(height:20.0),
+                  const SizedBox(height: 20.0),
 
                   // اسم العيادة
                   Text(
@@ -70,9 +71,7 @@ class DoctorCard extends StatelessWidget {
                       fontSize: 16.0,
                     ),
                   ),
-                  const SizedBox(height:20),
-
-
+                  const SizedBox(height: 20),
 
                   Text(
                     'Rating: $rating',
