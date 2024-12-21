@@ -1,8 +1,9 @@
 import 'dart:typed_data';
-import 'package:care_clinic/constants/colors_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../constants/colors_page.dart';
 
 class ChatInput extends StatelessWidget {
   final TextEditingController messageController;
@@ -27,19 +28,23 @@ class ChatInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDarkMode ? Colors.grey[800] : Colors.white,
         borderRadius: BorderRadius.circular(30),
-        boxShadow: [BoxShadow(blurRadius: 6, color: Colors.grey.shade300)],
+        boxShadow: isDarkMode
+            ? []
+            : [BoxShadow(blurRadius: 6, color: Colors.grey.shade300)],
       ),
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.image,
-              color: AppColors.primaryColor,
+              color: isDarkMode ? Colors.tealAccent : AppColors.primaryColor,
             ),
             onPressed: _pickImage,
           ),
@@ -50,15 +55,22 @@ class ChatInput extends StatelessWidget {
               minLines: 1, // Start with 1 line
               decoration: InputDecoration(
                 hintText: '97'.tr,
-                hintStyle: TextStyle(color: Colors.grey.shade600),
+                hintStyle: TextStyle(
+                  color: isDarkMode ? Colors.grey[400] : Colors.grey.shade600,
+                ),
                 border: InputBorder.none,
                 contentPadding: const EdgeInsets.symmetric(vertical: 10),
               ),
-              style: const TextStyle(color: AppColors.textBox),
+              style: TextStyle(
+                color: isDarkMode ? Colors.white70 : AppColors.textBox,
+              ),
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.send, color: AppColors.primaryColor),
+            icon: Icon(
+              Icons.send,
+              color: isDarkMode ? Colors.tealAccent : AppColors.primaryColor,
+            ),
             onPressed: onSendMessage,
           ),
         ],

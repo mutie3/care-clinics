@@ -1,9 +1,12 @@
 import 'dart:convert';
-import 'package:care_clinic/constants/colors_page.dart';
-import 'package:care_clinic/widgets/custom_text_fieled.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'dart:async';
+
+import '../constants/colors_page.dart';
+import '../constants/theme_dark_mode.dart';
+import '../widgets/custom_text_fieled.dart';
 
 class DrugInfoSearchPage extends StatefulWidget {
   const DrugInfoSearchPage({super.key});
@@ -15,7 +18,6 @@ class DrugInfoSearchPage extends StatefulWidget {
 class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
   final TextEditingController _controller = TextEditingController();
   late Future<Map<String, dynamic>>? drugData;
-
   late List<String> drugSuggestions = [];
   late Timer _debounce;
 
@@ -38,8 +40,7 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
         List<String> suggestions = [];
         for (var drug in data['results']) {
           if (drug['brand_name'] != null) {
-            suggestions.add(drug['brand_name'][0] ??
-                'هذه المعلومة غير متوفره, ستتوفر قريباً');
+            suggestions.add(drug['brand_name'][0] ?? 'هذه المعلومة غير متوفره');
           }
         }
         return suggestions;
@@ -99,6 +100,9 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.isDarkMode;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -106,7 +110,17 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: AppColors.primaryColor,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: themeProvider.isDarkMode
+                  ? [Colors.blueGrey, Colors.blueGrey.shade700]
+                  : [AppColors.primaryColor, Colors.lightBlueAccent],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         elevation: 5,
       ),
       body: Padding(
@@ -129,7 +143,8 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
                   style: TextStyle(fontSize: 16),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1E88E5),
+                  backgroundColor:
+                      isDarkMode ? Colors.teal : const Color(0xFF1E88E5),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   shape: RoundedRectangleBorder(
@@ -144,8 +159,9 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
                 padding: const EdgeInsets.symmetric(vertical: 5.0),
                 height: 150,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                  border: Border.all(color: Colors.grey),
+                  color: isDarkMode ? Colors.grey[800] : Colors.grey.shade200,
+                  border: Border.all(
+                      color: isDarkMode ? Colors.grey[700]! : Colors.grey),
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: ListView.builder(
@@ -154,7 +170,9 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
                     return ListTile(
                       title: Text(
                         drugSuggestions[index],
-                        style: const TextStyle(color: Colors.black87),
+                        style: TextStyle(
+                          color: isDarkMode ? Colors.white70 : Colors.black87,
+                        ),
                       ),
                       onTap: () {
                         _controller.text = drugSuggestions[index];
@@ -173,7 +191,7 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
                   ? const Center(
                       child: Text(
                         "ابحث عن دواء لعرض المعلومات.",
-                        style: TextStyle(fontSize: 16, color: Colors.black54),
+                        style: TextStyle(fontSize: 16),
                       ),
                     )
                   : FutureBuilder<Map<String, dynamic>>(
@@ -194,6 +212,7 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
                           var drugInfo = snapshot.data!;
                           return Card(
                             elevation: 5,
+                            color: isDarkMode ? Colors.grey[850] : Colors.white,
                             margin: const EdgeInsets.all(10),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -201,18 +220,21 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
                             child: ListView(
                               padding: const EdgeInsets.all(16),
                               children: [
-                                _buildDrugDetailTile("الاسم العام",
-                                    drugInfo['generic_name']?.first),
+                                _buildDrugDetailTile(
+                                    "الاسم العام",
+                                    drugInfo['generic_name']?.first,
+                                    isDarkMode),
                                 _buildDrugDetailTile("العلامة التجارية",
-                                    drugInfo['brand_name']?.first),
-                                _buildDrugDetailTile(
-                                    "الغرض", drugInfo['purpose']?.first),
-                                _buildDrugDetailTile(
-                                    "التحذيرات", drugInfo['warnings']?.first),
+                                    drugInfo['brand_name']?.first, isDarkMode),
+                                _buildDrugDetailTile("الغرض",
+                                    drugInfo['purpose']?.first, isDarkMode),
+                                _buildDrugDetailTile("التحذيرات",
+                                    drugInfo['warnings']?.first, isDarkMode),
                                 _buildDrugDetailTile(
                                     "الجرعة",
                                     drugInfo['dosage_and_administration']
-                                        ?.first),
+                                        ?.first,
+                                    isDarkMode),
                               ],
                             ),
                           );
@@ -220,8 +242,7 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
                         return const Center(
                           child: Text(
                             "لا توجد بيانات",
-                            style:
-                                TextStyle(fontSize: 16, color: Colors.black54),
+                            style: TextStyle(fontSize: 16),
                           ),
                         );
                       },
@@ -233,7 +254,7 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
     );
   }
 
-  Widget _buildDrugDetailTile(String title, String? value) {
+  Widget _buildDrugDetailTile(String title, String? value, bool isDarkMode) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
@@ -241,16 +262,19 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
-              color: AppColors.primaryColor,
+              color: isDarkMode ? Colors.tealAccent : AppColors.primaryColor,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             value ?? 'هذه المعلومة غير متوفره, ستتوفر قريباً',
-            style: const TextStyle(fontSize: 14, color: Colors.black87),
+            style: TextStyle(
+              fontSize: 14,
+              color: isDarkMode ? Colors.white70 : Colors.black87,
+            ),
           ),
           const Divider(),
         ],
