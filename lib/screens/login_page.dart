@@ -133,7 +133,7 @@ class LoginPageState extends State<LoginPage>
 
       if (clinicSnapshot.docs.isNotEmpty) {
         if (mounted) {
-          Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
+          Navigator.of(context).pop();
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const ClinicPage()),
@@ -148,7 +148,7 @@ class LoginPageState extends State<LoginPage>
 
         if (userSnapshot.docs.isNotEmpty) {
           if (mounted) {
-            Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
+            Navigator.of(context).pop();
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(

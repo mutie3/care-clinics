@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../constants/colors_page.dart';
 import '../constants/theme_dark_mode.dart';
 import '../pages_doctors/bottom_navig.dart';
+import '../widgets/advertisements_board.dart';
 import 'clinic.dart';
 import 'login_page.dart';
 import 'profile_page.dart';
@@ -23,6 +24,26 @@ class HomePageSpecializations extends StatefulWidget {
 class HomePageSpecializationsState extends State<HomePageSpecializations> {
   final PageController _pageController = PageController();
   int _currentIndex = 0;
+  final List<Map<String, String>> advertisements = [
+    {
+      'title': 'عن التطبيق',
+      'description':
+          'تطبيقنا يتيح لك سهولة البحث عن العيادات الطبية، عرض التفاصيل، وحجز المواعيد بكل سهولة.',
+      'image': 'images/logo.png', // تأكد من وجود الصورة
+    },
+    {
+      'title': 'الشات بوت الطبي',
+      'description':
+          'تواصل مع الشات بوت الخاص بنا للإجابة على استفساراتك الصحية بشكل فوري وموثوق.',
+      'image': 'images/chat.png', // تأكد من وجود الصورة
+    },
+    {
+      'title': 'موسوعة الأدوية',
+      'description':
+          'اكتشف معلومات شاملة عن الأدوية، الجرعات، والتفاعلات الدوائية في موسوعتنا الطبية.',
+      'image': 'images/med.png', // تأكد من وجود الصورة
+    },
+  ];
 
   List<Map<String, dynamic>> getMedicalSpecialties() {
     return [
@@ -202,18 +223,33 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
   }
 
   Widget _buildSpecializationsScreen(BuildContext context) {
-    return GridView.builder(
-      padding: const EdgeInsets.all(16.0),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16.0,
-        mainAxisSpacing: 16.0,
-        childAspectRatio: 0.8,
-      ),
-      itemCount: getMedicalSpecialties().length,
-      itemBuilder: (context, index) {
-        return _buildSpecialtyCard(getMedicalSpecialties()[index], context);
-      },
+    return CustomScrollView(
+      slivers: [
+        // لوحة الإعلانات كـ Sliver
+        SliverToBoxAdapter(
+          child: AdvertisementsBoard(advertisements: advertisements),
+        ),
+
+        // شبكة التخصصات كـ SliverGrid
+        SliverPadding(
+          padding: const EdgeInsets.all(16.0),
+          sliver: SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 16.0,
+              childAspectRatio: 0.8,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return _buildSpecialtyCard(
+                    getMedicalSpecialties()[index], context);
+              },
+              childCount: getMedicalSpecialties().length,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
