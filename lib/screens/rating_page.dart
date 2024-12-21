@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 
 class RatingPage extends StatefulWidget {
   final String appointmentId;
@@ -40,7 +41,7 @@ class RatingPageState extends State<RatingPage> {
       });
       await _calculateAndStoreDoctorRating(widget.doctorId);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Rating submitted successfully!')),
+        SnackBar(content: Text('219'.tr)),
       );
       Navigator.pop(context); // العودة إلى الصفحة السابقة بعد التقديم
     } catch (e) {
@@ -121,7 +122,7 @@ class RatingPageState extends State<RatingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Rate Your Appointment'),
+        title: Text('220'.tr),
         backgroundColor: Colors.blueAccent, // تغيير اللون إلى الأزرق الفاتح
         centerTitle: true,
       ),
@@ -147,9 +148,9 @@ class RatingPageState extends State<RatingPage> {
             const SizedBox(height: 20),
 
             // إشعار حول سرية التقييم
-            const Text(
-              'Your feedback is anonymous and helps us improve the service. We appreciate your honesty!',
-              style: TextStyle(
+            Text(
+              '221'.tr,
+              style: const TextStyle(
                 fontSize: 16,
                 color: Colors.grey,
                 fontStyle: FontStyle.italic,
@@ -158,8 +159,8 @@ class RatingPageState extends State<RatingPage> {
             const SizedBox(height: 20),
 
             // تعليمات التقييم
-            const Text(
-              'Please rate your appointment:',
+            Text(
+              '222'.tr,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 10),
@@ -196,9 +197,9 @@ class RatingPageState extends State<RatingPage> {
               ),
               child: _isSubmitting
                   ? const CircularProgressIndicator()
-                  : const Text(
-                      'Submit Rating',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                  : Text(
+                      '176'.tr,
+                      style: const TextStyle(fontSize: 16, color: Colors.white),
                     ),
             ),
           ],

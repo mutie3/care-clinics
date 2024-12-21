@@ -194,8 +194,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                       builder: (context) => const UserAppointmentsPage()),
                 );
               }),
-              _buildInfoCard(
-                  Icons.medication_outlined, 'Search for medicines', '',
+              _buildInfoCard(Icons.medication_outlined, '202'.tr, '',
                   isDarkMode: isDarkMode, onTap: () {
                 Navigator.push(
                   context,

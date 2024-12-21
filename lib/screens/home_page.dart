@@ -26,21 +26,18 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
   int _currentIndex = 0;
   final List<Map<String, String>> advertisements = [
     {
-      'title': 'عن التطبيق',
-      'description':
-          'تطبيقنا يتيح لك سهولة البحث عن العيادات الطبية، عرض التفاصيل، وحجز المواعيد بكل سهولة.',
+      'title': '223'.tr,
+      'description': '224'.tr,
       'image': 'images/logo.png', // تأكد من وجود الصورة
     },
     {
-      'title': 'الشات بوت الطبي',
-      'description':
-          'تواصل مع الشات بوت الخاص بنا للإجابة على استفساراتك الصحية بشكل فوري وموثوق.',
+      'title': '225'.tr,
+      'description': '226'.tr,
       'image': 'images/chat.png', // تأكد من وجود الصورة
     },
     {
-      'title': 'موسوعة الأدوية',
-      'description':
-          'اكتشف معلومات شاملة عن الأدوية، الجرعات، والتفاعلات الدوائية في موسوعتنا الطبية.',
+      'title': '227'.tr,
+      'description': '228'.tr,
       'image': 'images/med.png', // تأكد من وجود الصورة
     },
   ];

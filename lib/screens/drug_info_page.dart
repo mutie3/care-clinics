@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'dart:async';
@@ -40,7 +41,7 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
         List<String> suggestions = [];
         for (var drug in data['results']) {
           if (drug['brand_name'] != null) {
-            suggestions.add(drug['brand_name'][0] ?? 'هذه المعلومة غير متوفره');
+            suggestions.add(drug['brand_name'][0] ?? '203'.tr);
           }
         }
         return suggestions;
@@ -48,7 +49,7 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
         return [];
       }
     } else {
-      throw Exception('فشل تحميل الاقتراحات');
+      throw Exception('204'.tr);
     }
   }
 
@@ -63,10 +64,10 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
       if (data['results'] != null && data['results'].isNotEmpty) {
         return data['results'][0];
       } else {
-        throw Exception('لا توجد نتائج');
+        throw Exception('205'.tr);
       }
     } else {
-      throw Exception('فشل تحميل البيانات');
+      throw Exception('206'.tr);
     }
   }
 
@@ -105,9 +106,9 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "بحث عن دواء",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        title: Text(
+          '207'.tr,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         flexibleSpace: Container(
@@ -130,7 +131,7 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
           children: [
             CustomTextField(
               controller: _controller,
-              text: 'أدخل اسم الدواء بشكل صحيح',
+              text: '208'.tr,
               icon: const Icon(Icons.medical_information),
             ),
             const SizedBox(height: 20),
@@ -138,9 +139,9 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
               child: ElevatedButton.icon(
                 onPressed: searchDrug,
                 icon: const Icon(Icons.medical_services),
-                label: const Text(
-                  "بحث",
-                  style: TextStyle(fontSize: 16),
+                label: Text(
+                  '209'.tr,
+                  style: const TextStyle(fontSize: 16),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
@@ -188,10 +189,10 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
             const SizedBox(height: 20),
             Expanded(
               child: drugData == null
-                  ? const Center(
+                  ? Center(
                       child: Text(
-                        "ابحث عن دواء لعرض المعلومات.",
-                        style: TextStyle(fontSize: 16),
+                        '210'.tr,
+                        style: const TextStyle(fontSize: 16),
                       ),
                     )
                   : FutureBuilder<Map<String, dynamic>>(
@@ -202,10 +203,10 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
                           return const Center(
                               child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
-                          return const Center(
+                          return Center(
                             child: Text(
-                              " !أدخل اسم الدواء بالإنجليزية بشكل صحيح",
-                              style: TextStyle(color: Colors.red),
+                              '211'.tr,
+                              style: const TextStyle(color: Colors.red),
                             ),
                           );
                         } else if (snapshot.hasData) {
@@ -221,17 +222,17 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
                               padding: const EdgeInsets.all(16),
                               children: [
                                 _buildDrugDetailTile(
-                                    "الاسم العام",
+                                    '212'.tr,
                                     drugInfo['generic_name']?.first,
                                     isDarkMode),
-                                _buildDrugDetailTile("العلامة التجارية",
+                                _buildDrugDetailTile('213'.tr,
                                     drugInfo['brand_name']?.first, isDarkMode),
-                                _buildDrugDetailTile("الغرض",
+                                _buildDrugDetailTile('214'.tr,
                                     drugInfo['purpose']?.first, isDarkMode),
-                                _buildDrugDetailTile("التحذيرات",
+                                _buildDrugDetailTile('215'.tr,
                                     drugInfo['warnings']?.first, isDarkMode),
                                 _buildDrugDetailTile(
-                                    "الجرعة",
+                                    '216'.tr,
                                     drugInfo['dosage_and_administration']
                                         ?.first,
                                     isDarkMode),
@@ -239,10 +240,10 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
                             ),
                           );
                         }
-                        return const Center(
+                        return Center(
                           child: Text(
-                            "لا توجد بيانات",
-                            style: TextStyle(fontSize: 16),
+                            '217'.tr,
+                            style: const TextStyle(fontSize: 16),
                           ),
                         );
                       },
@@ -270,7 +271,7 @@ class DrugInfoSearchPageState extends State<DrugInfoSearchPage> {
           ),
           const SizedBox(height: 4),
           Text(
-            value ?? 'هذه المعلومة غير متوفره, ستتوفر قريباً',
+            value ?? '218'.tr,
             style: TextStyle(
               fontSize: 14,
               color: isDarkMode ? Colors.white70 : Colors.black87,
