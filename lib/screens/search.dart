@@ -9,8 +9,9 @@ import '../pages_doctors/doctor_card.dart';
 import '../pages_doctors/doctor_detail_page.dart';
 
 class Search extends StatefulWidget {
-  const Search({super.key, this.selectedSpecialty = ''});
-
+  const Search(
+      {super.key, this.selectedSpecialty = '', required this.isGustLogin});
+  final bool isGustLogin;
   final String selectedSpecialty;
 
   @override
@@ -40,6 +41,11 @@ class _SearchState extends State<Search> {
       for (var clinicDoc in clinicsSnapshot.docs) {
         var clinicData = clinicDoc.data();
         String clinicId = clinicDoc.id;
+
+        bool isApproved = clinicData['isApproved'] ?? false;
+        if (!isApproved) {
+          continue;
+        }
 
         double latitude = 0.0;
         double longitude = 0.0;
@@ -219,6 +225,7 @@ class _SearchState extends State<Search> {
                                   rating: clinic["rating"],
                                   latitude: clinic["latitude"],
                                   longitude: clinic["longitude"],
+                                  isGustLogin: widget.isGustLogin,
                                 ),
                               ),
                             );

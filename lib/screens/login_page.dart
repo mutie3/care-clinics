@@ -93,7 +93,6 @@ class LoginPageState extends State<LoginPage>
     }
   }
 
-  // تسجيل الدخول
   Future<void> _login() async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -120,7 +119,6 @@ class LoginPageState extends State<LoginPage>
 
       final String email = _emailController.text.trim();
 
-      // حفظ حالة "Remember Me" إذا تم اختياره
       if (rememberMe) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isRemembered', true);
@@ -132,12 +130,23 @@ class LoginPageState extends State<LoginPage>
           .get();
 
       if (clinicSnapshot.docs.isNotEmpty) {
-        if (mounted) {
+        bool isApproved = clinicSnapshot.docs.first.get('isApproved') ?? false;
+
+        if (isApproved) {
+          if (mounted) {
+            Navigator.of(context).pop();
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const ClinicPage()),
+              (Route<dynamic> route) => false,
+            );
+          }
+        } else {
           Navigator.of(context).pop();
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const ClinicPage()),
-            (Route<dynamic> route) => false,
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Your clinic account is not approved yet."),
+            ),
           );
         }
       } else {
@@ -160,18 +169,16 @@ class LoginPageState extends State<LoginPage>
             );
           }
         } else {
-          if (mounted) {
-            Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Email not found")),
-            );
-          }
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Email not found")),
+          );
         }
       }
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
 
-      Navigator.of(context).pop(); // إخفاء الـ LoadingOverlay
+      Navigator.of(context).pop();
       String errorMessage = 'Wrong Email or Password';
       if (e.code == 'user-not-found') {
         errorMessage = 'No user found for that email.';

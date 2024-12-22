@@ -58,6 +58,10 @@ class ClinicsState extends State<Clinics> {
       for (var clinicDoc in clinicsSnapshot.docs) {
         var clinicData = clinicDoc.data();
         String clinicId = clinicDoc.id;
+        bool isApproved = clinicData['isApproved'] ?? false;
+        if (!isApproved) {
+          continue;
+        }
 
         double latitude = 0.0;
         double longitude = 0.0;
@@ -212,6 +216,7 @@ class ClinicsState extends State<Clinics> {
                                     rating: selectedClinic["rating"],
                                     latitude: selectedClinic["latitude"],
                                     longitude: selectedClinic["longitude"],
+                                    isGustLogin: widget.isGustLogin,
                                   ),
                                 ),
                               );

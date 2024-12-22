@@ -12,7 +12,7 @@ import 'loading_overlay.dart';
 class ClincInfo extends StatefulWidget {
   final String clinicId;
 
-  const ClincInfo({Key? key, required this.clinicId}) : super(key: key);
+  const ClincInfo({super.key, required this.clinicId});
 
   @override
   State<ClincInfo> createState() => _ClincInfoState();

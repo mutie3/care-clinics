@@ -97,8 +97,9 @@ class _RegPageState extends State<RegPage> {
         'email': emailController.text,
         'location': locationController.text,
         'phone': phoneController.text,
-        // 'imageUrl': imageUrl,
-        // 'fileUrl': fileUrl,
+        'isApproved': false,
+        'imageUrl': imageUrl,
+        'fileUrl': fileUrl,
       });
 
       if (mounted) {

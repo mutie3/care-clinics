@@ -214,7 +214,9 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
   List<Widget> _buildPageViewChildren() {
     return [
       _buildSpecializationsScreen(context),
-      const Search(),
+      Search(
+        isGustLogin: widget.isGustLogin,
+      ),
       if (!widget.isGustLogin) ...[
         const DashboardScreen(),
         const UserProfileScreen(),
@@ -256,63 +258,84 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
   Widget _buildSpecialtyCard(
       Map<String, dynamic> specialty, BuildContext context) {
     final specialtyName = specialty['name'] ?? '';
+
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
+        final isDarkMode = themeProvider.isDarkMode;
+        final cardColor =
+            isDarkMode ? Colors.grey[900] : AppColors.scaffoldBackgroundColor;
+        final textColor = isDarkMode ? Colors.white : Colors.black87;
+        final borderColor = isDarkMode
+            ? Colors.blueGrey
+            : AppColors.primaryColor.withOpacity(0.2);
+
         return GestureDetector(
           onTap: () {
-            if (widget.isGustLogin && specialtyName != '14'.tr) {
-              _showVisitorMessage(context);
-            } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Clinics(
-                    selectedSpecialty:
-                        specialtyName == '14'.tr ? '' : specialtyName,
-                    isGustLogin: widget.isGustLogin,
-                  ),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Clinics(
+                  selectedSpecialty:
+                      specialtyName == '14'.tr ? '' : specialtyName,
+                  isGustLogin: widget.isGustLogin,
                 ),
-              );
-            }
+              ),
+            );
           },
           child: Card(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0), // زاوية أكثر نعومة
+              borderRadius: BorderRadius.circular(25.0),
+              side: BorderSide(
+                color: borderColor,
+                width: 2.0,
+              ),
             ),
-            elevation: 10.0, // زيادة الظل
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[850]
-                : AppColors.scaffoldBackgroundColor,
+            elevation: 10.0,
+            shadowColor: isDarkMode
+                ? Colors.black54
+                : Colors.grey.withOpacity(0.3), // Subtle shadow
+            color: cardColor,
             child: Padding(
-              padding: const EdgeInsets.all(
-                  16.0), // زيادة padding لجعل البطاقة أكثر اتساعًا
+              padding:
+                  const EdgeInsets.symmetric(vertical: 24.0, horizontal: 20.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 20),
-                  // زيادة حجم الأيقونة لتكون أكثر وضوحًا
-                  FaIcon(
-                    specialty['icon'],
-                    size: 50, // زيادة الحجم لجعل الأيقونة أكثر بروزًا
-                    color: themeProvider.isDarkMode
-                        ? Colors.white
-                        : AppColors.primaryColor,
+                  Container(
+                    decoration: BoxDecoration(
+                      color: isDarkMode
+                          ? Colors.blueGrey.withOpacity(0.2)
+                          : AppColors.primaryColor.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    padding: const EdgeInsets.all(12.0),
+                    child: FaIcon(
+                      specialty['icon'],
+                      size: 60.0, // Large icon for emphasis
+                      color: isDarkMode
+                          ? Colors.lightBlueAccent
+                          : AppColors.primaryColor,
+                    ),
                   ),
-                  const SizedBox(height: 10.0),
-                  Expanded(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        specialtyName,
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.merriweather(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16.0, // زيادة الحجم قليلاً لجعل النص أكبر
-                          color: themeProvider.isDarkMode
-                              ? Colors.white
-                              : Colors.black87,
-                        ),
-                      ),
+                  const SizedBox(height: 18.0),
+                  Text(
+                    specialtyName,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10.0,
+                      color: textColor,
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  Container(
+                    width: 50.0,
+                    height: 3.0,
+                    decoration: BoxDecoration(
+                      color: isDarkMode
+                          ? Colors.lightBlueAccent
+                          : AppColors.primaryColor,
+                      borderRadius: BorderRadius.circular(1.5),
                     ),
                   ),
                 ],
@@ -328,27 +351,95 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text('125'.tr),
-          content: Text('126'.tr),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
-              },
-              child: Text('60'.tr),
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0), // Rounded corners
+          ),
+          elevation: 16.0, // Adding shadow for elevation
+          backgroundColor: Colors.white, // Background color of the dialog
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '125'.tr,
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  '126'.tr,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.black54,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()),
+                          (route) => false,
+                        );
+                      },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 25, vertical: 12),
+                        backgroundColor:
+                            Colors.blueAccent, // Button background color
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(12.0), // Rounded corners
+                        ),
+                      ),
+                      child: Text(
+                        '60'.tr,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 25, vertical: 12),
+                        backgroundColor:
+                            Colors.grey[300], // Button background color
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(12.0), // Rounded corners
+                        ),
+                      ),
+                      child: Text(
+                        '117'.tr,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('117'.tr),
-            ),
-          ],
+          ),
         );
       },
     );

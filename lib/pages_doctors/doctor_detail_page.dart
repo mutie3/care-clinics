@@ -3,13 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../screens/login_page.dart';
 import '../widgets/rotating_dropdown.dart';
-import 'date_picker_widget.dart';
 
 class DoctorDetailPage extends StatefulWidget {
   final String clinicId;
@@ -19,7 +20,7 @@ class DoctorDetailPage extends StatefulWidget {
   final String rating;
   final double latitude;
   final double longitude;
-
+  final bool isGustLogin;
   const DoctorDetailPage({
     super.key,
     required this.clinicId,
@@ -29,6 +30,7 @@ class DoctorDetailPage extends StatefulWidget {
     required this.rating,
     required this.latitude,
     required this.longitude,
+    required this.isGustLogin,
   });
 
   @override
@@ -95,7 +97,110 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
     }
   }
 
+  void _showLoginPrompt() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0), // Rounded corners
+          ),
+          elevation: 16.0, // Adding shadow for elevation
+          backgroundColor: Colors.white, // Background color of the dialog
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '125'.tr,
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  '126'.tr,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.black54,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()),
+                          (route) => false,
+                        );
+                      },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 25, vertical: 12),
+                        backgroundColor:
+                            Colors.blueAccent, // Button background color
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(12.0), // Rounded corners
+                        ),
+                      ),
+                      child: Text(
+                        '60'.tr,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 25, vertical: 12),
+                        backgroundColor:
+                            Colors.grey[300], // Button background color
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(12.0), // Rounded corners
+                        ),
+                      ),
+                      child: Text(
+                        '117'.tr,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _makeAppointment(int? selectedDoctorIndex) async {
+    if (widget.isGustLogin) {
+      _showLoginPrompt();
+      return;
+    }
+
     try {
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
       await firestore.collection('appointments').add({
@@ -329,9 +434,9 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                         allowHalfRating: true,
                                         itemCount: 5, // عدد النجوم
                                         itemSize: 24.0, // حجم النجوم
-                                        itemPadding: EdgeInsets.symmetric(
+                                        itemPadding: const EdgeInsets.symmetric(
                                             horizontal: 2.0),
-                                        itemBuilder: (context, _) => Icon(
+                                        itemBuilder: (context, _) => const Icon(
                                           Icons.star,
                                           color: Colors.amber,
                                         ),
