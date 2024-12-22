@@ -1,5 +1,8 @@
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../constants/theme_dark_mode.dart';
 
 class CustomTextField extends StatelessWidget {
   final String? text;
@@ -27,39 +30,60 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      validator: validator,
-      obscureText: obscureText,
-      onChanged: onChanged,
-      enabled: enabled,
-      decoration: InputDecoration(
-        hintText: text,
-        hintStyle: const TextStyle(
-          color: AppColors.textColor,
-          fontFamily: 'Tajawal',
-        ),
-        prefixIcon: icon,
-        suffixIcon: suffixIcon,
-        labelText: text,
-        labelStyle: const TextStyle(
-          color: AppColors.textColor,
-          fontFamily: 'Tajawal',
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25.0),
-          borderSide: const BorderSide(
-            color: AppColors.primaryColor,
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          validator: validator,
+          obscureText: obscureText,
+          onChanged: onChanged,
+          enabled: enabled,
+          style: TextStyle(
+            color: themeProvider.isDarkMode
+                ? Colors.white // النص في الوضع المظلم يكون أبيض
+                : Colors.black, // النص في الوضع العادي يكون أسود
+            fontFamily: 'Tajawal',
           ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25.0),
-          borderSide: const BorderSide(
-            color: AppColors.primaryColor,
+          decoration: InputDecoration(
+            hintText: text,
+            hintStyle: TextStyle(
+              color: themeProvider.isDarkMode
+                  ? Colors
+                      .grey.shade500 // تلميح في الوضع المظلم بلون رمادي خفيف
+                  : AppColors.textColor, // تلميح في الوضع العادي
+              fontFamily: 'Tajawal',
+            ),
+            prefixIcon: icon,
+            suffixIcon: suffixIcon,
+            labelText: text,
+            labelStyle: TextStyle(
+              color: themeProvider.isDarkMode
+                  ? Colors.white // التسمية في الوضع المظلم تكون بيضاء
+                  : AppColors.textColor, // التسمية في الوضع العادي
+              fontFamily: 'Tajawal',
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: BorderSide(
+                color: themeProvider.isDarkMode
+                    ? Colors.grey.shade600 // حدود داكنة في الوضع الغامق
+                    : AppColors.primaryColor, // حدود في الوضع الفاتح
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: BorderSide(
+                color: themeProvider.isDarkMode
+                    ? Colors.blueGrey
+                        .shade300 // الحدود عندما يكون الحقل متركزًا في الوضع المظلم
+                    : AppColors
+                        .primaryColor, // الحدود عندما يكون الحقل متركزًا في الوضع العادي
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

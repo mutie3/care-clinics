@@ -298,15 +298,17 @@ class LoginButtons extends StatelessWidget {
                   borderRadius: BorderRadius.circular(25),
                 ),
                 backgroundColor: themeProvider.isDarkMode
-                    ? Colors.grey
-                    : AppColors.primaryColor,
+                    ? Colors.blueGrey
+                        .shade700 // لون خلفية أزرق داكن في الوضع الغامق
+                    : AppColors.primaryColor, // اللون الأساسي في الوضع الفاتح
               ),
               child: const Center(
                 child: Text(
                   'Login',
                   style: TextStyle(
                     fontSize: 18,
-                    color: AppColors.scaffoldBackgroundColor,
+                    color: AppColors
+                        .scaffoldBackgroundColor, // لون النص مناسب مع الخلفية
                   ),
                 ),
               ),
@@ -319,8 +321,9 @@ class LoginButtons extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: themeProvider.isDarkMode
-                      ? Colors.grey
-                      : AppColors.scaffoldBackgroundColor,
+                      ? Colors.grey.shade400 // لون رمادي خفيف في الوضع الغامق
+                      : AppColors
+                          .scaffoldBackgroundColor, // لون النص الفاتح في الوضع العادي
                 ),
               ),
             ),
@@ -333,7 +336,8 @@ class LoginButtons extends StatelessWidget {
                   borderRadius: BorderRadius.circular(25),
                 ),
                 backgroundColor: themeProvider.isDarkMode
-                    ? Colors.grey
+                    ? Colors.blueGrey
+                        .shade700 // نفس اللون الداكن للأزرار في الوضع الغامق
                     : AppColors.primaryColor,
               ),
               child: const Center(

@@ -22,6 +22,8 @@ class RotatingDropdownState extends State<RotatingDropdown> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Center(
       // Center the dropdown in the middle of the page
       child: GestureDetector(
@@ -34,23 +36,29 @@ class RotatingDropdownState extends State<RotatingDropdown> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 12, vertical: 10), // Smaller padding
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(8), // Smaller radius
+                color: isDarkMode
+                    ? Colors.grey[800]
+                    : Colors.blue, // Dark mode background
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     widget.selectedValue ?? "Select Time",
-                    style: const TextStyle(
-                        color: Colors.white, fontSize: 16), // Smaller font size
+                    style: TextStyle(
+                      color: isDarkMode
+                          ? Colors.white
+                          : Colors.white, // Light text in dark mode
+                      fontSize: 16,
+                    ),
                   ),
-                  const Icon(
+                  Icon(
                     Icons.arrow_drop_down,
-                    color: Colors.white,
+                    color:
+                        isDarkMode ? Colors.white : Colors.white, // Icon color
                   ),
                 ],
               ),
@@ -60,7 +68,9 @@ class RotatingDropdownState extends State<RotatingDropdown> {
                 margin: const EdgeInsets.only(top: 8),
                 padding: const EdgeInsets.symmetric(vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDarkMode
+                      ? Colors.grey[850]
+                      : Colors.white, // Dropdown background color
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
@@ -69,26 +79,25 @@ class RotatingDropdownState extends State<RotatingDropdown> {
                     ),
                   ],
                 ),
-                height: 100, // Smaller height for dropdown
+                height: 100,
                 child: PageView.builder(
                   controller: _pageController,
                   itemCount: widget.items.length,
                   itemBuilder: (context, index) {
-                    // Determine the arrows based on the index
                     Icon? leftArrow;
                     Icon? rightArrow;
 
                     if (index == 0) {
-                      rightArrow =
-                          const Icon(Icons.arrow_forward, color: Colors.white);
+                      rightArrow = Icon(Icons.arrow_forward,
+                          color: isDarkMode ? Colors.white : Colors.black);
                     } else if (index == widget.items.length - 1) {
-                      leftArrow =
-                          const Icon(Icons.arrow_back, color: Colors.white);
+                      leftArrow = Icon(Icons.arrow_back,
+                          color: isDarkMode ? Colors.white : Colors.black);
                     } else {
-                      leftArrow =
-                          const Icon(Icons.arrow_back, color: Colors.white);
-                      rightArrow =
-                          const Icon(Icons.arrow_forward, color: Colors.white);
+                      leftArrow = Icon(Icons.arrow_back,
+                          color: isDarkMode ? Colors.white : Colors.black);
+                      rightArrow = Icon(Icons.arrow_forward,
+                          color: isDarkMode ? Colors.white : Colors.black);
                     }
 
                     return GestureDetector(
@@ -101,13 +110,14 @@ class RotatingDropdownState extends State<RotatingDropdown> {
                       child: Container(
                         margin: const EdgeInsets.symmetric(vertical: 6),
                         padding: const EdgeInsets.symmetric(
-                          vertical: 10, // Reduced vertical padding
-                          horizontal: 14, // Reduced horizontal padding
+                          vertical: 10,
+                          horizontal: 14,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.blueAccent,
-                          borderRadius:
-                              BorderRadius.circular(10), // Smaller corners
+                          color: isDarkMode
+                              ? Colors.blueGrey
+                              : Colors.blueAccent, // Color in dropdown
+                          borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.1),
@@ -120,18 +130,18 @@ class RotatingDropdownState extends State<RotatingDropdown> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (leftArrow != null) leftArrow,
-                            const SizedBox(
-                                width: 6), // Space between icon and text
+                            const SizedBox(width: 6),
                             Expanded(
                               child: Center(
                                 child: Text(
                                   widget.items[index],
-                                  style: const TextStyle(
-                                    fontSize: 18, // Smaller font size
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: isDarkMode
+                                        ? Colors.white
+                                        : Colors.white, // Text color
                                     fontWeight: FontWeight.w600,
-                                    letterSpacing:
-                                        1.2, // Reduced letter spacing
+                                    letterSpacing: 1.2,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
