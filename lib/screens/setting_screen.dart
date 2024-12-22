@@ -2,6 +2,8 @@ import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:care_clinic/localization/local_controllet.dart';
 import 'package:care_clinic/screens/accont_info_screen.dart';
+import 'package:care_clinic/screens/change_passowrd_page.dart';
+import 'package:care_clinic/screens/change_phone_number.dart';
 import 'package:care_clinic/screens/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -90,11 +92,23 @@ class SettingsScreenState extends State<SettingsScreen> {
           ),
           _buildCustomTile(
             title: '26'.tr,
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ChangePhonePage()),
+              );
+            },
           ),
           _buildCustomTile(
             title: '27'.tr,
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ChangePasswordPage()),
+              );
+            },
           ),
           _buildCustomTile(
             title: '28'.tr,

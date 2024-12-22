@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:transparent_image/transparent_image.dart';
+import '../constants/colors_page.dart';
 import '../pages_doctors/doctor_detail_page.dart';
 
 class Clinics extends StatefulWidget {
@@ -152,13 +153,33 @@ class ClinicsState extends State<Clinics> {
           appBar: AppBar(
             title: Text(
               '159'.tr,
-              style: TextStyle(
-                color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
-            backgroundColor:
-                themeProvider.isDarkMode ? Colors.grey[900] : Colors.white,
-            elevation: 0,
+            centerTitle: true,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: themeProvider.isDarkMode
+                      ? [Colors.blueGrey, Colors.blueGrey.shade700]
+                      : [AppColors.primaryColor, Colors.lightBlueAccent],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 10,
+                    spreadRadius: 1,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+            ),
+            elevation: 5,
           ),
           body: Column(
             children: [

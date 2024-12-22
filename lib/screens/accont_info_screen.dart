@@ -192,10 +192,35 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
       builder: (context, themeProvider, child) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('25'.tr),
-            backgroundColor: themeProvider.isDarkMode
-                ? AppColors.textBox
-                : AppColors.primaryColor,
+            title: Text(
+              '25'.tr, // Use the translation for title text here
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            centerTitle: true,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: themeProvider.isDarkMode
+                      ? [Colors.blueGrey, Colors.blueGrey.shade700]
+                      : [Colors.blueAccent, Colors.lightBlueAccent],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 10,
+                    spreadRadius: 1,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+            ),
+            elevation: 5,
             actions: [
               IconButton(
                 icon: Icon(isEditing ? Icons.save : Icons.edit),
@@ -250,7 +275,8 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
                     ),
                     child: Text(
                       birthDate == null
-                          ? '156'.tr
+                          ? '156'
+                              .tr // Placeholder text when date is not selected
                           : DateFormat('yyyy-MM-dd').format(birthDate!),
                     ),
                   ),
@@ -262,7 +288,7 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
                     foregroundColor: Colors.white,
                   ),
                   icon: const Icon(Icons.delete),
-                  label: Text('157'.tr),
+                  label: Text('157'.tr), // "Delete Account" text
                   onPressed: _showDeleteAccountDialog,
                 ),
               ],

@@ -13,11 +13,35 @@ class AboutAppScreen extends StatelessWidget {
       builder: (context, themeProvider, child) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('45'.tr),
+            title: Text(
+              '45'.tr,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
             centerTitle: true,
-            backgroundColor: themeProvider.isDarkMode
-                ? AppColors.textBox
-                : AppColors.primaryColor,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: themeProvider.isDarkMode
+                      ? [Colors.blueGrey, Colors.blueGrey.shade700]
+                      : [AppColors.primaryColor, Colors.lightBlueAccent],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 10,
+                    spreadRadius: 1,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+            ),
+            elevation: 5,
           ),
           body: Padding(
             padding: const EdgeInsets.all(16.0),

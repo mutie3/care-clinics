@@ -272,8 +272,29 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
           'Your Appointments',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: AppColors.primaryColor,
+        backgroundColor: AppColors
+            .primaryColor, // You can customize this color or make it dynamic
         centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.primaryColor.withOpacity(0.8),
+                AppColors.primaryColor.withOpacity(1.0),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 8,
+                spreadRadius: 1,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+        ),
         elevation: 5,
       ),
       body: isLoading

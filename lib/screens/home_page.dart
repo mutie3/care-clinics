@@ -226,12 +226,9 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
   Widget _buildSpecializationsScreen(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        // لوحة الإعلانات كـ Sliver
         SliverToBoxAdapter(
           child: AdvertisementsBoard(advertisements: advertisements()),
         ),
-
-        // شبكة التخصصات كـ SliverGrid
         SliverPadding(
           padding: const EdgeInsets.all(16.0),
           sliver: SliverGrid(
@@ -363,7 +360,7 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
               children: [
                 Text(
                   '125'.tr,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
@@ -373,7 +370,7 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
                 const SizedBox(height: 10),
                 Text(
                   '126'.tr,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16.0,
                     color: Colors.black54,
                   ),
@@ -404,7 +401,7 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
                       ),
                       child: Text(
                         '60'.tr,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16.0,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -427,7 +424,7 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
                       ),
                       child: Text(
                         '117'.tr,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16.0,
                           color: Colors.black87,
                           fontWeight: FontWeight.bold,
@@ -439,26 +436,6 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
               ],
             ),
           ),
-        );
-      },
-    );
-  }
-
-  void _showVisitorMessage(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('168'.tr),
-          content: Text('169'.tr),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('148'.tr),
-            ),
-          ],
         );
       },
     );

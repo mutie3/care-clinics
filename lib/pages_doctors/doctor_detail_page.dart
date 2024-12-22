@@ -114,7 +114,7 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
               children: [
                 Text(
                   '125'.tr,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
@@ -124,7 +124,7 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                 const SizedBox(height: 10),
                 Text(
                   '126'.tr,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16.0,
                     color: Colors.black54,
                   ),
@@ -155,7 +155,7 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                       ),
                       child: Text(
                         '60'.tr,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16.0,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -178,7 +178,7 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                       ),
                       child: Text(
                         '117'.tr,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16.0,
                           color: Colors.black87,
                           fontWeight: FontWeight.bold,
@@ -374,8 +374,35 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
       builder: (context, themeProvider, child) {
         return Scaffold(
             appBar: AppBar(
-              title: const Text("Clinic"),
-              backgroundColor: AppColors.primaryColor,
+              title: Text(
+                '253'.tr,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              centerTitle: true,
+              flexibleSpace: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: themeProvider.isDarkMode
+                        ? [Colors.blueGrey, Colors.blueGrey.shade700]
+                        : [AppColors.primaryColor, Colors.lightBlueAccent],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+              ),
+              elevation: 5,
             ),
             body: WillPopScope(
               onWillPop: () async {
