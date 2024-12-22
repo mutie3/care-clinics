@@ -1,4 +1,3 @@
-import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -42,6 +41,7 @@ class RememberMeAndForgotPasswordRowState
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
+        final isDarkMode = themeProvider.isDarkMode;
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -57,14 +57,20 @@ class RememberMeAndForgotPasswordRowState
                         rememberMe); // Notify the parent widget of the change
                     _saveRememberMe(); // Save the value whenever it's changed
                   },
-                  activeColor: themeProvider.isDarkMode
-                      ? AppColors.textBox
-                      : AppColors.primaryColor,
-                  checkColor: AppColors.scaffoldBackgroundColor,
+                  activeColor: isDarkMode
+                      ? Colors.blueAccent
+                      : Colors.blue, // Color for the active checkbox
+                  checkColor: isDarkMode
+                      ? Colors.white
+                      : Colors.black87, // Color for checked box
                 ),
                 Text(
                   '62'.tr,
-                  style: const TextStyle(color: AppColors.textBox),
+                  style: TextStyle(
+                    color: isDarkMode
+                        ? Colors.white
+                        : Colors.black87, // Text color based on mode
+                  ),
                 ),
               ],
             ),
@@ -80,9 +86,9 @@ class RememberMeAndForgotPasswordRowState
                 '63'.tr,
                 style: TextStyle(
                   fontFamily: 'Tajawal',
-                  color: themeProvider.isDarkMode
-                      ? AppColors.textBox
-                      : AppColors.primaryColor,
+                  color: isDarkMode
+                      ? Colors.blueAccent
+                      : Colors.blue, // Text button color
                 ),
               ),
             ),
