@@ -40,6 +40,7 @@ class _ClincInfoState extends State<ClincInfo> {
         'experienceController': TextEditingController(),
         'daysSelected': ValueNotifier<List<bool>>(List<bool>.filled(7, false)),
         'imageFile': null,
+        'averageRating': 0,
       });
     });
   }

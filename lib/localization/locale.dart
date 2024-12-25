@@ -118,10 +118,8 @@ class MyLocale implements Translations {
               "يهدف تطبيق Care Clinic إلى تقديم خدمات الرعاية الصحية بطريقة سهلة ومريحة. يساعد المستخدمين على إدارة مواعيدهم الطبية، الوصول إلى السجلات الطبية، والتواصل مع الأطباء بشكل فعال.",
           "112": "تطبيق عيادة الرعاية",
           "113": "أهداف التطبيق",
-          "114": """'- تسهيل الوصول إلى الرعاية الصحية.
-                    '- إدارة المواعيد بكفاءة.
-                    '- الحفاظ على السجلات الطبية بشكل آمن.
-                    '- توفير معلومات صحية موثوقة للمستخدمين.'""",
+          "114":
+              """- تسهيل الوصول إلى الرعاية الصحية.\n- إدارة المواعيد بكفاءة.\n- الحفاظ على السجلات الطبية بشكل آمن.\n- توفير معلومات صحية موثوقة للمستخدمين.""",
           "115": "تأكيد الحذف",
           "116": "هل أنت متأكد أنك تريد حذف حسابك؟",
           "117": "إلغاء",
@@ -383,10 +381,8 @@ class MyLocale implements Translations {
               "Care Clinic app aims to provide healthcare services in an easy-to-navigate way. It helps users manage their medical appointments, access medical records, and communicate with indicators effectively.",
           "112": "Care Clinic App",
           "113": "Application objectives:",
-          "114": """'- Facilitating access to healthcare.
-          '- Managing appointments efficiently.
-          '- Maintaining medical records securely.
-          '- Providing reliable health information to users.'""",
+          "114":
+              """- Facilitating access to healthcare.\n- Managing appointments efficiently.\n- Maintaining medical records securely.\n- Providing reliable health information to users.""",
           "115": "Confirm Delete",
           "116":
               "Are you sure you want to delete your account? This action cannot be undone.",

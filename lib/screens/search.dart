@@ -212,7 +212,6 @@ class _SearchState extends State<Search> {
                           doctorName: clinic["name"] ?? "No Name",
                           doctorSpeciality:
                               clinic["speciality"] ?? "No Specialty",
-                          rating: clinic["rating"] ?? "0",
                           onTap: () {
                             Navigator.push(
                               context,

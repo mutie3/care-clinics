@@ -15,10 +15,11 @@ class AboutAppScreen extends StatelessWidget {
           appBar: AppBar(
             title: Text(
               '45'.tr,
-              style: const TextStyle(
-                fontSize: 22,
+              style: TextStyle(
+                fontSize: 26,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: themeProvider.isDarkMode ? Colors.white : Colors.black87,
+                letterSpacing: 1.5,
               ),
             ),
             centerTitle: true,
@@ -26,49 +27,72 @@ class AboutAppScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: themeProvider.isDarkMode
-                      ? [Colors.blueGrey, Colors.blueGrey.shade700]
+                      ? [Colors.blueGrey, Colors.blueGrey.shade800]
                       : [AppColors.primaryColor, Colors.lightBlueAccent],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 10,
-                    spreadRadius: 1,
-                    offset: const Offset(0, 4),
+                    color: themeProvider.isDarkMode
+                        ? Colors.black.withOpacity(0.5)
+                        : Colors.black.withOpacity(0.2),
+                    blurRadius: 16,
+                    spreadRadius: 4,
+                    offset: const Offset(0, 6),
                   ),
                 ],
               ),
             ),
-            elevation: 5,
+            elevation: 8,
           ),
           body: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     '112'.tr,
-                    style: const TextStyle(
-                        fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: themeProvider.isDarkMode
+                            ? Colors.white
+                            : Colors.black87),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 18),
                   Text(
                     '111'.tr,
-                    style: const TextStyle(fontSize: 16),
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.normal,
+                        color: themeProvider.isDarkMode
+                            ? Colors.white70
+                            : Colors.black54),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 18),
                   Text(
                     '113'.tr,
                     style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.scaffoldBackgroundColor),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Text(
                     '114'.tr,
-                    style: const TextStyle(fontSize: 16),
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.normal,
+                        color: themeProvider.isDarkMode
+                            ? Colors.white70
+                            : Colors.black54),
                   ),
                 ],
               ),

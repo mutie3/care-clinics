@@ -11,6 +11,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../screens/login_page.dart';
 import '../widgets/rotating_dropdown.dart';
+import 'package:intl/intl.dart';
 
 class DoctorDetailPage extends StatefulWidget {
   final String clinicId;
@@ -68,6 +69,17 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
     setState(() {
       isLoading = false;
     });
+  }
+
+  String getCurrentDay() {
+    // الحصول على اليوم الحالي
+    DateTime now = DateTime.now();
+
+    // استخدام DateFormat لتحويل اليوم إلى صيغة مختصرة مثل "sun", "mon", "tue", ...
+    String day =
+        DateFormat('EEE').format(now).toUpperCase(); // تحويل اليوم إلى حرف صغير
+
+    return day; // سيُرجع مثل "sun", "mon", "tue"
   }
 
   Future<void> _fetchWorkingDays(String doctorId) async {
@@ -790,12 +802,26 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                             const Duration(milliseconds: 300),
                                         child: ElevatedButton(
                                           onPressed: selectedDay != null &&
-                                                  selectedTime != null
+                                                  selectedTime != null &&
+                                                  selectedDay != getCurrentDay()
                                               ? () {
                                                   _makeAppointment(
                                                       selectedDoctorIndex);
                                                 }
-                                              : null,
+                                              : () {
+                                                  if (selectedDay ==
+                                                      getCurrentDay()) {
+                                                    // Show Snackbar if selectedDay is the same as the current day
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text(
+                                                            'You cannot book an appointment for today.'),
+                                                      ),
+                                                    );
+                                                  }
+                                                },
                                           style: ElevatedButton.styleFrom(
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 14, horizontal: 20),

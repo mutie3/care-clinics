@@ -6,7 +6,6 @@ class DoctorCard extends StatelessWidget {
   final String imgPath;
   final String doctorName;
   final String doctorSpeciality;
-  final String rating;
   final VoidCallback onTap;
 
   const DoctorCard({
@@ -14,7 +13,6 @@ class DoctorCard extends StatelessWidget {
     required this.imgPath,
     required this.doctorName,
     required this.doctorSpeciality,
-    required this.rating,
     required this.onTap,
   });
 
@@ -60,7 +58,7 @@ class DoctorCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: 40.0),
 
                   // اسم العيادة
                   Text(
@@ -71,13 +69,6 @@ class DoctorCard extends StatelessWidget {
                       fontSize: 16.0,
                     ),
                   ),
-                  const SizedBox(height: 20),
-
-                  Text(
-                    'Rating: $rating',
-                    style: const TextStyle(fontSize: 14, color: Colors.green),
-                  ),
-                  const SizedBox(height: 8.0),
                 ],
               ),
             ),

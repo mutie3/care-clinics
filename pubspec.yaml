@@ -48,9 +48,11 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_rating_bar: ^4.0.1
+  flutter_string_extractor: ^0.1.1
   font_awesome_flutter: ^10.7.0
   geocoding: ^3.0.0
   geolocator: ^12.0.0
+  get: ^4.6.6
   google_fonts: ^6.2.1
   google_generative_ai: ^0.4.6
   google_maps_flutter: ^2.9.0
@@ -61,7 +63,9 @@ dependencies:
   intl_phone_field: ^3.2.0
   intl_utils: ^2.8.7
   local_auth: ^2.3.0
+  material_design_icons_flutter: ^7.0.7296
   meta: ^1.12.0
+  path: ^1.9.0
   permission_handler: ^11.3.1
   pin_code_fields: ^8.0.1
   provider: ^6.1.2
@@ -70,9 +74,6 @@ dependencies:
   transparent_image: ^2.0.1
   url_launcher: ^6.3.1
   video_player: ^2.9.2
-  get: ^4.6.6
-  flutter_string_extractor: ^0.1.1
-  path: ^1.9.0
 
 dev_dependencies:
   flutter_lints: ^4.0.0

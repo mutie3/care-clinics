@@ -20,12 +20,19 @@ class UploadFileState extends State<UploadFile> {
 
   @override
   Widget build(BuildContext context) {
+    // تحديد الوضع الحالي
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       width: double.infinity,
       height: 200,
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.primaryColor),
+        border: Border.all(
+            color: isDarkMode ? Colors.grey.shade600 : AppColors.primaryColor),
         borderRadius: BorderRadius.circular(20),
+        color: isDarkMode
+            ? Colors.grey.shade800
+            : Colors.white, // تغيير الخلفية بناءً على الوضع
       ),
       child: Stack(
         children: [
@@ -33,8 +40,10 @@ class UploadFileState extends State<UploadFile> {
               ? Center(
                   child: Text(
                     '132'.tr,
-                    style: const TextStyle(
-                      color: AppColors.textColor,
+                    style: TextStyle(
+                      color: isDarkMode
+                          ? Colors.white
+                          : AppColors.textColor, // تغيير لون النص
                       fontFamily: 'Tajawal',
                       fontSize: 18,
                     ),
@@ -47,7 +56,9 @@ class UploadFileState extends State<UploadFile> {
                       Container(
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black54),
+                          border: Border.all(
+                              color:
+                                  isDarkMode ? Colors.white70 : Colors.black54),
                           borderRadius: BorderRadius.circular(10),
                           color: AppColors.textColor.withOpacity(0.2),
                         ),
@@ -66,7 +77,12 @@ class UploadFileState extends State<UploadFile> {
                       const SizedBox(height: 8),
                       Text(
                         platformFile!.name.split('.').first,
-                        style: const TextStyle(fontSize: 16),
+                        style: TextStyle(
+                          color: isDarkMode
+                              ? Colors.white
+                              : Colors.black, // تغيير النص حسب الوضع
+                          fontSize: 16,
+                        ),
                       ),
                     ],
                   ),
@@ -75,14 +91,18 @@ class UploadFileState extends State<UploadFile> {
             Positioned.fill(
               child: MaterialButton(
                 onPressed: _pickFile,
-                color: AppColors.scaffoldBackgroundColor,
+                color: isDarkMode
+                    ? Colors.grey.shade800
+                    : AppColors.scaffoldBackgroundColor, // تغيير الخلفية
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   '58'.tr,
                   style: TextStyle(
-                    color: AppColors.primaryColor.withOpacity(0.6),
+                    color: isDarkMode
+                        ? AppColors.primaryColor
+                        : AppColors.primaryColor.withOpacity(0.6),
                     fontFamily: 'Tajawal',
                   ),
                 ),
@@ -94,10 +114,12 @@ class UploadFileState extends State<UploadFile> {
               right: 8,
               child: IconButton(
                 onPressed: _deleteFile,
-                icon: const FaIcon(
+                icon: FaIcon(
                   FontAwesomeIcons.trash,
                   size: 20,
-                  color: Colors.black,
+                  color: isDarkMode
+                      ? Colors.white
+                      : Colors.black, // تغيير الأيقونة حسب الوضع
                 ),
               ),
             ),

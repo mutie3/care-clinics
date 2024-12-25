@@ -120,12 +120,18 @@ class _AdvertisementsBoardState extends State<AdvertisementsBoard> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            ScrollingText(
-                              text: ad['description']!,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.white,
-                              ),
+                            // عرض النصوص تحت بعضها بدون حركة
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  ad['description']!,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -137,67 +143,6 @@ class _AdvertisementsBoardState extends State<AdvertisementsBoard> {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class ScrollingText extends StatefulWidget {
-  final String text;
-  final TextStyle style;
-
-  const ScrollingText({
-    super.key,
-    required this.text,
-    required this.style,
-  });
-
-  @override
-  _ScrollingTextState createState() => _ScrollingTextState();
-}
-
-class _ScrollingTextState extends State<ScrollingText>
-    with SingleTickerProviderStateMixin {
-  late final ScrollController _scrollController;
-  late final Timer _scrollTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-    _scrollTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
-      if (_scrollController.hasClients) {
-        final maxScroll = _scrollController.position.maxScrollExtent;
-        final currentScroll = _scrollController.offset;
-
-        if (currentScroll < maxScroll) {
-          _scrollController.animateTo(
-            currentScroll + 2.0,
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.linear,
-          );
-        } else {
-          _scrollController.jumpTo(0);
-        }
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollTimer.cancel();
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: _scrollController,
-      scrollDirection: Axis.horizontal,
-      child: Text(
-        widget.text,
-        style: widget.style,
       ),
     );
   }

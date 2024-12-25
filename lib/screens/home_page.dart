@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import '../constants/colors_page.dart';
 import '../constants/theme_dark_mode.dart';
@@ -48,67 +49,64 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
     return [
       {
         "name": '14'.tr,
-        "icon": FontAwesomeIcons.hospitalUser
-      }, // أيقونة شاملة لجميع التخصصات
-      {
-        "name": '15'.tr,
-        "icon": FontAwesomeIcons.kitMedical
-      }, // أيقونة الإسعافات الأولية
+        "icon": MdiIcons.hospitalBuilding
+      }, // أيقونة المستشفى (شاملة لجميع التخصصات الطبية)
       {
         "name": '16'.tr,
-        "icon": FontAwesomeIcons.userInjured
-      }, // أيقونة إصابات المرضى
-      {"name": '17'.tr, "icon": FontAwesomeIcons.baby}, // أيقونة طب الأطفال
-      {
-        "name": '18'.tr,
-        "icon": FontAwesomeIcons.dna
-      }, // أيقونة الوراثة والعلوم الحيوية
-      {
-        "name": '19'.tr,
-        "icon": FontAwesomeIcons.handshakeAngle
-      }, // أيقونة الدعم والرعاية
+        "icon": MdiIcons.stethoscope
+      }, // أيقونة السماعة الطبية (للطب العام والفحص السريري)
       {
         "name": '20'.tr,
         "icon": FontAwesomeIcons.heartPulse
       }, // أيقونة أمراض القلب
-      {"name": '21'.tr, "icon": FontAwesomeIcons.bone}, // أيقونة جراحة العظام
-      {"name": '22'.tr, "icon": FontAwesomeIcons.brain}, // أيقونة طب الأعصاب
-      {
-        "name": '23'.tr,
-        "icon": FontAwesomeIcons.flask
-      }, // أيقونة التحاليل والمختبرات
-      {
-        "name": '3'.tr,
-        "icon": FontAwesomeIcons.utensils
-      }, // أيقونة طب الجهاز الهضمي
-      {"name": '4'.tr, "icon": FontAwesomeIcons.lungs}, // أيقونة أمراض الرئة
-      {
-        "name": '5'.tr,
-        "icon": FontAwesomeIcons.toiletPaper
-      }, // أيقونة أمراض المسالك البولية
+      {"name": '3'.tr, "icon": MdiIcons.stomach}, // أيقونة أمراض الجهاز الهضمي
+      {"name": '4'.tr, "icon": MdiIcons.lungs}, // أيقونة أمراض الرئة
       {
         "name": '6'.tr,
         "icon": FontAwesomeIcons.radiation
       }, // أيقونة العلاج الإشعاعي
       {
-        "name": '7'.tr,
-        "icon": FontAwesomeIcons.personRunning
-      }, // أيقونة الطب الرياضي
+        "name": '19'.tr,
+        "icon": MdiIcons.humanHandsup
+      }, // أيقونة الدعم والرعاية الصحية
+      {
+        "name": '5'.tr,
+        "icon": MdiIcons.meditation
+      }, // أيقونة العلاج الطبيعي أو الطب النفسي
+      {
+        "name": '21'.tr,
+        "icon": MdiIcons.radiologyBoxOutline
+      }, // أيقونة العلاج الإشعاعي
+      {"name": '23'.tr, "icon": MdiIcons.pill}, // أيقونة الأدوية
+      {"name": '7'.tr, "icon": MdiIcons.run}, // أيقونة الطب الرياضي
       {
         "name": '8'.tr,
-        "icon": FontAwesomeIcons.syringe
-      }, // أيقونة الحقن والعلاجات
-      {"name": '9'.tr, "icon": FontAwesomeIcons.pills}, // أيقونة الأدوية
+        "icon": MdiIcons.bloodBag
+      }, // أيقونة نقل الدم أو أمراض الدم
       {
-        "name": '10'.tr,
-        "icon": FontAwesomeIcons.virus
-      }, // أيقونة الأمراض المعدية
-      {"name": '11'.tr, "icon": FontAwesomeIcons.carrot}, // أيقونة التغذية
-      {"name": '12'.tr, "icon": FontAwesomeIcons.eye}, // أيقونة طب العيون
+        "name": '9'.tr,
+        "icon": MdiIcons.flask
+      }, // أيقونة التحاليل والمختبرات الطبية
+      {"name": '10'.tr, "icon": MdiIcons.bacteria}, // أيقونة الأمراض المعدية
+      {"name": '11'.tr, "icon": MdiIcons.foodApple}, // أيقونة التغذية
+      {"name": '12'.tr, "icon": MdiIcons.eye}, // أيقونة طب العيون
+      {
+        "name": '15'.tr,
+        "icon": FontAwesomeIcons.kitMedical
+      }, // أيقونة حقيبة الإسعافات الأولية
       {
         "name": '13'.tr,
         "icon": FontAwesomeIcons.headSideCough
-      } // أيقونة طب الجهاز التنفسي
+      }, // أيقونة طب الجهاز التنفسي (الأنف والحنجرة)
+      {"name": '17'.tr, "icon": FontAwesomeIcons.baby}, // أيقونة طب الأطفال
+      {
+        "name": '18'.tr,
+        "icon": FontAwesomeIcons.personDress
+      }, // أيقونة طب النساء والتوليد
+      {
+        "name": '22'.tr,
+        "icon": MdiIcons.emoticon
+      }, // أيقونة الطب النفسي أو الاستشارات النفسية
     ];
   }
 

@@ -1,4 +1,3 @@
-import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:care_clinic/widgets/custom_text_fieled.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
