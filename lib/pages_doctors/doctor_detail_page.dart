@@ -2,7 +2,6 @@ import 'package:care_clinic/widgets/video.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:care_clinic/constants/colors_page.dart';
@@ -466,23 +465,36 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       const SizedBox(height: 5),
-                                      RatingBar.builder(
-                                        initialRating: clinicAverageRating,
-                                        minRating: 1,
-                                        direction: Axis.horizontal,
-                                        allowHalfRating: true,
-                                        itemCount: 5, // عدد النجوم
-                                        itemSize: 24.0, // حجم النجوم
-                                        itemPadding: const EdgeInsets.symmetric(
-                                            horizontal: 2.0),
-                                        itemBuilder: (context, _) => const Icon(
-                                          Icons.star,
-                                          color: Colors.amber,
-                                        ),
-                                        onRatingUpdate: (rating) {
-                                          print(
-                                              rating); // يمكنك استخدام هذه الدالة لتحديث التقييم إذا كنت بحاجة
-                                        },
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .center, // لضبط المحاذاة الأفقية
+                                        children: [
+                                          const Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                            size: 24.0,
+                                          ),
+                                          const SizedBox(
+                                              width:
+                                                  8.0), // فاصل بين النجمة والرقم
+                                          // استخدام Baseline لضبط محاذاة النص مع النجمة
+                                          Baseline(
+                                            baseline:
+                                                24.0, // نفس حجم النجمة لضبط المحاذاة
+                                            baselineType:
+                                                TextBaseline.alphabetic,
+                                            child: Text(
+                                              clinicAverageRating.toStringAsFixed(
+                                                  1), // عرض التقييم كرقم (مثال: 4.5)
+                                              style: const TextStyle(
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.amber,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                       const SizedBox(height: 10),
                                       Row(
@@ -494,16 +506,17 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                             label: const Text(
                                               'Location',
                                               style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor:
                                                   themeProvider.isDarkMode
                                                       ? Colors.blueGrey
-                                                          .withOpacity(0.7)
+                                                          .withOpacity(0.8)
                                                       : Colors.blue
-                                                          .withOpacity(0.8),
+                                                          .withOpacity(0.9),
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 20,
@@ -512,7 +525,18 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                                 borderRadius:
                                                     BorderRadius.circular(30),
                                               ),
-                                              elevation: 4,
+                                              elevation: 6,
+                                              shadowColor: Colors.black
+                                                  .withOpacity(
+                                                      0.3), // إضافة الظل
+                                              side: BorderSide(
+                                                color: themeProvider.isDarkMode
+                                                    ? Colors.blueGrey
+                                                        .withOpacity(0.5)
+                                                    : Colors.blue
+                                                        .withOpacity(0.6),
+                                                width: 1.5, // إضافة حدود ناعمة
+                                              ),
                                             ),
                                           ),
                                           const SizedBox(width: 10),
@@ -524,16 +548,17 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                             label: const Text(
                                               'Call',
                                               style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor:
                                                   themeProvider.isDarkMode
                                                       ? Colors.greenAccent
-                                                          .withOpacity(0.7)
+                                                          .withOpacity(0.8)
                                                       : Colors.green
-                                                          .withOpacity(0.8),
+                                                          .withOpacity(0.9),
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 20,
@@ -542,11 +567,22 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                                 borderRadius:
                                                     BorderRadius.circular(30),
                                               ),
-                                              elevation: 4,
+                                              elevation: 6,
+                                              shadowColor: Colors.black
+                                                  .withOpacity(
+                                                      0.3), // إضافة الظل
+                                              side: BorderSide(
+                                                color: themeProvider.isDarkMode
+                                                    ? Colors.greenAccent
+                                                        .withOpacity(0.5)
+                                                    : Colors.green
+                                                        .withOpacity(0.6),
+                                                width: 1.5, // إضافة حدود ناعمة
+                                              ),
                                             ),
                                           ),
                                         ],
-                                      ),
+                                      )
                                     ],
                                   ),
                                 ),
