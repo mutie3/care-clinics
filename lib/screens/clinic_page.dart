@@ -1,18 +1,15 @@
 import 'dart:io';
 import 'package:care_clinic/screens/drug_info_page.dart';
-import 'package:care_clinic/screens/login_page.dart';
 import 'package:care_clinic/screens/setting_screen.dart';
 import 'package:care_clinic/widgets/appointments_doc.dart';
 import 'package:care_clinic/widgets/custom_text_fieled.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui';
 
 import '../constants/theme_dark_mode.dart';
@@ -158,14 +155,15 @@ class ClinicPageState extends State<ClinicPage> {
 
   void showDoctorDetails(Map<String, dynamic> doctor, String doctorId) {
     doctorNameController.text = doctor['name'] ?? '';
-    specialtyController.text = doctor['specialty'] ?? '';
     experienceController.text = doctor['experience']?.toString() ?? '';
+    specialtyController.text = doctor['specialty'] ?? '';
     daysSelected.value = List<bool>.generate(
-        7,
-        (index) =>
-            doctor['working_days']?.contains(
-                ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][index]) ??
-            false);
+      7,
+      (index) =>
+          doctor['working_days']?.contains(
+              ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][index]) ??
+          false,
+    );
 
     showDialog(
       context: context,
@@ -201,15 +199,177 @@ class ClinicPageState extends State<ClinicPage> {
                               'https://www.theclinics.us//150'),
                         ),
                         const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            showDoctorEditInfo(doctorId);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF1E88E5),
+                          ),
+                          child: const Text(
+                            'تعديل معلومات الطبيب',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            showDoctorWorkingDays(doctorId);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF1E88E5),
+                          ),
+                          child: const Text(
+                            'تعديل مواعيد العمل',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DoctorAppointmentsPage(
+                                  doctorId: doctorId,
+                                ),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF1E88E5),
+                          ),
+                          child: const Text(
+                            'عرض المرضى',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void showDoctorEditInfo(String doctorId) {
+    showDialog(
+      context: context,
+      builder: (context) => GestureDetector(
+        onTap: () {
+          Navigator.of(context).pop();
+        },
+        child: Stack(
+          children: [
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+              ),
+            ),
+            Center(
+              child: GestureDetector(
+                onTap: () {},
+                child: Card(
+                  color: Colors.white,
+                  elevation: 10,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 10),
                         TextField(
                           controller: doctorNameController,
-                          decoration:
-                              const InputDecoration(labelText: 'اسم الطبيب'),
+                          decoration: const InputDecoration(
+                            labelText: 'اسم الطبيب',
+                            labelStyle: TextStyle(color: Colors.black),
+                          ),
                         ),
+                        const SizedBox(height: 10),
                         TextField(
                           controller: experienceController,
-                          decoration:
-                              const InputDecoration(labelText: 'الخبرة'),
+                          decoration: const InputDecoration(
+                            labelText: 'الخبرة',
+                            labelStyle: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            saveDoctorData(doctorId);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF1E88E5),
+                          ),
+                          child: const Text(
+                            'حفظ التعديلات',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            _showDeleteConfirmationDialog(doctorId);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                          child: const Text(
+                            'حذف الطبيب',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void showDoctorWorkingDays(String doctorId) {
+    showDialog(
+      context: context,
+      builder: (context) => GestureDetector(
+        onTap: () {
+          Navigator.of(context).pop();
+        },
+        child: Stack(
+          children: [
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+              ),
+            ),
+            Center(
+              child: GestureDetector(
+                onTap: () {},
+                child: Card(
+                  color: Colors.white,
+                  elevation: 10,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'تعديل مواعيد العمل',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                         const SizedBox(height: 10),
                         ValueListenableBuilder<List<bool>>(
@@ -236,7 +396,6 @@ class ClinicPageState extends State<ClinicPage> {
                                         setState(() {
                                           daysSelected.value[index] =
                                               value ?? false;
-
                                           daysSelected.value = List<bool>.from(
                                               daysSelected.value);
                                         });
@@ -252,32 +411,15 @@ class ClinicPageState extends State<ClinicPage> {
                         const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DoctorAppointmentsPage(
-                                  doctorId: doctorId,
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text('عرض المرضى'),
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {
                             saveDoctorData(doctorId);
                           },
-                          child: const Text('حفظ التعديلات'),
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            _showDeleteConfirmationDialog(doctorId);
-                          },
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red),
-                          child: const Text('حذف الطبيب'),
+                            backgroundColor: const Color(0xFF1E88E5),
+                          ),
+                          child: const Text(
+                            'حفظ التعديلات',
+                            style: TextStyle(color: Colors.black),
+                          ),
                         ),
                       ],
                     ),
@@ -409,7 +551,7 @@ class ClinicPageState extends State<ClinicPage> {
             ),
             ExpansionTile(
               title: const Text('تعديل معلومات العيادة'),
-              leading: Icon(Icons.edit),
+              leading: const Icon(Icons.edit),
               children: [
                 buildEditableField('اسم العيادة', nameController),
                 buildPhoneField(),

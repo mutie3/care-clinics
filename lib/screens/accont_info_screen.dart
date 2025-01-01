@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import 'login_page.dart';
 
 class AccountInfoScreen extends StatefulWidget {
@@ -275,13 +274,31 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
                 const SizedBox(height: 16),
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
+                    backgroundColor:
+                        Colors.transparent, // Transparent background
+                    side: BorderSide(color: Colors.red, width: 2), // Red border
+                    foregroundColor: Colors.red, // Red text and icon color
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(30), // Rounded corners
+                    ),
+                    elevation: 0, // No shadow to keep it clean
+                    padding: EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 20), // Comfortable padding
                   ),
-                  icon: const Icon(Icons.delete),
-                  label: Text('157'.tr), // "Delete Account" text
+                  icon: const Icon(
+                    Icons.delete,
+                    size: 24, // Icon size
+                  ),
+                  label: Text(
+                    '157'.tr, // Text inside the button
+                    style: TextStyle(
+                      fontSize: 18, // Text size
+                      fontWeight: FontWeight.bold, // Bold text
+                    ),
+                  ),
                   onPressed: _showDeleteAccountDialog,
-                ),
+                )
               ],
             ),
           ),
