@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/screens/rating_page.dart';
 import 'package:care_clinic/screens/user_appointments_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 

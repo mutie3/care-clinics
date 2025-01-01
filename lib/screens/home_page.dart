@@ -30,17 +30,17 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
       {
         'title': '223'.tr,
         'description': '224'.tr,
-        'image': 'images/logo.png', // تأكد من وجود الصورة
+        'image': 'images/logo.png',
       },
       {
         'title': '225'.tr,
         'description': '226'.tr,
-        'image': 'images/chat.png', // تأكد من وجود الصورة
+        'image': 'images/chat.png',
       },
       {
         'title': '227'.tr,
         'description': '228'.tr,
-        'image': 'images/med.png', // تأكد من وجود الصورة
+        'image': 'images/med.png',
       },
     ];
   }

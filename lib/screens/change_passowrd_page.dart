@@ -20,6 +20,36 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
   final _formKey = GlobalKey<FormState>();
   bool _obscureCurrentPassword = true;
 
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +117,8 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
               ),
               const SizedBox(height: 20),
               CustomTextField(
-                text: '232'.tr, // Change the text here
+                text: '232'.tr,
+                obscureText: true, // Change the text here
                 controller: _newPasswordController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -103,7 +134,8 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
               ),
               const SizedBox(height: 20),
               CustomTextField(
-                text: '235'.tr, // Change the text here
+                text: '235'.tr,
+                obscureText: true, // Change the text here
                 controller: _confirmPasswordController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -135,34 +167,31 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                       // Change the password
                       await user.updatePassword(_newPasswordController.text);
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content:
-                              Text('238'.tr), // "Password updated successfully"
-                        ),
-                      );
+                      _showSuccessSnackBar(
+                          '238'.tr); // "Password updated successfully"
                       Navigator.pop(context);
                     } on FirebaseAuthException catch (e) {
                       String errorMessage = '';
                       switch (e.code) {
                         case 'wrong-password':
-                          errorMessage = '239'.tr; // "Wrong current password"
+                          errorMessage = 'كلمة المرور الحالية غير صحيحة';
+                          break;
+                        case 'expired-action':
+                          errorMessage = 'التوثيق غير صالح أو منتهي';
+                          break;
+                        case 'weak-password':
+                          errorMessage = 'كلمة المرور الجديدة ضعيفة جدًا';
+                          break;
+                        case 'email-already-in-use':
+                          errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
                           break;
                         default:
-                          errorMessage = 'An error occurred: ${e.message}';
+                          errorMessage = 'كلمة السر الحالية خاطئة';
                       }
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(errorMessage),
-                        ),
-                      );
+                      _showErrorDialog(errorMessage); // Show error in a dialog
                     } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('An unexpected error occurred: $e'),
-                        ),
-                      );
+                      _showErrorDialog('حدث خطأ غير متوقع: $e');
                     }
                   }
                 },

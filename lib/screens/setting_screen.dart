@@ -12,8 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
-
+  const SettingsScreen({super.key, required this.isClinic});
+  final bool isClinic;
   @override
   SettingsScreenState createState() => SettingsScreenState();
 }
@@ -79,82 +79,122 @@ class SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          _buildSectionTitle('24'.tr),
-          _buildCustomTile(
-            title: '25'.tr,
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AccountInfoScreen()),
-              );
-            },
-          ),
-          _buildCustomTile(
-            title: '26'.tr,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ChangePhonePage()),
-              );
-            },
-          ),
-          _buildCustomTile(
-            title: '27'.tr,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ChangePasswordPage()),
-              );
-            },
-          ),
-          _buildCustomTile(
-            title: '28'.tr,
-            trailing: Switch(
-              value: notificationsEnabled,
-              onChanged: (value) {
-                setState(() {
-                  notificationsEnabled = value;
-                });
+          if (widget.isClinic) ...[
+            // إذا كان isClinic = true، يظهر فقط اللغة، الوضع المظلم، وتسجيل الخروج
+            _buildSectionTitle('29'.tr),
+            _buildCustomTile(
+              title: '30'.tr,
+              subtitle: '178'.tr,
+              onTap: () {
+                if (Get.locale?.languageCode == 'ar') {
+                  controllerLang.changelang('en'); // التبديل للإنجليزية
+                } else {
+                  controllerLang.changelang('ar'); // التبديل للعربية
+                }
               },
             ),
-          ),
-          _buildSectionTitle('29'.tr),
-          _buildCustomTile(
-            title: '30'.tr,
-            subtitle: '178'.tr,
-            onTap: () {
-              if (Get.locale?.languageCode == 'ar') {
-                controllerLang.changelang('en'); // التبديل للإنجليزية
-              } else {
-                controllerLang.changelang('ar'); // التبديل للعربية
-              }
-            },
-          ),
-          _buildThemeListTile(themeProvider),
-          _buildCustomTile(
-            title: '32'.tr,
-            leading: const Icon(
-              Icons.logout_rounded,
-              color: Colors.red,
-              size: 28,
+            _buildThemeListTile(themeProvider),
+            _buildCustomTile(
+              title: '32'.tr,
+              leading: const Icon(
+                Icons.logout_rounded,
+                color: Colors.red,
+                size: 28,
+              ),
+              onTap: () async {
+                final prefs = await SharedPreferences.getInstance();
+                prefs.remove('userLoggedIn');
+                await FirebaseAuth.instance.signOut();
+                if (context.mounted) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                    (Route<dynamic> route) => false,
+                  );
+                }
+              },
+              showTrailing: false,
             ),
-            onTap: () async {
-              final prefs = await SharedPreferences.getInstance();
-              prefs.remove('userLoggedIn');
-              await FirebaseAuth.instance.signOut();
-              if (context.mounted) {
-                Navigator.pushAndRemoveUntil(
+          ],
+          if (!widget.isClinic) ...[
+            // إذا كان isClinic = false، يظهر أولاً معلومات الحساب، ثم باقي الإعدادات
+            _buildSectionTitle('24'.tr),
+            _buildCustomTile(
+              title: '25'.tr,
+              onTap: () {
+                Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                  (Route<dynamic> route) => false,
+                  MaterialPageRoute(
+                      builder: (context) => const AccountInfoScreen()),
                 );
-              }
-            },
-            showTrailing: false,
-          ),
+              },
+            ),
+            _buildCustomTile(
+              title: '26'.tr,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ChangePhonePage()),
+                );
+              },
+            ),
+            _buildCustomTile(
+              title: '27'.tr,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ChangePasswordPage()),
+                );
+              },
+            ),
+            _buildCustomTile(
+              title: '28'.tr,
+              trailing: Switch(
+                value: notificationsEnabled,
+                onChanged: (value) {
+                  setState(() {
+                    notificationsEnabled = value;
+                  });
+                },
+              ),
+            ),
+            _buildSectionTitle('29'.tr),
+            _buildCustomTile(
+              title: '30'.tr,
+              subtitle: '178'.tr,
+              onTap: () {
+                if (Get.locale?.languageCode == 'ar') {
+                  controllerLang.changelang('en'); // التبديل للإنجليزية
+                } else {
+                  controllerLang.changelang('ar'); // التبديل للعربية
+                }
+              },
+            ),
+            _buildThemeListTile(themeProvider),
+            _buildCustomTile(
+              title: '32'.tr,
+              leading: const Icon(
+                Icons.logout_rounded,
+                color: Colors.red,
+                size: 28,
+              ),
+              onTap: () async {
+                final prefs = await SharedPreferences.getInstance();
+                prefs.remove('userLoggedIn');
+                await FirebaseAuth.instance.signOut();
+                if (context.mounted) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                    (Route<dynamic> route) => false,
+                  );
+                }
+              },
+              showTrailing: false,
+            ),
+          ],
         ],
       ),
     );

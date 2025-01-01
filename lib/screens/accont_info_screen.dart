@@ -21,7 +21,7 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
   bool isEditing = false;
   DateTime? birthDate;
   String gender = '33'.tr;
-  final TextEditingController emailController = TextEditingController();
+
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
@@ -45,7 +45,6 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
       if (snapshot.exists) {
         final data = snapshot.data() as Map<String, dynamic>;
         setState(() {
-          emailController.text = data['email'] ?? '';
           firstNameController.text = data['firstName'] ?? '';
           lastNameController.text = data['lastName'] ?? '';
           phoneController.text = data['phone'] ?? '';
@@ -75,7 +74,6 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
           .collection('users')
           .doc(user.uid)
           .update({
-        'email': emailController.text,
         'firstName': firstNameController.text,
         'lastName': lastNameController.text,
         'phone': phoneController.text,
@@ -239,12 +237,6 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                CustomTextField(
-                  text: '26'.tr,
-                  controller: emailController,
-                  icon: const Icon(Icons.email),
-                  enabled: isEditing,
-                ),
                 const SizedBox(height: 16),
                 CustomTextField(
                   text: '47'.tr,

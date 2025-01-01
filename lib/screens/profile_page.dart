@@ -119,12 +119,12 @@ class UserProfileScreenState extends State<UserProfileScreen> {
               IconButton(
                 icon: const Icon(Icons.settings, color: Colors.white),
                 onPressed: () {
-                  // التوجيه إلى صفحة الإعدادات
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          const SettingsScreen(), // تأكد من وجود صفحة SettingScreen
+                      builder: (context) => const SettingsScreen(
+                        isClinic: false,
+                      ), // تأكد من وجود صفحة SettingScreen
                     ),
                   );
                 },

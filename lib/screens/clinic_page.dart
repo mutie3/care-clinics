@@ -1,6 +1,9 @@
 import 'dart:io';
+import 'package:care_clinic/screens/drug_info_page.dart';
 import 'package:care_clinic/screens/login_page.dart';
+import 'package:care_clinic/screens/setting_screen.dart';
 import 'package:care_clinic/widgets/appointments_doc.dart';
+import 'package:care_clinic/widgets/custom_text_fieled.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,9 +11,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui';
 
+import '../constants/theme_dark_mode.dart';
+import '../widgets/custom_location_picker.dart';
 import 'doctor_reg/doctor_info.dart';
 
 class ClinicPage extends StatefulWidget {
@@ -334,10 +340,34 @@ class ClinicPageState extends State<ClinicPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    bool isDarkMode = themeProvider.isDarkMode;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Clinic Dashboard'),
         backgroundColor: Colors.blue,
+        actions: [
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.settings, color: Colors.white),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsScreen(
+                        isClinic: true,
+                      ), // تأكد من وجود صفحة SettingScreen
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+            ],
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
@@ -377,82 +407,49 @@ class ClinicPageState extends State<ClinicPage> {
                 ],
               ),
             ),
-            buildEditableField('اسم العيادة', nameController),
-            buildPhoneField(),
-            ListTile(
-              title: const Text('الموقع'),
-              subtitle: TextField(
-                controller: locationController,
-                enabled: isEditingClinic,
-                decoration: const InputDecoration(
-                  hintText: 'موقع العيادة',
+            ExpansionTile(
+              title: const Text('تعديل معلومات العيادة'),
+              leading: Icon(Icons.edit),
+              children: [
+                buildEditableField('اسم العيادة', nameController),
+                buildPhoneField(),
+                ListTile(
+                  title: const Text('الموقع'),
+                  subtitle: IgnorePointer(
+                    ignoring:
+                        !isEditingClinic, // تعطيل التفاعل إذا لم يكن في وضع التعديل
+                    child: Opacity(
+                      opacity: isEditingClinic
+                          ? 1.0
+                          : 0.5, // تقليل شفافية العنصر إذا لم يكن في وضع التعديل
+                      child: CustomLocationPicker(
+                        controller: locationController,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(isEditingClinic ? Icons.save : Icons.edit),
-              title: Text(isEditingClinic ? 'حفظ' : 'تعديل'),
-              onTap: () {
-                setState(() {
-                  isEditingClinic = !isEditingClinic;
-                });
-                if (!isEditingClinic) {
-                  saveClinicData();
-                }
-              },
-            ),
-            ListTile(
-              title: const Text(
-                'تسجيل الخروج',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              leading: const Icon(
-                Icons.logout,
-                color: Colors.red,
-              ),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('تأكيد تسجيل الخروج'),
-                      content:
-                          const Text('هل أنت متأكد أنك تريد تسجيل الخروج؟'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('إلغاء'),
-                        ),
-                        TextButton(
-                          onPressed: () async {
-                            final prefs = await SharedPreferences.getInstance();
-                            prefs.remove('userLoggedIn');
-                            await FirebaseAuth.instance.signOut();
-                            if (context.mounted) {
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginPage()),
-                                (Route<dynamic> route) => false,
-                              );
-                            }
-                          },
-                          child: const Text(
-                            'تسجيل الخروج',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ),
-                      ],
-                    );
+                ListTile(
+                  leading: Icon(isEditingClinic ? Icons.save : Icons.edit),
+                  title: Text(isEditingClinic ? 'حفظ' : 'تعديل'),
+                  onTap: () {
+                    setState(() {
+                      isEditingClinic = !isEditingClinic;
+                    });
+                    if (!isEditingClinic) {
+                      saveClinicData();
+                    }
                   },
-                );
-              },
+                ),
+              ],
             ),
+            _buildInfoCard(Icons.medication_outlined, '202'.tr, '',
+                isDarkMode: isDarkMode, onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const DrugInfoSearchPage()),
+              );
+            }),
           ],
         ),
       ),
@@ -516,27 +513,80 @@ class ClinicPageState extends State<ClinicPage> {
     );
   }
 
-  Widget buildPhoneField() {
-    return ListTile(
-      title: TextField(
-        controller: phoneController,
-        enabled: isEditingClinic,
-        keyboardType: TextInputType.number,
-        inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
-          LengthLimitingTextInputFormatter(10),
-        ],
-        decoration: const InputDecoration(labelText: 'رقم الهاتف'),
+  Widget _buildInfoCard(IconData icon, String title, String value,
+      {VoidCallback? onTap, required bool isDarkMode}) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: isDarkMode ? Colors.grey[800] : Colors.white,
+      child: ListTile(
+        leading:
+            Icon(icon, color: isDarkMode ? Colors.blueAccent : Colors.blue),
+        title: Text(title,
+            style: TextStyle(color: isDarkMode ? Colors.white : Colors.black)),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: isDarkMode ? Colors.white : Colors.black,
+              ),
+            ),
+            if (onTap != null)
+              const Icon(Icons.arrow_forward_ios, color: Colors.grey),
+          ],
+        ),
+        onTap: onTap,
       ),
     );
   }
 
+  Widget buildPhoneField() {
+    return ListTile(
+      title: CustomTextField(
+        text: 'رقم الهاتف',
+        controller: phoneController,
+        keyboardType: TextInputType.number,
+        enabled: isEditingClinic,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'رقم الهاتف مطلوب';
+          }
+          if (value.length != 10) {
+            return 'رقم الهاتف يجب أن يتكون من 10 أرقام';
+          }
+          return null;
+        },
+        onChanged: (value) {
+          // معالجة أي تغييرات في النص إذا لزم الأمر
+        },
+        icon: const Icon(Icons.phone), // أيقونة الهاتف
+      ),
+    );
+  }
+
+// استدعاء الوظيفة لتسجيل الخروج
+
   Widget buildEditableField(String label, TextEditingController controller) {
     return ListTile(
-      title: TextField(
+      title: CustomTextField(
+        text: label,
         controller: controller,
         enabled: isEditingClinic,
-        decoration: InputDecoration(labelText: label),
+        onChanged: (value) {
+          // معالجة النص إذا لزم الأمر
+        },
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return '$label مطلوب';
+          }
+          return null;
+        },
+        icon: const Icon(Icons
+            .medical_information), // أيقونة للتوضيح (يمكنك تغييرها حسب الحاجة)
       ),
     );
   }
