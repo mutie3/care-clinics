@@ -117,7 +117,6 @@ class SettingsScreenState extends State<SettingsScreen> {
             ),
           ],
           if (!widget.isClinic) ...[
-            // إذا كان isClinic = false، يظهر أولاً معلومات الحساب، ثم باقي الإعدادات
             _buildSectionTitle('24'.tr),
             _buildCustomTile(
               title: '25'.tr,

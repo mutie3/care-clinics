@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'dart:ui';
 
@@ -411,7 +412,12 @@ class ClinicPageState extends State<ClinicPage> {
                         const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: () {
+                            // حفظ التعديلات
                             saveDoctorData(doctorId);
+
+                            // التحقق من الأيام التي تم تعديلها
+                            checkAndDeleteAppointments(
+                                doctorId, daysSelected.value);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF1E88E5),
@@ -431,6 +437,60 @@ class ClinicPageState extends State<ClinicPage> {
         ),
       ),
     );
+  }
+
+  Future<void> checkAndDeleteAppointments(
+      String doctorId, List<bool> selectedDays) async {
+    try {
+      // العثور على جميع المواعيد التي تخص الطبيب
+      final snapshot = await FirebaseFirestore.instance
+          .collection('appointments')
+          .where('doctorId', isEqualTo: doctorId)
+          .get();
+
+      // قائمة لتخزين المواعيد التي تحتاج إلى الحذف
+      List<String> appointmentsToDelete = [];
+
+      final doctorWorkingDays = [
+        "SUN",
+        "MON",
+        "TUE",
+        "WED",
+        "THU",
+        "FRI",
+        "SAT"
+      ];
+
+      for (var doc in snapshot.docs) {
+        // جلب يوم الموعد كقيمة نصية
+        final appointmentDay = doc['appointmentDate'] as String;
+
+        // إذا كان الموعد يتعارض مع يوم تم إلغاؤه
+        if (!selectedDays[doctorWorkingDays.indexOf(appointmentDay)]) {
+          appointmentsToDelete.add(doc.id); // إضافة المعرف إلى قائمة الحذف
+        }
+      }
+
+      // حذف المواعيد التي تم تحديدها
+      for (var appointmentId in appointmentsToDelete) {
+        await FirebaseFirestore.instance
+            .collection('appointments')
+            .doc(appointmentId)
+            .delete();
+
+        // إرسال إشعار للمريض بأنه تم حذف موعده
+        final patientId = snapshot.docs
+            .firstWhere((doc) => doc.id == appointmentId)['patientId'];
+        await FirebaseFirestore.instance.collection('notifications').add({
+          'patientId': patientId,
+          'message': 'تم حذف موعدك بسبب تعديل في مواعيد العمل الخاصة بالطبيب.',
+          'createdAt': FieldValue.serverTimestamp(),
+          'date': FieldValue.serverTimestamp(),
+        });
+      }
+    } catch (e) {
+      print('Error checking and deleting appointments: $e');
+    }
   }
 
   void _showDeleteConfirmationDialog(String doctorId) {

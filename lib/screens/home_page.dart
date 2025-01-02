@@ -1,3 +1,4 @@
+import 'package:care_clinic/screens/notifications_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -199,6 +200,23 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
               color: Colors.white,
             ),
           ),
+          actions: [
+            Row(children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.notifications,
+                  color: AppColors.scaffoldBackgroundColor,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const NotificationsPage()),
+                  );
+                },
+              ),
+            ])
+          ],
           centerTitle: true,
           elevation: 0.0,
           backgroundColor:

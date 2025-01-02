@@ -276,14 +276,15 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
                         Colors.transparent, // Transparent background
-                    side: BorderSide(color: Colors.red, width: 2), // Red border
+                    side: const BorderSide(
+                        color: Colors.red, width: 2), // Red border
                     foregroundColor: Colors.red, // Red text and icon color
                     shape: RoundedRectangleBorder(
                       borderRadius:
                           BorderRadius.circular(30), // Rounded corners
                     ),
                     elevation: 0, // No shadow to keep it clean
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                         vertical: 12, horizontal: 20), // Comfortable padding
                   ),
                   icon: const Icon(
@@ -292,9 +293,10 @@ class AccountInfoScreenState extends State<AccountInfoScreen> {
                   ),
                   label: Text(
                     '157'.tr, // Text inside the button
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18, // Text size
-                      fontWeight: FontWeight.bold, // Bold text
+                      fontWeight: FontWeight.bold,
+                      // Bold text
                     ),
                   ),
                   onPressed: _showDeleteAccountDialog,

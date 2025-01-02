@@ -51,6 +51,7 @@ class _DoctorAppointmentsPageState extends State<DoctorAppointmentsPage> {
           fetchedAppointments.add({
             'id': doc.id,
             'patientName': patientName,
+            'patientId': data['patientId'],
             'doctorName': await _fetchDoctorName(data['doctorId']),
             // 'doctorName': doctorName,
             'date': formattedDate,
@@ -290,8 +291,11 @@ class _DoctorAppointmentsPageState extends State<DoctorAppointmentsPage> {
                       : IconButton(
                           icon: const Icon(Icons.delete,
                               color: Colors.red, size: 28),
-                          onPressed: () => _deleteAppointment(appointment['id'],
-                              appointment['appointmentDate']),
+                          onPressed: () => _deleteAppointment(
+                            appointment['id'],
+                            appointment['appointmentDate'],
+                            appointment['patientId'], // تمرير patientId
+                          ),
                         ),
                 ),
               );
@@ -303,7 +307,7 @@ class _DoctorAppointmentsPageState extends State<DoctorAppointmentsPage> {
   }
 
   Future<void> _deleteAppointment(
-      String appointmentId, String appointmentDate) async {
+      String appointmentId, String appointmentDate, String patientId) async {
     try {
       if (_isAppointmentTooClose(appointmentDate)) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -314,15 +318,27 @@ class _DoctorAppointmentsPageState extends State<DoctorAppointmentsPage> {
         return;
       }
 
+      // حذف الموعد
       await FirebaseFirestore.instance
           .collection('appointments')
           .doc(appointmentId)
           .delete();
 
+      // إرسال إشعار إلى المريض
+      await FirebaseFirestore.instance.collection('notifications').add({
+        'patientId': patientId,
+        'message': 'تم حذف موعدك. يرجى حجز موعد آخر.',
+        'date': appointmentDate,
+        'type': 'appointment_deleted', // نوع الإشعار
+        'createdAt': Timestamp.now(),
+      });
+
+      // تحديث الحالة المحلية
       setState(() {
         appointments
             .removeWhere((appointment) => appointment['id'] == appointmentId);
       });
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Appointment deleted successfully')),
