@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,8 @@ import 'dart:math';
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/widgets/add_doctor_button.dart';
 import 'package:care_clinic/widgets/doctor_form.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 import 'loading_overlay.dart';
 
@@ -104,7 +107,15 @@ class _ClincInfoState extends State<ClincInfo> {
         }
 
         List<String> selectedDays = [];
-        const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+        var days = [
+          "102".tr,
+          "103".tr,
+          "104".tr,
+          "105".tr,
+          "106".tr,
+          "107".tr,
+          "108".tr
+        ]; //["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
         for (int i = 0; i < daysSelected.value.length; i++) {
           if (daysSelected.value[i]) {
             selectedDays.add(days[i]);
@@ -134,7 +145,7 @@ class _ClincInfoState extends State<ClincInfo> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Doctors saved successfully')),
+        SnackBar(content: Text('110'.tr)),
       );
     } catch (e) {
       print('Error saving doctors: $e');
@@ -151,22 +162,22 @@ class _ClincInfoState extends State<ClincInfo> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
+      return Scaffold(
         appBar: AppBar(
-          title: const Text(
-            "Doctor Information",
-            style: TextStyle(color: AppColors.textColor),
+          title: Text(
+            "69".tr,
+            style: const TextStyle(color: AppColors.textColor),
           ),
-          backgroundColor: AppColors.primaryColor,
+          backgroundColor:
+              themeProvider.isDarkMode ? Colors.black : AppColors.primaryColor,
           leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.arrow_back,
-              color: AppColors.textColor,
+              color: Colors.grey.shade600,
             ),
           ),
         ),
@@ -193,7 +204,7 @@ class _ClincInfoState extends State<ClincInfo> {
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

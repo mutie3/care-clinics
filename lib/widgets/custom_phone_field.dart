@@ -19,14 +19,14 @@ class CustomPhoneField extends StatelessWidget {
           decoration: InputDecoration(
             labelText: '41'.tr,
             labelStyle: const TextStyle(
-              color: AppColors.textColor,
+              color: AppColors.scaffoldBackgroundColor,
               fontFamily: 'Tajawal',
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(25.0),
               borderSide: BorderSide(
                 color: themeProvider.isDarkMode
-                    ? Colors.white
+                    ? Colors.grey.shade600
                     : AppColors.primaryColor,
               ),
             ),
@@ -34,7 +34,7 @@ class CustomPhoneField extends StatelessWidget {
               borderRadius: BorderRadius.circular(25.0),
               borderSide: BorderSide(
                 color: themeProvider.isDarkMode
-                    ? Colors.white
+                    ? Colors.grey.shade600
                     : AppColors.primaryColor,
               ),
             ),

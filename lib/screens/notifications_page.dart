@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class NotificationsPage extends StatefulWidget {
@@ -28,7 +29,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Future<List<DocumentSnapshot>> _fetchNotifications() async {
     final patientId = await _getPatientId();
     if (patientId == null) {
-      throw Exception('User not logged in');
+      throw Exception('260'.tr);
     }
 
     final querySnapshot = await FirebaseFirestore.instance
@@ -62,7 +63,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
           .delete();
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('تم حذف الإشعار بنجاح')),
+        SnackBar(content: Text('254'.tr)),
       );
 
       // تحديث قائمة الإشعارات بعد الحذف
@@ -71,7 +72,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('حدث خطأ أثناء حذف الإشعار')),
+        SnackBar(content: Text('255'.tr)),
       );
     }
   }
@@ -80,7 +81,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('الإشعارات'),
+        title: Text('28'.tr),
         centerTitle: true,
         actions: [
           IconButton(
@@ -101,19 +102,19 @@ class _NotificationsPageState extends State<NotificationsPage> {
           }
 
           if (snapshot.hasError) {
-            return const Center(
+            return Center(
               child: Text(
-                'حدث خطأ أثناء تحميل الإشعارات.',
-                style: TextStyle(fontSize: 18, color: Colors.grey),
+                '256'.tr,
+                style: const TextStyle(fontSize: 18, color: Colors.grey),
               ),
             );
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
-                'لا توجد إشعارات.',
-                style: TextStyle(fontSize: 18, color: Colors.grey),
+                '257'.tr,
+                style: const TextStyle(fontSize: 18, color: Colors.grey),
               ),
             );
           }
@@ -137,28 +138,28 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     style: const TextStyle(fontSize: 16),
                   ),
                   subtitle: Text(
-                    ' تاريخ الموعد المحذوف: ${formattedDate.toString()}',
+                    ' 259 ${formattedDate.toString()}'.tr,
                     style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                   onLongPress: () {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: const Text('تأكيد الحذف'),
-                        content: const Text('هل تريد حذف هذا الإشعار؟'),
+                        title: Text('115'.tr),
+                        content: Text('258'.tr),
                         actions: [
                           TextButton(
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: const Text('إلغاء'),
+                            child: Text('117'.tr),
                           ),
                           TextButton(
                             onPressed: () async {
                               Navigator.of(context).pop();
                               await _deleteNotification(notificationId);
                             },
-                            child: const Text('حذف'),
+                            child: Text('78'.tr),
                           ),
                         ],
                       ),

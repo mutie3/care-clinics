@@ -1,8 +1,11 @@
 import 'package:care_clinic/constants/colors_page.dart';
+import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'rating_page.dart';
 
 enum AppointmentStatus { past, upcoming }
@@ -212,9 +215,7 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
         // إذا كانت الموعد لم ينتهي بعد، نقوم فقط بحذفه
         if (_isAppointmentTooClose(appointmentDate)) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content:
-                    Text('Cannot delete appointment less than 8 hours away')),
+            SnackBar(content: Text('290'.tr)),
           );
           return;
         }
@@ -230,7 +231,7 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Appointment deleted successfully')),
+          SnackBar(content: Text('180'.tr)),
         );
       }
     } catch (e) {
@@ -265,71 +266,77 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
                 DateTime.parse(appointment['appointmentDate'])) ==
             AppointmentStatus.upcoming)
         .toList();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Your Appointments',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: AppColors
-            .primaryColor, // You can customize this color or make it dynamic
-        centerTitle: true,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.primaryColor.withOpacity(0.8),
-                AppColors.primaryColor.withOpacity(1.0),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 8,
-                spreadRadius: 1,
-                offset: const Offset(0, 4),
-              ),
-            ],
+    return Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            '291'.tr,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
+          backgroundColor: AppColors
+              .primaryColor, // You can customize this color or make it dynamic
+          centerTitle: true,
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  themeProvider.isDarkMode
+                      ? Colors.black.withOpacity(0.8)
+                      : AppColors.primaryColor.withOpacity(0.8),
+                  themeProvider.isDarkMode
+                      ? Colors.black.withOpacity(1.0)
+                      : AppColors.primaryColor.withOpacity(1.0),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 8,
+                  spreadRadius: 1,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+          ),
+          elevation: 5,
         ),
-        elevation: 5,
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : errorMessage != null
-              ? Center(
-                  child: Text(
-                    errorMessage!,
-                    style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
-                )
-              : appointments.isEmpty
-                  ? const Center(
-                      child: Text(
-                        'No appointments found',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500),
-                      ),
-                    )
-                  : SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          if (upcomingAppointments.isNotEmpty)
-                            _buildAppointmentList(
-                                upcomingAppointments, 'Upcoming Appointments'),
-                          if (pastAppointments.isNotEmpty)
-                            _buildAppointmentList(
-                                pastAppointments, 'Past Appointments'),
-                        ],
-                      ),
+        body: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : errorMessage != null
+                ? Center(
+                    child: Text(
+                      errorMessage!,
+                      style: const TextStyle(
+                          color: Colors.red,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
                     ),
-    );
+                  )
+                : appointments.isEmpty
+                    ? Center(
+                        child: Text(
+                          '185'.tr,
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w500),
+                        ),
+                      )
+                    : SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            if (upcomingAppointments.isNotEmpty)
+                              _buildAppointmentList(
+                                upcomingAppointments,
+                                '292'.tr,
+                              ),
+                            if (pastAppointments.isNotEmpty)
+                              _buildAppointmentList(pastAppointments, '293'.tr),
+                          ],
+                        ),
+                      ),
+      );
+    });
   }
 
   Widget _buildAppointmentList(
@@ -396,7 +403,7 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
                   ),
                   trailing: isPastAppointment
                       ? IconButton(
-                          tooltip: 'Rate this appointment',
+                          tooltip: '294'.tr,
                           icon:
                               const Icon(Icons.rate_review, color: Colors.blue),
                           onPressed: () {
@@ -415,7 +422,7 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
                           },
                         )
                       : IconButton(
-                          tooltip: 'Delete this appointment',
+                          tooltip: '295'.tr,
                           icon: const Icon(Icons.delete,
                               color: Colors.red, size: 28),
                           onPressed: () => _confirmDelete(
@@ -439,20 +446,20 @@ class _UserAppointmentsPageState extends State<UserAppointmentsPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Confirm Delete'),
+          title: Text('115'.tr),
           content: Text(
               'Are you sure you want to delete the appointment on $appointmentDate?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: Text('117'.tr),
             ),
             TextButton(
               onPressed: () {
                 _deleteAppointment(appointmentId, appointmentDate);
                 Navigator.pop(context);
               },
-              child: const Text('Delete'),
+              child: Text('78'.tr),
             ),
           ],
         );

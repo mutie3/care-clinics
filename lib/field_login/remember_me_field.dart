@@ -87,7 +87,7 @@ class RememberMeAndForgotPasswordRowState
                 style: TextStyle(
                   fontFamily: 'Tajawal',
                   color: isDarkMode
-                      ? Colors.blueAccent
+                      ? Colors.white
                       : Colors.blue, // Text button color
                 ),
               ),

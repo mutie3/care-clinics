@@ -21,7 +21,7 @@ class PhoneField extends StatelessWidget {
             borderRadius: BorderRadius.circular(25.0),
             borderSide: BorderSide(
               color: themeProvider.isDarkMode
-                  ? Colors.white
+                  ? Colors.grey.shade600
                   : AppColors.primaryColor,
             ),
           ),
@@ -29,7 +29,7 @@ class PhoneField extends StatelessWidget {
             borderRadius: BorderRadius.circular(25.0),
             borderSide: BorderSide(
               color: themeProvider.isDarkMode
-                  ? Colors.white
+                  ? Colors.grey.shade600
                   : AppColors.primaryColor,
             ),
           ),

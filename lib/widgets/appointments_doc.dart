@@ -3,6 +3,7 @@ import 'package:care_clinic/screens/rating_page.dart';
 import 'package:care_clinic/screens/user_appointments_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 enum AppointmentsDoc { past, upcoming }
@@ -87,13 +88,13 @@ class _DoctorAppointmentsPageState extends State<DoctorAppointmentsPage> {
             .get();
 
         if (doctorsSnapshot.docs.isNotEmpty) {
-          return doctorsSnapshot.docs.first['name'] ?? 'Unknown Doctor';
+          return doctorsSnapshot.docs.first['name'] ?? '296'.tr;
         }
       }
     } catch (e) {
       print('Error fetching doctor name: $e');
     }
-    return 'Unknown Doctor';
+    return '296'.tr;
   }
 
   Future<String> _fetchPatientName(String patientId) async {

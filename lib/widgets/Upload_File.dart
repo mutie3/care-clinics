@@ -101,7 +101,7 @@ class UploadFileState extends State<UploadFile> {
                   '58'.tr,
                   style: TextStyle(
                     color: isDarkMode
-                        ? AppColors.primaryColor
+                        ? Colors.white
                         : AppColors.primaryColor.withOpacity(0.6),
                     fontFamily: 'Tajawal',
                   ),

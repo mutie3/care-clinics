@@ -503,9 +503,9 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                             onPressed: _openMap,
                                             icon: const Icon(Icons.location_on,
                                                 size: 20),
-                                            label: const Text(
-                                              'Location',
-                                              style: TextStyle(
+                                            label: Text(
+                                              '76'.tr,
+                                              style: const TextStyle(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w600,
                                               ),
@@ -545,9 +545,9 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                                 _makeCall(clinicPhoneNumber),
                                             icon: const Icon(Icons.phone,
                                                 size: 20),
-                                            label: const Text(
-                                              'Call',
-                                              style: TextStyle(
+                                            label: Text(
+                                              '261'.tr,
+                                              style: const TextStyle(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w600,
                                               ),
@@ -589,11 +589,11 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                               ],
                             ),
                           ),
-                          const Align(
+                          Align(
                             alignment: Alignment.bottomLeft,
                             child: Text(
-                              'Select a Doctor ',
-                              style: TextStyle(
+                              '262'.tr,
+                              style: const TextStyle(
                                   fontSize: 22, fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -737,9 +737,10 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                     },
                                   ),
                                 )
-                              : const Center(
+                              : Center(
                                   child: Text(
-                                      'No doctors available at the moment'),
+                                    '263'.tr,
+                                  ),
                                 ),
                           const SizedBox(height: 30),
                           if (selectedDoctorIndex != null)
@@ -751,16 +752,18 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                   axisAlignment: -1.0,
                                   child: Column(
                                     children: [
-                                      const Text(
-                                        'Available Days:',
-                                        style: TextStyle(
+                                      Text(
+                                        '264'.tr,
+                                        style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       const SizedBox(height: 10),
                                       if (workingDays.isEmpty)
-                                        const Text('No working days available'),
+                                        Text(
+                                          '265'.tr,
+                                        ),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -817,7 +820,7 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                               horizontal: 16.0, vertical: 10.0),
                                           child: RotatingDropdown(
                                             selectedValue:
-                                                selectedTime ?? 'Select Time',
+                                                selectedTime ?? '92'.tr,
                                             items: availableTimes,
                                             onChanged: (selectedTime) {
                                               setState(() {
@@ -851,9 +854,10 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                                     ScaffoldMessenger.of(
                                                             context)
                                                         .showSnackBar(
-                                                      const SnackBar(
+                                                      SnackBar(
                                                         content: Text(
-                                                            'You cannot book an appointment for today.'),
+                                                          '266'.tr,
+                                                        ),
                                                       ),
                                                     );
                                                   }
@@ -867,9 +871,9 @@ class _DoctorDetailPageState extends State<DoctorDetailPage>
                                                   BorderRadius.circular(12),
                                             ),
                                           ),
-                                          child: const Text(
-                                            'Book Appointment',
-                                            style: TextStyle(
+                                          child: Text(
+                                            '267'.tr,
+                                            style: const TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold),
                                           ),

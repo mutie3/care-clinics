@@ -28,9 +28,11 @@ class SignUpText extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: '65'.tr,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Tajawal',
-                      color: AppColors.textBox,
+                      color: themeProvider.isDarkMode
+                          ? Colors.grey[300]
+                          : AppColors.textBox,
                     ),
                   ),
                   TextSpan(

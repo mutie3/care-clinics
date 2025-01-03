@@ -6,6 +6,7 @@ import 'package:care_clinic/field_login/sign_up_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'clinic_page.dart';
@@ -96,7 +97,7 @@ class LoginPageState extends State<LoginPage>
   Future<void> _login() async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter email and password")),
+        SnackBar(content: Text("127".tr)),
       );
       return;
     }
@@ -144,8 +145,8 @@ class LoginPageState extends State<LoginPage>
         } else {
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Your clinic account is not approved yet."),
+            SnackBar(
+              content: Text("288".tr),
             ),
           );
         }
@@ -171,7 +172,7 @@ class LoginPageState extends State<LoginPage>
         } else {
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Email not found")),
+            SnackBar(content: Text("170".tr)),
           );
         }
       }
@@ -179,11 +180,11 @@ class LoginPageState extends State<LoginPage>
       if (!mounted) return;
 
       Navigator.of(context).pop();
-      String errorMessage = 'Wrong Email or Password';
+      String errorMessage = '289'.tr;
       if (e.code == 'user-not-found') {
-        errorMessage = 'No user found for that email.';
+        errorMessage = '163'.tr;
       } else if (e.code == 'wrong-password') {
-        errorMessage = 'Wrong Email or Password';
+        errorMessage = '289'.tr;
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -302,10 +303,10 @@ class LoginButtons extends StatelessWidget {
                         .shade700 // لون خلفية أزرق داكن في الوضع الغامق
                     : AppColors.primaryColor, // اللون الأساسي في الوضع الفاتح
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
-                  'Login',
-                  style: TextStyle(
+                  '60'.tr,
+                  style: const TextStyle(
                     fontSize: 18,
                     color: AppColors
                         .scaffoldBackgroundColor, // لون النص مناسب مع الخلفية
@@ -316,7 +317,7 @@ class LoginButtons extends StatelessWidget {
             const SizedBox(height: 10),
             Center(
               child: Text(
-                'OR',
+                '86'.tr,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -340,10 +341,10 @@ class LoginButtons extends StatelessWidget {
                         .shade700 // نفس اللون الداكن للأزرار في الوضع الغامق
                     : AppColors.primaryColor,
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
-                  'Guest Login',
-                  style: TextStyle(
+                  '61'.tr,
+                  style: const TextStyle(
                     fontSize: 18,
                     color: AppColors.scaffoldBackgroundColor,
                   ),

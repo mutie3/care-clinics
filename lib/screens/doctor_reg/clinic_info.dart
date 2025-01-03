@@ -37,16 +37,16 @@ class _RegPageState extends State<RegPage> {
   File? selectedFile;
 
   final List<String> specialties = [
-    "Pediatrics",
-    "Obstetrics and Gynecology",
-    "Dermatology",
-    "Cardiology",
-    "Orthopedic Surgery",
-    "Psychiatry",
-    "Endocrinology",
-    "Gastroenterology",
-    "Respiratory Medicine",
-    "Nephrology and Urology",
+    "17".tr,
+    "18".tr,
+    "19".tr,
+    "20".tr,
+    "21".tr,
+    "22".tr,
+    "23".tr,
+    "3".tr,
+    "4".tr,
+    "5".tr,
   ];
 
   Future<void> _uploadData() async {
@@ -111,7 +111,9 @@ class _RegPageState extends State<RegPage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text("Error"),
+              title: Text(
+                "268".tr,
+              ),
               content: Text("An error occurred: ${e.toString()} ,"),
               actions: [
                 TextButton(

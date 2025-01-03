@@ -24,14 +24,14 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Error'),
+        title: Text('268'.tr),
         content: Text(message),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text('OK'),
+            child: Text('148'.tr),
           ),
         ],
       ),
@@ -43,7 +43,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
       SnackBar(
         content: Text(
           message,
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.green,
       ),
@@ -174,19 +174,19 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                       String errorMessage = '';
                       switch (e.code) {
                         case 'wrong-password':
-                          errorMessage = 'كلمة المرور الحالية غير صحيحة';
+                          errorMessage = '239'.tr;
                           break;
                         case 'expired-action':
-                          errorMessage = 'التوثيق غير صالح أو منتهي';
+                          errorMessage = '269'.tr;
                           break;
                         case 'weak-password':
-                          errorMessage = 'كلمة المرور الجديدة ضعيفة جدًا';
+                          errorMessage = '270'.tr;
                           break;
                         case 'email-already-in-use':
-                          errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
+                          errorMessage = '271'.tr;
                           break;
                         default:
-                          errorMessage = 'كلمة السر الحالية خاطئة';
+                          errorMessage = '272'.tr;
                       }
 
                       _showErrorDialog(errorMessage); // Show error in a dialog

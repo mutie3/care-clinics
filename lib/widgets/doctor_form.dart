@@ -1,10 +1,13 @@
 import 'dart:io';
+import 'package:care_clinic/constants/theme_dark_mode.dart';
 import 'package:care_clinic/screens/login_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/widgets/set_picture.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 import 'custom_text_fieled.dart';
 
@@ -41,166 +44,206 @@ class _DoctorFormState extends State<DoctorForm> {
   File? selectedImage;
 
   final List<String> specialties = [
-    "Pediatrics",
-    "Obstetrics and Gynecology",
-    "Dermatology",
-    "Cardiology",
-    "Orthopedic Surgery",
-    "Psychiatry",
-    "Endocrinology",
-    "Gastroenterology",
-    "Respiratory Medicine",
-    "Nephrology and Urology",
+    "17".tr,
+    "18".tr,
+    "19".tr,
+    "20".tr,
+    "21".tr,
+    "22".tr,
+    "23".tr,
+    "3".tr,
+    "4".tr,
+    "5".tr,
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: widget.formKey,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(
-          border: Border.all(color: AppColors.primaryColor),
-          borderRadius: BorderRadius.circular(20),
-          color: AppColors.scaffoldBackgroundColor.withOpacity(0.05),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                icon: const Icon(Icons.delete, color: AppColors.primaryColor),
-                onPressed: widget.onDelete,
-              ),
+    return Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
+      return Form(
+        key: widget.formKey,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: themeProvider.isDarkMode
+                  ? Colors.black
+                  : AppColors.primaryColor,
             ),
-            Center(
-              child: SetProfilePicture(
-                onImagePicked: (File file) {
+            borderRadius: BorderRadius.circular(20),
+            color: AppColors.scaffoldBackgroundColor.withOpacity(0.05),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.delete,
+                    color: themeProvider.isDarkMode
+                        ? Colors.red
+                        : AppColors.primaryColor,
+                  ),
+                  onPressed: widget.onDelete,
+                ),
+              ),
+              Center(
+                child: SetProfilePicture(
+                  onImagePicked: (File file) {
+                    setState(() {
+                      selectedImage = file;
+                    });
+                    widget.onImageChanged(file);
+                  },
+                ),
+              ),
+              const SizedBox(height: 10),
+              CustomTextField(
+                text: "74".tr,
+                controller: widget.nameController,
+                icon: Icon(
+                  Icons.person_outline_outlined,
+                  color: themeProvider.isDarkMode
+                      ? Colors.grey.shade600
+                      : AppColors.primaryColor,
+                ),
+                validator: (value) =>
+                    value == null || value.isEmpty ? '137'.tr : null,
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<String>(
+                value: widget.specialtyController.text.isNotEmpty
+                    ? widget.specialtyController.text
+                    : selectedSpecialty,
+                decoration: InputDecoration(
+                  labelText: "75".tr,
+                  prefixIcon: Icon(
+                    Icons.medical_services,
+                    color: themeProvider.isDarkMode
+                        ? Colors.grey.shade600 // حدود داكنة في الوضع الغامق
+                        : AppColors.primaryColor,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                    borderSide: BorderSide(
+                      color: themeProvider.isDarkMode
+                          ? Colors.grey.shade600 // حدود داكنة في الوضع الغامق
+                          : AppColors.primaryColor, // حدود في الوضع الفاتح
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                    borderSide: BorderSide(
+                      color: themeProvider.isDarkMode
+                          ? Colors.blueGrey
+                              .shade300 // الحدود عندما يكون الحقل متركزًا في الوضع المظلم
+                          : AppColors
+                              .primaryColor, // الحدود عندما يكون الحقل متركزًا في الوضع العادي
+                    ),
+                  ),
+                ),
+                items: specialties.map((specialty) {
+                  return DropdownMenuItem(
+                    value: specialty,
+                    child: Text(specialty),
+                  );
+                }).toList(),
+                onChanged: (value) {
                   setState(() {
-                    selectedImage = file;
+                    selectedSpecialty = value;
+                    widget.specialtyController.text = value ?? '';
                   });
-                  widget.onImageChanged(file);
                 },
+                validator: (value) =>
+                    value == null || value.isEmpty ? '138'.tr : null,
               ),
-            ),
-            const SizedBox(height: 10),
-            CustomTextField(
-              text: "Doctor Name",
-              controller: widget.nameController,
-              icon: const Icon(Icons.person_outline_outlined,
-                  color: AppColors.primaryColor),
-              validator: (value) => value == null || value.isEmpty
-                  ? 'Please enter doctor name'
-                  : null,
-            ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              value: widget.specialtyController.text.isNotEmpty
-                  ? widget.specialtyController.text
-                  : selectedSpecialty,
-              decoration: const InputDecoration(
-                labelText: "Specialty",
-                prefixIcon:
-                    Icon(Icons.medical_services, color: AppColors.primaryColor),
-                border: OutlineInputBorder(),
+              const SizedBox(height: 12),
+              CustomTextField(
+                keyboardType: TextInputType.number,
+                text: "73".tr,
+                controller: widget.experienceController,
+                icon: Icon(
+                  Icons.more_time,
+                  color: themeProvider.isDarkMode
+                      ? Colors.grey.shade600 // حدود داكنة في الوضع الغامق
+                      : AppColors.primaryColor,
+                ),
+                validator: (value) =>
+                    value == null || value.isEmpty ? '139'.tr : null,
               ),
-              items: specialties.map((specialty) {
-                return DropdownMenuItem(
-                  value: specialty,
-                  child: Text(specialty),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedSpecialty = value;
-                  widget.specialtyController.text = value ?? '';
-                });
-              },
-              validator: (value) => value == null || value.isEmpty
-                  ? 'Please select a specialty'
-                  : null,
-            ),
-            const SizedBox(height: 12),
-            CustomTextField(
-              keyboardType: TextInputType.number,
-              text: "Experience Years",
-              controller: widget.experienceController,
-              icon: const Icon(Icons.more_time, color: AppColors.primaryColor),
-              validator: (value) => value == null || value.isEmpty
-                  ? 'Please enter experience years'
-                  : null,
-            ),
-            const SizedBox(height: 15),
-            const Text(
-              "Working Days:",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primaryColor,
+              const SizedBox(height: 15),
+              Text(
+                "72".tr,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: themeProvider.isDarkMode
+                      ? Colors.grey.shade600 // حدود داكنة في الوضع الغامق
+                      : AppColors.primaryColor,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List<Widget>.generate(7, (index) {
-                  const days = [
-                    "SUN",
-                    "MON",
-                    "TUE",
-                    "WED",
-                    "THU",
-                    "FRI",
-                    "SAT"
-                  ];
-                  return ValueListenableBuilder<List<bool>>(
-                    valueListenable: widget.daysSelected,
-                    builder: (context, daysList, child) {
-                      return GestureDetector(
-                        onTap: () {
-                          daysList[index] = !daysList[index];
-                          widget.daysSelected.value = List.from(daysList);
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          padding: const EdgeInsets.all(2),
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: daysList[index]
-                                ? AppColors.primaryColor
-                                : Colors.white,
-                            border: Border.all(
-                                color: AppColors.primaryColor, width: 2),
-                          ),
-                          child: Center(
-                            child: Text(
-                              days[index],
-                              style: TextStyle(
-                                color: daysList[index]
-                                    ? Colors.white
-                                    : AppColors.primaryColor,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
+              const SizedBox(height: 8),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List<Widget>.generate(7, (index) {
+                    var days = [
+                      "102".tr,
+                      "103".tr,
+                      "104".tr,
+                      "105".tr,
+                      "106".tr,
+                      "107".tr,
+                      "108".tr
+                    ];
+                    return ValueListenableBuilder<List<bool>>(
+                      valueListenable: widget.daysSelected,
+                      builder: (context, daysList, child) {
+                        return GestureDetector(
+                          onTap: () {
+                            daysList[index] = !daysList[index];
+                            widget.daysSelected.value = List.from(daysList);
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            padding: const EdgeInsets.all(2),
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: daysList[index]
+                                  ? AppColors.primaryColor
+                                  : Colors.white,
+                              border: Border.all(
+                                  color: AppColors.primaryColor, width: 2),
+                            ),
+                            child: Center(
+                              child: Text(
+                                days[index],
+                                style: TextStyle(
+                                  color: daysList[index]
+                                      ? Colors.white
+                                      : AppColors.primaryColor,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              textAlign: TextAlign.center,
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                }),
+                        );
+                      },
+                    );
+                  }),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 
@@ -248,7 +291,7 @@ class _DoctorListState extends State<DoctorList> {
 
           if (specialty.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Please select a valid specialty.')),
+              SnackBar(content: Text('300'.tr)),
             );
             hasError = true;
             break;
@@ -267,14 +310,11 @@ class _DoctorListState extends State<DoctorList> {
           });
 
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text(
-                    'تم حفظ الدكاترة سوف يتم التاكد من المعلومات خلال 24 ساعة.')),
+            SnackBar(content: Text('299'.tr)),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Please fill all fields for all doctors.')),
+            SnackBar(content: Text('298'.tr)),
           );
           hasError = true;
           break;
@@ -297,36 +337,51 @@ class _DoctorListState extends State<DoctorList> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        widget.doctorForms.isEmpty
-            ? const Center(
-                child: Text(
-                  "No doctors added yet. Please add a doctor to continue.",
-                  style: TextStyle(fontSize: 18, color: AppColors.textColor),
-                  textAlign: TextAlign.center,
+    return Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
+      return Column(
+        children: [
+          widget.doctorForms.isEmpty
+              ? Center(
+                  child: Text(
+                    "141".tr,
+                    style: const TextStyle(
+                        fontSize: 18, color: AppColors.textColor),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              : Column(
+                  children: widget.doctorForms.map((form) {
+                    return DoctorForm(
+                      uniqueKey: form['key'],
+                      formKey: form['formKey'],
+                      daysSelected: form['daysSelected'],
+                      onDelete: () => widget.onRemove(form['key']),
+                      nameController: form['nameController'],
+                      specialtyController: form['specialtyController'],
+                      experienceController: form['experienceController'],
+                      clinicId: widget.clinicId,
+                      onImageChanged: (file) => form['selectedImage'] = file,
+                    );
+                  }).toList(),
                 ),
-              )
-            : Column(
-                children: widget.doctorForms.map((form) {
-                  return DoctorForm(
-                    uniqueKey: form['key'],
-                    formKey: form['formKey'],
-                    daysSelected: form['daysSelected'],
-                    onDelete: () => widget.onRemove(form['key']),
-                    nameController: form['nameController'],
-                    specialtyController: form['specialtyController'],
-                    experienceController: form['experienceController'],
-                    clinicId: widget.clinicId,
-                    onImageChanged: (file) => form['selectedImage'] = file,
-                  );
-                }).toList(),
+          ElevatedButton(
+            onPressed: _saveAllDoctors,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: themeProvider.isDarkMode
+                  ? Colors.black
+                  : AppColors.primaryColor,
+            ),
+            child: Text(
+              "297".tr,
+              style: TextStyle(
+                color: themeProvider.isDarkMode
+                    ? Colors.grey.shade600 // حدود داكنة في الوضع الغامق
+                    : Colors.white,
               ),
-        ElevatedButton(
-          onPressed: _saveAllDoctors,
-          child: const Text("Save All Doctors"),
-        ),
-      ],
-    );
+            ),
+          ),
+        ],
+      );
+    });
   }
 }

@@ -89,7 +89,7 @@ class CustomLocationPickerState extends State<CustomLocationPicker> {
                     Icon(
                       Icons.location_on,
                       color: themeProvider.isDarkMode
-                          ? AppColors.primaryColor
+                          ? Colors.white
                           : AppColors.primaryColor, // أيقونة باللون المناسب
                     ),
                     const SizedBox(width: 8), // مساحة بين الأيقونة والنص

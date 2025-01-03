@@ -87,7 +87,7 @@ class ClinicPageState extends State<ClinicPage> {
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم حفظ التعديلات بنجاح!')),
+          SnackBar(content: Text('273'.tr)),
         );
       }
     } catch (e) {
@@ -100,7 +100,15 @@ class ClinicPageState extends State<ClinicPage> {
   Future<void> saveDoctorData(String doctorId) async {
     try {
       List<String> selectedDays = [];
-      const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+      var days = [
+        "102".tr,
+        "103".tr,
+        "104".tr,
+        "105".tr,
+        "106".tr,
+        "107".tr,
+        "108".tr
+      ];
       for (int i = 0; i < daysSelected.value.length; i++) {
         if (daysSelected.value[i]) {
           selectedDays.add(days[i]);
@@ -126,7 +134,7 @@ class ClinicPageState extends State<ClinicPage> {
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم حفظ التعديلات للطبيب بنجاح!')),
+          SnackBar(content: Text('274'.tr)),
         );
       }
     } catch (e) {
@@ -161,8 +169,15 @@ class ClinicPageState extends State<ClinicPage> {
     daysSelected.value = List<bool>.generate(
       7,
       (index) =>
-          doctor['working_days']?.contains(
-              ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][index]) ??
+          doctor['working_days']?.contains([
+            "102".tr,
+            "103".tr,
+            "104".tr,
+            "105".tr,
+            "106".tr,
+            "107".tr,
+            "108".tr
+          ][index]) ??
           false,
     );
 
@@ -207,9 +222,9 @@ class ClinicPageState extends State<ClinicPage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF1E88E5),
                           ),
-                          child: const Text(
-                            'تعديل معلومات الطبيب',
-                            style: TextStyle(color: Colors.black),
+                          child: Text(
+                            '275'.tr,
+                            style: const TextStyle(color: Colors.black),
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -220,9 +235,9 @@ class ClinicPageState extends State<ClinicPage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF1E88E5),
                           ),
-                          child: const Text(
-                            'تعديل مواعيد العمل',
-                            style: TextStyle(color: Colors.black),
+                          child: Text(
+                            '276'.tr,
+                            style: const TextStyle(color: Colors.black),
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -240,9 +255,9 @@ class ClinicPageState extends State<ClinicPage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF1E88E5),
                           ),
-                          child: const Text(
-                            'عرض المرضى',
-                            style: TextStyle(color: Colors.black),
+                          child: Text(
+                            '277'.tr,
+                            style: const TextStyle(color: Colors.black),
                           ),
                         ),
                       ],
@@ -288,17 +303,17 @@ class ClinicPageState extends State<ClinicPage> {
                         const SizedBox(height: 10),
                         TextField(
                           controller: doctorNameController,
-                          decoration: const InputDecoration(
-                            labelText: 'اسم الطبيب',
-                            labelStyle: TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            labelText: '74'.tr,
+                            labelStyle: const TextStyle(color: Colors.black),
                           ),
                         ),
                         const SizedBox(height: 10),
                         TextField(
                           controller: experienceController,
-                          decoration: const InputDecoration(
-                            labelText: 'الخبرة',
-                            labelStyle: TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            labelText: '278'.tr,
+                            labelStyle: const TextStyle(color: Colors.black),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -309,9 +324,9 @@ class ClinicPageState extends State<ClinicPage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF1E88E5),
                           ),
-                          child: const Text(
-                            'حفظ التعديلات',
-                            style: TextStyle(color: Colors.black),
+                          child: Text(
+                            '279'.tr,
+                            style: const TextStyle(color: Colors.black),
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -322,9 +337,9 @@ class ClinicPageState extends State<ClinicPage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red,
                           ),
-                          child: const Text(
-                            'حذف الطبيب',
-                            style: TextStyle(color: Colors.white),
+                          child: Text(
+                            '280'.tr,
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                       ],
@@ -367,9 +382,9 @@ class ClinicPageState extends State<ClinicPage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(
-                          'تعديل مواعيد العمل',
-                          style: TextStyle(
+                        Text(
+                          '276'.tr,
+                          style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                         const SizedBox(height: 10),
@@ -380,13 +395,13 @@ class ClinicPageState extends State<ClinicPage> {
                               spacing: 10,
                               children: List<Widget>.generate(7, (index) {
                                 final day = [
-                                  "SUN",
-                                  "MON",
-                                  "TUE",
-                                  "WED",
-                                  "THU",
-                                  "FRI",
-                                  "SAT"
+                                  "102".tr,
+                                  "103".tr,
+                                  "104".tr,
+                                  "105".tr,
+                                  "106".tr,
+                                  "107".tr,
+                                  "108".tr
                                 ][index];
                                 return Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -422,9 +437,9 @@ class ClinicPageState extends State<ClinicPage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF1E88E5),
                           ),
-                          child: const Text(
-                            'حفظ التعديلات',
-                            style: TextStyle(color: Colors.black),
+                          child: Text(
+                            '279'.tr,
+                            style: const TextStyle(color: Colors.black),
                           ),
                         ),
                       ],
@@ -452,13 +467,13 @@ class ClinicPageState extends State<ClinicPage> {
       List<String> appointmentsToDelete = [];
 
       final doctorWorkingDays = [
-        "SUN",
-        "MON",
-        "TUE",
-        "WED",
-        "THU",
-        "FRI",
-        "SAT"
+        "102".tr,
+        "103".tr,
+        "104".tr,
+        "105".tr,
+        "106".tr,
+        "107".tr,
+        "108".tr
       ];
 
       for (var doc in snapshot.docs) {
@@ -483,7 +498,7 @@ class ClinicPageState extends State<ClinicPage> {
             .firstWhere((doc) => doc.id == appointmentId)['patientId'];
         await FirebaseFirestore.instance.collection('notifications').add({
           'patientId': patientId,
-          'message': 'تم حذف موعدك بسبب تعديل في مواعيد العمل الخاصة بالطبيب.',
+          'message': '281'.tr,
           'createdAt': FieldValue.serverTimestamp(),
           'date': FieldValue.serverTimestamp(),
         });
@@ -498,21 +513,21 @@ class ClinicPageState extends State<ClinicPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('تأكيد الحذف'),
-          content: const Text('هل أنت متأكد أنك تريد حذف هذا الطبيب؟'),
+          title: Text('115'.tr),
+          content: Text('282'.tr),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('إلغاء'),
+              child: Text('117'.tr),
             ),
             TextButton(
               onPressed: () {
                 deleteDoctor(doctorId);
                 Navigator.of(context).pop();
               },
-              child: const Text('حذف'),
+              child: Text('78'.tr),
             ),
           ],
         );
@@ -530,7 +545,7 @@ class ClinicPageState extends State<ClinicPage> {
           .delete();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم حذف الطبيب بنجاح!')),
+          SnackBar(content: Text('283'.tr)),
         );
       }
     } catch (e) {
@@ -546,7 +561,7 @@ class ClinicPageState extends State<ClinicPage> {
     bool isDarkMode = themeProvider.isDarkMode;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Clinic Dashboard'),
+        title: Text('284'.tr),
         backgroundColor: Colors.blue,
         actions: [
           Row(
@@ -603,20 +618,20 @@ class ClinicPageState extends State<ClinicPage> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    clinicData['name'] ?? 'اسم العيادة',
+                    clinicData['name'] ?? '57'.tr,
                     style: const TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ],
               ),
             ),
             ExpansionTile(
-              title: const Text('تعديل معلومات العيادة'),
+              title: Text('285'.tr),
               leading: const Icon(Icons.edit),
               children: [
-                buildEditableField('اسم العيادة', nameController),
+                buildEditableField('57'.tr, nameController),
                 buildPhoneField(),
                 ListTile(
-                  title: const Text('الموقع'),
+                  title: Text('76'.tr),
                   subtitle: IgnorePointer(
                     ignoring:
                         !isEditingClinic, // تعطيل التفاعل إذا لم يكن في وضع التعديل
@@ -632,7 +647,7 @@ class ClinicPageState extends State<ClinicPage> {
                 ),
                 ListTile(
                   leading: Icon(isEditingClinic ? Icons.save : Icons.edit),
-                  title: Text(isEditingClinic ? 'حفظ' : 'تعديل'),
+                  title: Text(isEditingClinic ? '55'.tr : '79'.tr),
                   onTap: () {
                     setState(() {
                       isEditingClinic = !isEditingClinic;
@@ -663,7 +678,7 @@ class ClinicPageState extends State<ClinicPage> {
           }
 
           if (snapshot.hasError) {
-            return const Center(child: Text('حدث خطأ أثناء تحميل البيانات.'));
+            return Center(child: Text('286'.tr));
           }
 
           var doctors = snapshot.data!.docs;
@@ -696,12 +711,12 @@ class ClinicPageState extends State<ClinicPage> {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        doctor['name'] ?? 'اسم الطبيب',
+                        doctor['name'] ?? '74'.tr,
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        doctor['specialty'] ?? 'التخصص',
+                        doctor['specialty'] ?? '75'.tr,
                         style: const TextStyle(color: Colors.grey),
                       ),
                     ],
@@ -749,16 +764,16 @@ class ClinicPageState extends State<ClinicPage> {
   Widget buildPhoneField() {
     return ListTile(
       title: CustomTextField(
-        text: 'رقم الهاتف',
+        text: '41'.tr,
         controller: phoneController,
         keyboardType: TextInputType.number,
         enabled: isEditingClinic,
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'رقم الهاتف مطلوب';
+            return '287'.tr;
           }
           if (value.length != 10) {
-            return 'رقم الهاتف يجب أن يتكون من 10 أرقام';
+            return '246'.tr;
           }
           return null;
         },
