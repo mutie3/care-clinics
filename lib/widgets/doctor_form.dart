@@ -44,16 +44,27 @@ class _DoctorFormState extends State<DoctorForm> {
   File? selectedImage;
 
   final List<String> specialties = [
-    "17".tr,
-    "18".tr,
-    "19".tr,
-    "20".tr,
-    "21".tr,
-    "22".tr,
-    "23".tr,
-    "3".tr,
-    "4".tr,
-    "5".tr,
+    'Cardiology', // '20'.tr
+    'Dentistry', // Added Dentistry
+    'Dermatology', // '19'.tr
+    'Endocrinology', // '23'.tr
+    'ENT (Ear, Nose, and Throat)', // '13'.tr
+    'Gastroenterology', // '3'.tr
+    'General Medicine / Family Medicine', // '15'.tr
+    'Hematology', // '8'.tr
+    'Hepatology', // '9'.tr
+    'Infectious Diseases', // '10'.tr
+    'Internal Medicine', // '16'.tr
+    'Nephrology and Urology', // '5'.tr
+    'Nutrition and Dietetics', // '11'.tr
+    'Obstetrics and Gynecology', // '18'.tr
+    'Ophthalmology', // '12'.tr
+    'Orthopedic Surgery', // '21'.tr
+    'Pediatrics', // '17'.tr
+    'Psychiatry', // '22'.tr
+    'Respiratory Medicine', // '4'.tr
+    'Sports Medicine', // '7'.tr
+    'Oncology and Radiotherapy', // '6'.tr
   ];
 
   @override
@@ -113,6 +124,7 @@ class _DoctorFormState extends State<DoctorForm> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
+                isExpanded: true,
                 value: widget.specialtyController.text.isNotEmpty
                     ? widget.specialtyController.text
                     : selectedSpecialty,
@@ -190,14 +202,15 @@ class _DoctorFormState extends State<DoctorForm> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List<Widget>.generate(7, (index) {
                     var days = [
-                      "102".tr,
-                      "103".tr,
-                      "104".tr,
-                      "105".tr,
-                      "106".tr,
-                      "107".tr,
-                      "108".tr
+                      "SUN",
+                      "MON",
+                      "TUE",
+                      "WED",
+                      "THU",
+                      "FRI",
+                      "SAT",
                     ];
+
                     return ValueListenableBuilder<List<bool>>(
                       valueListenable: widget.daysSelected,
                       builder: (context, daysList, child) {

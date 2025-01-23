@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 import 'package:care_clinic/constants/colors_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../constants/gemini_provider.dart';
 import '../../constants/theme_dark_mode.dart';
@@ -80,6 +82,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _sendImageMessage(Uint8List imageBytes) async {
     final geminiProvider = Provider.of<GeminiProvider>(context, listen: false);
 
+    // احصل على اللغة الحالية باستخدام GetX
+    final currentLocale = Get.locale ??
+        const Locale('en'); // إذا لم يتم تحديد اللغة الافتراضية، الإنجليزية.
+    final isArabic = currentLocale.languageCode == 'ar';
+
+    // النصوص للرد بناءً على اللغة
+    const promptArabic =
+        "قم بتحليل هذه الصورة فقط إذا كانت تحتوي على محتوى طبي مثل صور الأشعة السينية، أو صور الرنين المغناطيسي، أو غيرها من الصور الطبية. أما إذا كانت الصورة غير طبية، فالرجاء الرد بـ: 'هذه ليست صورة طبية. يمكنني فقط تحليل الصور الطبية'.";
+    const promptEnglish =
+        "Analyze this image only if it contains medical content such as X-rays, MRIs, or other medical images. If the image is non-medical, please respond with 'This is not a medical image. I can only analyze medical images.'";
+
     setState(() {
       _messages
           .insert(0, {'type': 'image', 'data': imageBytes, 'sender': 'user'});
@@ -93,8 +106,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     geminiProvider
         .generateContentFromImage(
-      prompt:
-          'Analyze this image only if it contains medical content such as X-rays, MRIs, or other medical images. If the image is non-medical, please respond with "This is not a medical image. I can only analyze medical images."',
+      prompt: isArabic ? promptArabic : promptEnglish,
       bytes: imageBytes,
     )
         .then((_) {

@@ -27,8 +27,17 @@ class RememberMeAndForgotPasswordRowState
   @override
   void initState() {
     super.initState();
-    rememberMe =
-        widget.rememberMe; // Initialize with the passed rememberMe value
+
+    rememberMe = widget.rememberMe || true;
+
+    _initializeRememberMe();
+  }
+
+  Future<void> _initializeRememberMe() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('rememberMe')) {
+      await prefs.setBool('rememberMe', true);
+    }
   }
 
   // Function to save the rememberMe value to SharedPreferences
@@ -53,16 +62,14 @@ class RememberMeAndForgotPasswordRowState
                     setState(() {
                       rememberMe = value ?? false;
                     });
-                    widget.onRememberMeChanged(
-                        rememberMe); // Notify the parent widget of the change
-                    _saveRememberMe(); // Save the value whenever it's changed
+                    widget.onRememberMeChanged(rememberMe);
                   },
                   activeColor: isDarkMode
                       ? Colors.blueAccent
-                      : Colors.blue, // Color for the active checkbox
+                      : Colors.blue, // لون Checkbox عند التفعيل
                   checkColor: isDarkMode
                       ? Colors.white
-                      : Colors.black87, // Color for checked box
+                      : Colors.black87, // لون الإشارة عند التفعيل
                 ),
                 Text(
                   '62'.tr,

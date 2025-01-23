@@ -69,13 +69,28 @@ class GeminiProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     response = null;
+
+    // كشف لغة النص
+    final language = detectLanguage(prompt);
+
+    // توليد التعليمات بناءً على اللغة
+    final healthPrompt = language == 'en'
+        ? '''
+        Analyze this image if it contains medical content such as X-rays, MRIs, or other medical images. If the image is non-medical, respond with "This is not a medical image. I can only analyze medical images." 
+        Also, analyze this description: "$prompt".
+      '''
+        : '''
+        قم بتحليل هذه الصورة إذا كانت تحتوي على محتوى طبي مثل صور الأشعة السينية أو الرنين المغناطيسي أو غيرها من الصور الطبية. إذا كانت الصورة غير طبية، يرجى الرد بـ "هذه ليست صورة طبية. يمكنني فقط تحليل الصور الطبية." 
+        وأيضًا قم بتحليل هذا الوصف: "$prompt".
+      ''';
+
     final dataPart = DataPart(
       'image/jpeg',
       bytes,
     );
 
     response = await _geminiService.generateContentFromImage(
-      prompt: prompt,
+      prompt: healthPrompt,
       dataPart: dataPart,
     );
 

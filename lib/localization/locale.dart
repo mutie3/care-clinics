@@ -312,6 +312,7 @@ class MyLocale implements Translations {
           "298": "يرجى ملء جميع الحقول لجميع الأطباء.",
           "299": "تم حفظ الدكاترة سوف يتم التاكد من المعلومات خلال 24 ساعة.",
           "300": "الرجاء اختيار التخصص الصحيح.",
+          "301": "طب الاسنان",
         },
         "en": {
           "1": "HomePage",
@@ -625,6 +626,7 @@ class MyLocale implements Translations {
           "299":
               "Doctors have been saved. Information will be verified within 24 hours.",
           "300": "Please select a valid specialty.",
+          "301": "Dentistry",
         }
       };
 }

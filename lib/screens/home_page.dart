@@ -70,10 +70,8 @@ class HomePageSpecializationsState extends State<HomePageSpecializations> {
         "name": '19'.tr,
         "icon": MdiIcons.humanHandsup
       }, // أيقونة الدعم والرعاية الصحية
-      {
-        "name": '5'.tr,
-        "icon": MdiIcons.meditation
-      }, // أيقونة العلاج الطبيعي أو الطب النفسي
+      {"name": '5'.tr, "icon": MdiIcons.meditation},
+      {"name": '301'.tr, "icon": FontAwesomeIcons.tooth},
       {
         "name": '21'.tr,
         "icon": MdiIcons.radiologyBoxOutline

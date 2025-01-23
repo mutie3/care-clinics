@@ -802,8 +802,7 @@ class ClinicPageState extends State<ClinicPage> {
           }
           return null;
         },
-        icon: const Icon(Icons
-            .medical_information), // أيقونة للتوضيح (يمكنك تغييرها حسب الحاجة)
+        icon: const Icon(Icons.medical_information),
       ),
     );
   }
