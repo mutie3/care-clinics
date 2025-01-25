@@ -163,6 +163,9 @@ class ClinicPageState extends State<ClinicPage> {
   }
 
   void showDoctorDetails(Map<String, dynamic> doctor, String doctorId) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    bool isDarkMode = themeProvider.isDarkMode;
+
     doctorNameController.text = doctor['name'] ?? '';
     experienceController.text = doctor['experience']?.toString() ?? '';
     specialtyController.text = doctor['specialty'] ?? '';
@@ -200,7 +203,7 @@ class ClinicPageState extends State<ClinicPage> {
               child: GestureDetector(
                 onTap: () {},
                 child: Card(
-                  color: Colors.white,
+                  color: isDarkMode ? Colors.grey[900] : Colors.white,
                   elevation: 10,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15)),
@@ -220,11 +223,15 @@ class ClinicPageState extends State<ClinicPage> {
                             showDoctorEditInfo(doctorId);
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1E88E5),
+                            backgroundColor: isDarkMode
+                                ? Colors.blueGrey
+                                : const Color(0xFF1E88E5),
                           ),
                           child: Text(
                             '275'.tr,
-                            style: const TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: isDarkMode ? Colors.white : Colors.black,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -233,11 +240,15 @@ class ClinicPageState extends State<ClinicPage> {
                             showDoctorWorkingDays(doctorId);
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1E88E5),
+                            backgroundColor: isDarkMode
+                                ? Colors.blueGrey
+                                : const Color(0xFF1E88E5),
                           ),
                           child: Text(
                             '276'.tr,
-                            style: const TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: isDarkMode ? Colors.white : Colors.black,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -253,11 +264,15 @@ class ClinicPageState extends State<ClinicPage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1E88E5),
+                            backgroundColor: isDarkMode
+                                ? Colors.blueGrey
+                                : const Color(0xFF1E88E5),
                           ),
                           child: Text(
                             '277'.tr,
-                            style: const TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: isDarkMode ? Colors.white : Colors.black,
+                            ),
                           ),
                         ),
                       ],
@@ -273,6 +288,8 @@ class ClinicPageState extends State<ClinicPage> {
   }
 
   void showDoctorEditInfo(String doctorId) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    bool isDarkMode = themeProvider.isDarkMode;
     showDialog(
       context: context,
       builder: (context) => GestureDetector(
@@ -291,10 +308,11 @@ class ClinicPageState extends State<ClinicPage> {
               child: GestureDetector(
                 onTap: () {},
                 child: Card(
-                  color: Colors.white,
-                  elevation: 10,
+                  color: isDarkMode ? Colors.grey[900] : Colors.white,
+                  elevation: 15,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
@@ -303,17 +321,61 @@ class ClinicPageState extends State<ClinicPage> {
                         const SizedBox(height: 10),
                         TextField(
                           controller: doctorNameController,
+                          style: TextStyle(
+                            color: isDarkMode ? Colors.white : Colors.black,
+                          ),
                           decoration: InputDecoration(
                             labelText: '74'.tr,
-                            labelStyle: const TextStyle(color: Colors.black),
+                            labelStyle: TextStyle(
+                              color:
+                                  isDarkMode ? Colors.white70 : Colors.black54,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: isDarkMode
+                                    ? Colors.white70
+                                    : Colors.black45,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: isDarkMode
+                                    ? Colors.blueAccent
+                                    : Colors.blue,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 10),
                         TextField(
                           controller: experienceController,
+                          style: TextStyle(
+                            color: isDarkMode ? Colors.white : Colors.black,
+                          ),
                           decoration: InputDecoration(
                             labelText: '278'.tr,
-                            labelStyle: const TextStyle(color: Colors.black),
+                            labelStyle: TextStyle(
+                              color:
+                                  isDarkMode ? Colors.white70 : Colors.black54,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: isDarkMode
+                                    ? Colors.white70
+                                    : Colors.black45,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: isDarkMode
+                                    ? Colors.blueAccent
+                                    : Colors.blue,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -323,10 +385,13 @@ class ClinicPageState extends State<ClinicPage> {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF1E88E5),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
                           child: Text(
                             '279'.tr,
-                            style: const TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -336,6 +401,9 @@ class ClinicPageState extends State<ClinicPage> {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
                           child: Text(
                             '280'.tr,
@@ -355,6 +423,8 @@ class ClinicPageState extends State<ClinicPage> {
   }
 
   void showDoctorWorkingDays(String doctorId) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    bool isDarkMode = themeProvider.isDarkMode;
     showDialog(
       context: context,
       builder: (context) => GestureDetector(
@@ -373,10 +443,11 @@ class ClinicPageState extends State<ClinicPage> {
               child: GestureDetector(
                 onTap: () {},
                 child: Card(
-                  color: Colors.white,
-                  elevation: 10,
+                  color: isDarkMode ? Colors.grey[900] : Colors.white,
+                  elevation: 15,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
@@ -384,8 +455,11 @@ class ClinicPageState extends State<ClinicPage> {
                       children: [
                         Text(
                           '276'.tr,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: isDarkMode ? Colors.white : Colors.black,
+                          ),
                         ),
                         const SizedBox(height: 10),
                         ValueListenableBuilder<List<bool>>(
@@ -417,7 +491,14 @@ class ClinicPageState extends State<ClinicPage> {
                                         });
                                       },
                                     ),
-                                    Text(day),
+                                    Text(
+                                      day,
+                                      style: TextStyle(
+                                        color: isDarkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                    ),
                                   ],
                                 );
                               }),
@@ -427,19 +508,19 @@ class ClinicPageState extends State<ClinicPage> {
                         const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: () {
-                            // حفظ التعديلات
                             saveDoctorData(doctorId);
-
-                            // التحقق من الأيام التي تم تعديلها
                             checkAndDeleteAppointments(
                                 doctorId, daysSelected.value);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF1E88E5),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
                           child: Text(
                             '279'.tr,
-                            style: const TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                       ],
@@ -559,47 +640,54 @@ class ClinicPageState extends State<ClinicPage> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     bool isDarkMode = themeProvider.isDarkMode;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('284'.tr),
-        backgroundColor: Colors.blue,
+        title: Text(
+          '284'.tr,
+          style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
+        ),
+        backgroundColor: isDarkMode ? Colors.grey[900] : Colors.blue,
         actions: [
           Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.settings, color: Colors.white),
+                icon: Icon(Icons.settings,
+                    color: isDarkMode ? Colors.white : Colors.black),
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const SettingsScreen(
                         isClinic: true,
-                      ), // تأكد من وجود صفحة SettingScreen
+                      ),
                     ),
                   );
                 },
               ),
-              const SizedBox(
-                width: 10,
-              ),
+              const SizedBox(width: 10),
             ],
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
+        backgroundColor: isDarkMode ? Colors.grey[800] : Colors.blue,
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ClincInfo(clinicId: clinicId)));
+            builder: (context) => ClincInfo(clinicId: clinicId),
+          ));
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       drawer: Drawer(
+        backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: const BoxDecoration(color: Colors.blue),
+              decoration: BoxDecoration(
+                color: isDarkMode ? Colors.grey[800] : Colors.blue,
+              ),
               child: Column(
                 children: [
                   GestureDetector(
@@ -612,33 +700,43 @@ class ClinicPageState extends State<ClinicPage> {
                                   'images/861547d6b20eedd16ab36dc108f44254.jpg')
                               as ImageProvider,
                       child: _imageFile == null
-                          ? const Icon(Icons.camera_alt, color: Colors.white)
+                          ? Icon(Icons.camera_alt,
+                              color: isDarkMode ? Colors.black : Colors.white)
                           : null,
                     ),
                   ),
                   const SizedBox(height: 10),
                   Text(
                     clinicData['name'] ?? '57'.tr,
-                    style: const TextStyle(fontSize: 18, color: Colors.white),
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: isDarkMode ? Colors.white : Colors.black,
+                    ),
                   ),
                 ],
               ),
             ),
             ExpansionTile(
-              title: Text('285'.tr),
-              leading: const Icon(Icons.edit),
+              title: Text(
+                '285'.tr,
+                style:
+                    TextStyle(color: isDarkMode ? Colors.white : Colors.black),
+              ),
+              leading: Icon(Icons.edit,
+                  color: isDarkMode ? Colors.white : Colors.black),
               children: [
                 buildEditableField('57'.tr, nameController),
                 buildPhoneField(),
                 ListTile(
-                  title: Text('76'.tr),
+                  title: Text(
+                    '76'.tr,
+                    style: TextStyle(
+                        color: isDarkMode ? Colors.white : Colors.black),
+                  ),
                   subtitle: IgnorePointer(
-                    ignoring:
-                        !isEditingClinic, // تعطيل التفاعل إذا لم يكن في وضع التعديل
+                    ignoring: !isEditingClinic,
                     child: Opacity(
-                      opacity: isEditingClinic
-                          ? 1.0
-                          : 0.5, // تقليل شفافية العنصر إذا لم يكن في وضع التعديل
+                      opacity: isEditingClinic ? 1.0 : 0.5,
                       child: CustomLocationPicker(
                         controller: locationController,
                       ),
@@ -646,8 +744,15 @@ class ClinicPageState extends State<ClinicPage> {
                   ),
                 ),
                 ListTile(
-                  leading: Icon(isEditingClinic ? Icons.save : Icons.edit),
-                  title: Text(isEditingClinic ? '55'.tr : '79'.tr),
+                  leading: Icon(
+                    isEditingClinic ? Icons.save : Icons.edit,
+                    color: isDarkMode ? Colors.white : Colors.black,
+                  ),
+                  title: Text(
+                    isEditingClinic ? '55'.tr : '79'.tr,
+                    style: TextStyle(
+                        color: isDarkMode ? Colors.white : Colors.black),
+                  ),
                   onTap: () {
                     setState(() {
                       isEditingClinic = !isEditingClinic;
@@ -659,14 +764,20 @@ class ClinicPageState extends State<ClinicPage> {
                 ),
               ],
             ),
-            _buildInfoCard(Icons.medication_outlined, '202'.tr, '',
-                isDarkMode: isDarkMode, onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const DrugInfoSearchPage()),
-              );
-            }),
+            _buildInfoCard(
+              Icons.medication_outlined,
+              '202'.tr,
+              '',
+              isDarkMode: isDarkMode,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const DrugInfoSearchPage(),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -678,7 +789,10 @@ class ClinicPageState extends State<ClinicPage> {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('286'.tr));
+            return Center(
+                child: Text('286'.tr,
+                    style: TextStyle(
+                        color: isDarkMode ? Colors.white : Colors.black)));
           }
 
           var doctors = snapshot.data!.docs;
@@ -697,10 +811,11 @@ class ClinicPageState extends State<ClinicPage> {
               return GestureDetector(
                 onTap: () => showDoctorDetails(doctor, doctorId),
                 child: Card(
-                  color: Colors.white,
+                  color: isDarkMode ? Colors.grey[800] : Colors.white,
                   elevation: 5,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -712,12 +827,16 @@ class ClinicPageState extends State<ClinicPage> {
                       const SizedBox(height: 10),
                       Text(
                         doctor['name'] ?? '74'.tr,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: isDarkMode ? Colors.white : Colors.black,
+                        ),
                       ),
                       Text(
                         doctor['specialty'] ?? '75'.tr,
-                        style: const TextStyle(color: Colors.grey),
+                        style: TextStyle(
+                            color: isDarkMode ? Colors.grey[400] : Colors.grey),
                       ),
                     ],
                   ),
@@ -730,33 +849,61 @@ class ClinicPageState extends State<ClinicPage> {
     );
   }
 
-  Widget _buildInfoCard(IconData icon, String title, String value,
-      {VoidCallback? onTap, required bool isDarkMode}) {
+  Widget _buildInfoCard(
+    IconData icon,
+    String title,
+    String value, {
+    VoidCallback? onTap,
+    required bool isDarkMode,
+  }) {
     return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      color: isDarkMode ? Colors.grey[800] : Colors.white,
-      child: ListTile(
-        leading:
-            Icon(icon, color: isDarkMode ? Colors.blueAccent : Colors.blue),
-        title: Text(title,
-            style: TextStyle(color: isDarkMode ? Colors.white : Colors.black)),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: isDarkMode ? Colors.white : Colors.black,
-              ),
-            ),
-            if (onTap != null)
-              const Icon(Icons.arrow_forward_ios, color: Colors.grey),
-          ],
-        ),
+      elevation: 5, // زيادة قيمة الظل لجعل العنصر أكثر وضوحًا
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: isDarkMode ? Colors.grey[850] : Colors.white,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
         onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundColor:
+                    isDarkMode ? Colors.blueGrey[700] : Colors.blue[50],
+                child: Icon(icon,
+                    color: isDarkMode ? Colors.blueAccent : Colors.blue),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: isDarkMode ? Colors.white70 : Colors.black87,
+                      ),
+                    ),
+                    if (value.isNotEmpty)
+                      Text(
+                        value,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: isDarkMode ? Colors.white : Colors.black,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              if (onTap != null)
+                Icon(Icons.arrow_forward_ios,
+                    color: isDarkMode ? Colors.grey[500] : Colors.grey),
+            ],
+          ),
+        ),
       ),
     );
   }

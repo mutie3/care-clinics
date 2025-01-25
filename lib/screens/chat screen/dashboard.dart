@@ -3,7 +3,6 @@ import 'package:care_clinic/constants/colors_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../constants/gemini_provider.dart';
 import '../../constants/theme_dark_mode.dart';
