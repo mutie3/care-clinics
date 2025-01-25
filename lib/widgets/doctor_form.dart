@@ -340,7 +340,7 @@ class _DoctorListState extends State<DoctorList> {
           // عرض SnackBar فقط إذا كانت العيادة غير معتمدة
           if (!isApproved) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('عيادتك لم يتم الموافقة عليها بعد'.tr)),
+              SnackBar(content: Text('299'.tr)),
             );
           }
         } else {
