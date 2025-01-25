@@ -359,10 +359,17 @@ class _DoctorListState extends State<DoctorList> {
     }
 
     if (!hasError) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
-      );
+      if (isApproved) {
+        // العودة إلى الشاشة السابقة إذا كانت العيادة معتمدة
+        Navigator.pop(context);
+      } else {
+        // العودة إلى صفحة تسجيل الدخول إذا كانت العيادة غير معتمدة
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+          (route) => false, // مسح جميع الصفحات في الستاك
+        );
+      }
     }
   }
 
