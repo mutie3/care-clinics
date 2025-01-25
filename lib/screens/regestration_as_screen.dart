@@ -97,7 +97,7 @@ class _RegAsSelectState extends State<RegAsSelect> {
                               );
                             },
                             openBuilder: (context, action) {
-                              return const RegistrationPage(); //حط الصفحة تبعتك هون بدل هاي
+                              return const RegistrationPage();
                             },
                           ),
 

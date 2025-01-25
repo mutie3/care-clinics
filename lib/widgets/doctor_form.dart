@@ -8,6 +8,7 @@ import 'package:care_clinic/constants/colors_page.dart';
 import 'package:care_clinic/widgets/set_picture.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'custom_text_fieled.dart';
 
@@ -279,8 +280,22 @@ class DoctorList extends StatefulWidget {
 class _DoctorListState extends State<DoctorList> {
   Future<void> _saveAllDoctors() async {
     bool hasError = false;
+    bool isExistingClinic = false;
+    bool isApproved = false; // لتخزين حالة الموافقة على العيادة
 
     try {
+      // التحقق مما إذا كانت العيادة موجودة مسبقًا وجلب حالة isApproved
+      final clinicDoc = await FirebaseFirestore.instance
+          .collection('clinics')
+          .doc(widget.clinicId)
+          .get();
+
+      if (clinicDoc.exists) {
+        isExistingClinic = true;
+        isApproved =
+            clinicDoc.data()?['isApproved'] ?? false; // جلب حالة isApproved
+      }
+
       for (var form in widget.doctorForms) {
         if (form['formKey'].currentState!.validate()) {
           List<String> selectedDays = [];
@@ -322,9 +337,12 @@ class _DoctorListState extends State<DoctorList> {
             'image_url': imageUrl,
           });
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('299'.tr)),
-          );
+          // عرض SnackBar فقط إذا كانت العيادة غير معتمدة
+          if (!isApproved) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('عيادتك لم يتم الموافقة عليها بعد'.tr)),
+            );
+          }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('298'.tr)),
