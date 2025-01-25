@@ -3,16 +3,16 @@ import 'package:care_clinic/field_login/email_field.dart';
 import 'package:care_clinic/field_login/password_field.dart';
 import 'package:care_clinic/field_login/remember_me_field.dart';
 import 'package:care_clinic/field_login/sign_up_text.dart';
+import 'package:care_clinic/screens/doctor_reg/loading_overlay.dart';
+import 'package:care_clinic/screens/home_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../constants/colors_page.dart';
 import 'clinic_page.dart';
-import 'doctor_reg/loading_overlay.dart';
-import 'home_page.dart';
-import 'package:care_clinic/constants/colors_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -31,6 +31,7 @@ class LoginPageState extends State<LoginPage>
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool rememberMe = false;
+
   @override
   void initState() {
     super.initState();
@@ -54,7 +55,6 @@ class LoginPageState extends State<LoginPage>
   Future<void> _checkLoginState() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isRemembered = prefs.getBool('isRemembered') ?? false;
-    if (!isRemembered) return;
     if (isRemembered) {
       User? user = _auth.currentUser;
 
@@ -123,6 +123,9 @@ class LoginPageState extends State<LoginPage>
         // تحقق من حالة "تذكرني"
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isRemembered', true);
+      } else {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.remove('isRemembered');
       }
 
       final clinicSnapshot = await FirebaseFirestore.instance
@@ -197,7 +200,6 @@ class LoginPageState extends State<LoginPage>
   void dispose() {
     _controller.dispose();
     _emailController.dispose();
-
     _passwordController.dispose();
     super.dispose();
   }

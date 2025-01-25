@@ -28,7 +28,7 @@ class RememberMeAndForgotPasswordRowState
   void initState() {
     super.initState();
 
-    rememberMe = widget.rememberMe || true;
+    rememberMe = widget.rememberMe || false;
 
     _initializeRememberMe();
   }
